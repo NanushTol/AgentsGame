@@ -20,9 +20,15 @@ public class KeysTimeControl : MonoBehaviour
                 //Debug.Log("scale -");
                 Time.timeScale -= 1;
             }
+
             if (Time.timeScale == 1)
             {
-                Time.timeScale -= 0.99f;
+                Time.timeScale -= 1f;
+            }
+
+            if(Time.timeScale == 0)
+            {
+                Time.timeScale = 0f;
             }
 
         }
@@ -33,7 +39,7 @@ public class KeysTimeControl : MonoBehaviour
             {
                 //Debug.Log("Paused");
 
-                Time.timeScale = 0.01f;
+                Time.timeScale = 0.0f;
             }
             if(Time.timeScale == 0)
             {

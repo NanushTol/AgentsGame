@@ -18,6 +18,11 @@ public class WorkPlace : MonoBehaviour
     public int MaxWorkers = 6;
     public int CurrntlyWorking;
 
+    public Color WorkingColor;
+    public Color NotWorkingColor;
+
+    public bool WorkersNeeded;
+
     [HideInInspector]
     public Vector3Int LastPosition;
 
@@ -71,14 +76,46 @@ public class WorkPlace : MonoBehaviour
     {
         spherecastTimer = spherecastTimer + Time.deltaTime;
 
-        if (spherecastTimer >= 1)
+        if (spherecastTimer >= 0.5)
         {
             Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(transform.position, WorkersRadius, LayerMask.GetMask("Agent"));
 
-            agentsWorking = new int[_objectColliders.Length];
+
+
+            CurrntlyWorking = 0;
+
+            for(int a = 0; a < _objectColliders.Length; a++)
+            {
+                if (_objectColliders[a].GetComponent<Agent>().working)
+                {
+                    CurrntlyWorking += 1;
+                }
+            }
+
+            agentsWorking = new int[CurrntlyWorking];
+
+            if(agentsWorking.Length <= 6)
+            {
+
+                WorkersNeeded = true;
+
+                if (agentsWorking.Length == 6)
+                {
+                    WorkersNeeded = false;
+                }
+                
+            }
+            if (agentsWorking.Length > 6)
+            {
+                agentsWorking = new int[6];
+                WorkersNeeded = false;
+            }
+
 
             spherecastTimer = 0;
         }
+
+        UpdateVacancyBar(agentsWorking);
 
         if(Production > 0)
         {
@@ -155,5 +192,21 @@ public class WorkPlace : MonoBehaviour
             // Recalculate the connections for that node as well as its neighbours
             grid.CalculateConnectionsForCellAndNeighbours(_position.x, _position.y);
         });
+    }
+
+    void UpdateVacancyBar(int[] _agentsWorking)
+    {
+        Transform vacancyBar = transform.GetChild(0);
+
+        for(int j = 0; j < MaxWorkers; j++)
+        {
+            vacancyBar.transform.GetChild(j).gameObject.GetComponent<SpriteRenderer>().color = NotWorkingColor;
+        }
+
+        for(int i = 0; i < _agentsWorking.Length; i++)
+        {
+            vacancyBar.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = WorkingColor;
+        }
+        
     }
 }

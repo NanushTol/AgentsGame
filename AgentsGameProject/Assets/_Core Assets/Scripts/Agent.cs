@@ -216,17 +216,26 @@ public class Agent : MonoBehaviour
         reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.1f);
         reproductiveUrge = UnityEngine.Mathf.Clamp(reproductiveUrge, MinReproductiveUrge, MaxReproductiveUrge);
 
-        if (food <= 3f || energy <= 3f)
+        if (food <= 3f)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
             _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Hunger");
+        }
+        if (energy <= 3f)
+        {
+            Destroy(gameObject);
+            GameObject _globalStats = GameObject.Find("GlobalStats");
+            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Exhaustion");
         }
         if (currentAge >= MaxAge)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
             _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Old Age");
         }
     }
 
@@ -658,7 +667,7 @@ public class Agent : MonoBehaviour
                 closestWork = FindClosestObject(transform.position, SearchRadius, "Work"); //find Closest Workplace
 
                 // found close workplace //
-                if (closestWork != null)
+                if (closestWork != null && closestWork.GetComponent<WorkPlace>().WorkersNeeded)
                 {
                     //move to workplace
                     MoveTo(closestWork);
@@ -666,7 +675,7 @@ public class Agent : MonoBehaviour
                 }
 
                 // Has not found close work place //
-                if (closestWork == null)
+                if (closestWork == null || closestWork.GetComponent<WorkPlace>().WorkersNeeded == false)
                 {
                     //if You are not searching find a new searchPoint
                     if (searching == false)
