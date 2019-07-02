@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2038208597483455995}
   - component: {fileID: 3102577599314634660}
-  - component: {fileID: 4086031959198471563}
   - component: {fileID: 1647192999387235613}
   - component: {fileID: 2271895063104277318}
   - component: {fileID: 1611902184749935212}
@@ -93,9 +92,9 @@ MonoBehaviour:
   MinReproductiveUrge: 0
   SpeedCost: 0.4
   WorkFoodCost: 2
-  WorkEnergyCost: 1.6
+  WorkEnergyCost: 2.2
   AgentSpeed: 5
-  SearchRadius: 5
+  SearchRadius: 4
   BiteSize: 3
   SleepEfficiency: 2
   FoodFullThreshold: 60
@@ -168,7 +167,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.69999987
+      time: 0.80064684
       value: 0
       inSlope: 0
       outSlope: 0
@@ -210,7 +209,7 @@ MonoBehaviour:
       inWeight: 0.63636386
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 44.940125
+      time: 49.95569
       value: 59.994583
       inSlope: 0
       outSlope: 0
@@ -219,8 +218,8 @@ MonoBehaviour:
       inWeight: 0.28007612
       outWeight: 0
     - serializedVersion: 3
-      time: 74.598526
-      value: 9.703323
+      time: 90.04975
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -252,7 +251,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 60.026985
+      time: 64.71658
       value: 1
       inSlope: 0
       outSlope: 0
@@ -261,7 +260,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.25446343
     - serializedVersion: 3
-      time: 79.88748
+      time: 90
       value: 100
       inSlope: 0
       outSlope: 0
@@ -270,17 +269,8 @@ MonoBehaviour:
       inWeight: 0.09642935
       outWeight: 0
     - serializedVersion: 3
-      time: 92.49573
-      value: 59.9599
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 99.821434
-      value: 59.83963
+      time: 100
+      value: 100
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -341,18 +331,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4086031959198471563
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 300681778666496619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7e7498808f281740b1ea7bf06e598e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1647192999387235613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,7 +440,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 300681778666496619}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 6f0bff599cf14d049b79287167cbe67a, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -485,7 +463,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 6f0bff599cf14d049b79287167cbe67a, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1

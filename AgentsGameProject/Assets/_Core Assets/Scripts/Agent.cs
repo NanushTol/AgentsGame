@@ -587,7 +587,7 @@ public class Agent : MonoBehaviour
             {
 
             RemapedSearchTime = Remap(FoodSearchTime, 0f, MaxSearchTime, 0f, 1f);
-            Needs[HUNGRY] = foodToHunger.Evaluate(food) * searchTimeToHunger.Evaluate(RemapedSearchTime);
+            Needs[HUNGRY] = foodToHunger.Evaluate(food) - searchTimeToHunger.Evaluate(RemapedSearchTime);
             hungry = Needs[HUNGRY];
             }
             

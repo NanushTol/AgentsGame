@@ -54,7 +54,7 @@ public class GlobalStats : MonoBehaviour
         {
             updateTimer = 0f;
             //GetStats
-            Collider[] _agentsColliders = Physics.OverlapSphere(transform.position, 100f, LayerMask.GetMask("Agent"));
+            Collider2D[] _agentsColliders = Physics2D.OverlapCircleAll(transform.position, 100f, LayerMask.GetMask("Agent"));
             
             float[] _agentsSpeeds;
             _agentsSpeeds = new float [_agentsColliders.Length];

@@ -37,6 +37,7 @@ public class WorkPlace : MonoBehaviour
     void Awake()
     {
         environment = GameObject.Find("Environment");
+        grid = GameObject.Find("Grid").GetComponent<Grid>();
     }
     private void Start()
     {
