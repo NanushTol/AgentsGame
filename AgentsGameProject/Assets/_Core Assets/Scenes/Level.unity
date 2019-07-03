@@ -2122,7 +2122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &138169738
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5839,7 +5839,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.45444295, g: 0.33228016, b: 0.5377358, a: 1}
-  m_Text: 15
+  m_Text: 4
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -6591,7 +6591,7 @@ Transform:
   - {fileID: 2034679448}
   - {fileID: 1011316900}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &403549731
 GameObject:
@@ -8164,7 +8164,7 @@ GameObject:
   - component: {fileID: 474980912}
   - component: {fileID: 474980911}
   m_Layer: 5
-  m_Name: AvrageSearchRaduis
+  m_Name: AvrageSearchRadius
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8209,7 +8209,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: 'Av Search Raduis:'
+  m_text: 'Av Search Radius:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 67d0075964a5417459d4c1ca486a5810, type: 2}
   m_sharedMaterial: {fileID: 7377349411714148486, guid: 67d0075964a5417459d4c1ca486a5810,
@@ -8612,7 +8612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7380445e458691439023b39fb342341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AngelPrefab: {fileID: 300681778666496619, guid: 03adbdd1ab8e6864a975b883c4d1cf09,
+  AngelPrefab: {fileID: 300681778666496619, guid: 72d2f6fa17e5cad41a791f183b24fefc,
     type: 3}
   SearchRadiusField: {fileID: 343067345}
   SpeedField: {fileID: 1275965667}
@@ -8631,14 +8631,14 @@ MonoBehaviour:
   MaxFood: 100
   MaxReproductiveUrge: 1
   MinReproductiveUrge: 0
-  SpeedCost: 0.3
-  WorkFoodCost: 1.8
-  WorkEnergyCost: 1.2
-  AgentSpeed: 10
-  SearchRadius: 8
+  SpeedCost: 0.4
+  WorkFoodCost: 2
+  WorkEnergyCost: 1.6
+  AgentSpeed: 5
+  SearchRadius: 4
   SleepEfficiency: 2
   FoodFullThreshold: 60
-  AwakeThreshold: 70
+  AwakeThreshold: 90
   Mutaion: 0.15
 --- !u!1 &522345714
 GameObject:
@@ -13325,7 +13325,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 898251587}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 898251585}
+        m_MethodName: quitButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &898251587
@@ -13450,6 +13461,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Agent (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 300681778666496619, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2038208597483455995, guid: 67b5f51618c6e224d8b85d8041f30d6f,
         type: 3}
@@ -14593,7 +14609,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &994152628
 GameObject:
@@ -16180,7 +16196,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: "10\u200B"
+  m_text: "5\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -16249,7 +16265,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1066223456}
-    characterCount: 3
+    characterCount: 2
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -19808,7 +19824,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.45490196, g: 0.33333334, b: 0.5372549, a: 0.7529412}
-  m_Text: 10
+  m_Text: 5
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -26062,7 +26078,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: "15\u200B"
+  m_text: "4\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -26131,7 +26147,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1911940718}
-    characterCount: 3
+    characterCount: 2
     spriteCount: 0
     spaceCount: 0
     wordCount: 1

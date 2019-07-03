@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using UnityEngine.AI;
 using System.Linq;
 using Pathfinding;
 
@@ -55,8 +54,6 @@ public class Agent : MonoBehaviour
     public bool wantsToMate = false;
     public bool foundMate = false;
     public bool working;
-
-    public float HasArrivedThresh = 3f;
 
     [Header("Stats")]
 
@@ -411,22 +408,22 @@ public class Agent : MonoBehaviour
         _globalStats.GetComponent<GlobalStats>().AgentsBorn += 1;
         _globalStats.GetComponent<GlobalStats>().GodForce += GfPerBirth;
 
-        //Vector3 _birthPosition = new Vector3(0, 0, 2);
+       
         //get random location
-        for(int j = 0; j < 20; j++)
+        for(int j = 0; j < 30; j++)
         {
             _birthPosition = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius) + gameObject.transform.position;
 
             _birthPosition.z = 0.0f;
 
             //Check if location is valid
-            Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(transform.position, 0.4f, LayerMask.GetMask("Agent")); //check agent on location
+            Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_birthPosition, 0.4f, LayerMask.GetMask("Agent")); //check agent on location
 
             bool PositionValid = Physics2D.CircleCast(_birthPosition, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));//check on ground
 
             if (PositionValid && _objectColliders.Length == 0)
             {
-                j = 21;
+                j = 31;
             }
         }
 
@@ -485,21 +482,26 @@ public class Agent : MonoBehaviour
         _globalStats.GetComponent<GlobalStats>().AgentsBorn += 1;
         _globalStats.GetComponent<GlobalStats>().GodForce += GfPerBirth;
 
-        for (int j = 0; j < 20; j++)
+        //get random location
+        for (int j = 0; j < 30; j++)
         {
-            _birthPosition = (UnityEngine.Random.insideUnitSphere * SearchRadius) + gameObject.transform.position;
-            _birthPosition.y = 0.3f;
+            _birthPosition = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius) + gameObject.transform.position;
+
+            _birthPosition.z = 0.0f;
+
             //Check if location is valid
-            RaycastHit _hit;
-            bool PositionValid = Physics.SphereCast(_birthPosition, 1.3f, Camera.main.transform.forward, out _hit, 100f, LayerMask.GetMask("Agent"));
-            if (PositionValid == false)
+            Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_birthPosition, 0.4f, LayerMask.GetMask("Agent")); //check agent on location
+
+            bool PositionValid = Physics2D.CircleCast(_birthPosition, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));//check on ground
+
+            if (PositionValid && _objectColliders.Length == 0)
             {
-                j = 21;
+                j = 31;
             }
         }
 
         Quaternion _rotation = new Quaternion(0, 0, 0, 0);
-        GameObject _baby = Instantiate(AgentPrefab, (transform.position + _birthPosition), _rotation); // create a baby as a child object
+        GameObject _baby = Instantiate(AgentPrefab, _birthPosition, _rotation); // create a baby as a child object
         _baby.name = "Agent (clone) " + UnityEngine.Random.Range(1000, 1999);
         _baby.GetComponent<Agent>().JustBornWithAngel = true;
 
@@ -507,10 +509,10 @@ public class Agent : MonoBehaviour
 
         _baby.GetComponent<Agent>().MissionInLife = MissionInLife; //set mission in life to self mission
 
-        _baby.GetComponent<Agent>().AgentSpeed = (_mate.GetComponent<GodAngel>().AgentSpeed + AgentSpeed) / 2;
-        _baby.GetComponent<Agent>().SearchRadius = (_mate.GetComponent<GodAngel>().SearchRadius + SearchRadius) / 2;
-        _baby.GetComponent<Agent>().SpeedCost = (_mate.GetComponent<GodAngel>().SpeedCost + SpeedCost) / 2;
-        _baby.GetComponent<Agent>().WorkFoodCost = (_mate.GetComponent<GodAngel>().WorkFoodCost + WorkFoodCost) / 2;
+        _baby.GetComponent<Agent>().AgentSpeed = (_mate.GetComponent<GodAngel>().AgentSpeed + AgentSpeed) / 2f;
+        _baby.GetComponent<Agent>().SearchRadius = (_mate.GetComponent<GodAngel>().SearchRadius + SearchRadius) / 2f;
+        _baby.GetComponent<Agent>().SpeedCost = (_mate.GetComponent<GodAngel>().SpeedCost + SpeedCost) / 2f;
+        _baby.GetComponent<Agent>().WorkFoodCost = (_mate.GetComponent<GodAngel>().WorkFoodCost + WorkFoodCost) / 2f;
 
         //for (int i = 0; i < _babyTraits.Length; i++)
         //{

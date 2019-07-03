@@ -9,24 +9,19 @@ public class KeysTimeControl : MonoBehaviour
         if (Input.GetKeyDown("[+]"))
         {
             //Debug.Log("scale +");
-            Time.timeScale += 1;
+            Time.timeScale += 1f;
             
         }
 
         if (Input.GetKeyDown("[-]"))
         {
-            if(Time.timeScale > 1)
+            if(Time.timeScale >= 1f)
             {
                 //Debug.Log("scale -");
-                Time.timeScale -= 1;
+                Time.timeScale = Time.timeScale - 1f;
             }
 
-            if (Time.timeScale == 1)
-            {
-                Time.timeScale -= 1f;
-            }
-
-            if(Time.timeScale == 0)
+            if (Time.timeScale < 1f)
             {
                 Time.timeScale = 0f;
             }
@@ -35,15 +30,15 @@ public class KeysTimeControl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
-            if(Time.timeScale > 0)
+            if(Time.timeScale > 0f)
             {
                 //Debug.Log("Paused");
 
                 Time.timeScale = 0.0f;
             }
-            if(Time.timeScale == 0)
+            if(Time.timeScale == 0f)
             {
-                Time.timeScale = 1;
+                Time.timeScale = 1f;
             }
         }
     }

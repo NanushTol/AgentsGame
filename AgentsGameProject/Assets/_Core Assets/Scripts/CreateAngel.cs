@@ -15,10 +15,15 @@ public class CreateAngel : MonoBehaviour
     public GameObject globalStats;
     public float BaseGfCost;
 
+    [HideInInspector]
     public float GfCostSearchRadius;
+    [HideInInspector]
     public float GfCostAgentSpeed;
+    [HideInInspector]
     public float GfCostSpeedCost;
+    [HideInInspector]
     public float GfCostWorkFoodCost;
+    [HideInInspector]
     public float[] GodForceCosts;
 
     [Header("Traits")]
@@ -49,10 +54,16 @@ public class CreateAngel : MonoBehaviour
     RaycastHit hit;
     float yOffset = 5f;
     Vector3 creationPoint;
+    bool creatingGodAngel;
+    float distance;
+    Vector3 v3;
+    Grid grid;
+
     #endregion
     private void Awake()
     {
         GodForceCosts = new float[5];
+        grid = GameObject.Find("Grid").GetComponent<Grid>();
     }
     void Update()
     {
@@ -75,11 +86,49 @@ public class CreateAngel : MonoBehaviour
         GodForceCosts[2] = GfCostSpeedCost;
         GodForceCosts[3] = GfCostWorkFoodCost;
         GodForceCosts[4] = gfSum;
+
+
+
+        if (creatingGodAngel)
+        {
+
+            Time.timeScale = 0f;
+
+
+            if (Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground")))
+            {
+                v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
+
+                v3 = Camera.main.ScreenToWorldPoint(v3);
+
+                v3.z = 0f;
+
+                newBornAngel.transform.position = v3;  
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                globalStats.GetComponent<GlobalStats>().GodForce -= BaseGfCost;
+
+                creatingGodAngel = false;
+                Time.timeScale = 1f;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Destroy(newBornAngel);
+                creatingGodAngel = false;
+                Time.timeScale = 1f;
+            }
+        }
     }
+
     public void CreateAngelFunc()
     {
         if (globalStats.GetComponent<GlobalStats>().GodForce > 0)
         {
+            creatingGodAngel = true;
+
             creationPoint.Set(20f, 0.4f, 0f);
 
             newBornAngel = Instantiate(AngelPrefab, creationPoint, rotation);
@@ -101,25 +150,5 @@ public class CreateAngel : MonoBehaviour
             newBornAngel.GetComponent<GodAngel>().horney = 1f;
             newBornAngel.GetComponent<GodAngel>().reproductiveUrge = 0.0f;
         }
-        #region // create on mouse position
-        //Time.timeScale = 0;
-        /*
-        if (Input.GetMouseButtonDown(0)) // Create a GodAngel on mouse click position
-        {
-            RaycastHit hit;
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.rigidbody != null)
-                {
-                    creationPoint.Set(hit.point.x, yOffset, hit.point.z);
-                    Time.timeScale = 1;
-                    newBornAngel = Instantiate(AngelPrefab, creationPoint, rotation);
-                }
-            }
-        }
-        */
-        #endregion 
     }
 }

@@ -71,7 +71,6 @@ MonoBehaviour:
   wantsToMate: 0
   foundMate: 0
   working: 0
-  HasArrivedThresh: 3
   mostUrgentNeed: null
   readyForWork: 0
   hungry: 0
@@ -85,7 +84,7 @@ MonoBehaviour:
   GoingForFood: 
   MissionInLife: Builder
   MaxAge: 60
-  MaxSearchTime: 15
+  MaxSearchTime: 7
   MaxEnergy: 100
   MaxFood: 100
   MaxReproductiveUrge: 1
@@ -293,7 +292,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.06410859
     - serializedVersion: 3
-      time: 21.993378
+      time: 15.047058
       value: 0
       inSlope: 0
       outSlope: 0
@@ -321,7 +320,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 60
-      value: 79.56044
+      value: 95
       inSlope: 0
       outSlope: 0
       tangentMode: 0

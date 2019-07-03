@@ -20,6 +20,6 @@ public class DisplayGfCost : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.gameObject.GetComponent<TextMeshProUGUI>().text = createAngel.GetComponent<CreateAngel>().GodForceCosts[GodForceCostIndex].ToString("0.00");
+        this.gameObject.GetComponent<TextMeshProUGUI>().text = createAngel.GetComponent<CreateAngel>().GodForceCosts[GodForceCostIndex].ToString("0.0");
     }
 }

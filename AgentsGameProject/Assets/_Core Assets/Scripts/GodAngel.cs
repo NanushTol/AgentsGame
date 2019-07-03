@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Linq;
+using Pathfinding;
 
 public class GodAngel : MonoBehaviour
 {
@@ -14,7 +15,12 @@ public class GodAngel : MonoBehaviour
     GameObject closestFood = null;
     GameObject closestWork = null;
     GameObject closestMate = null;
-    NavMeshAgent navMeshAgent;
+
+    AIPath AstarAiPath;
+    AIDestinationSetter aiDestinationSetter;
+    GameObject DestinationTarget;
+    public GameObject DestinationTargetPrefab;
+
     public GameObject AgentPrefab;
 
     public Dictionary<string, float> TraitsDic = new Dictionary<string, float>();
@@ -32,7 +38,7 @@ public class GodAngel : MonoBehaviour
     [SerializeField]
     Vector3 SearchPoint;
 
-    public float SearchTime;
+    public float FoodSearchTime;
     public float RemapedSearchTime;
 
     [SerializeField]
@@ -44,11 +50,10 @@ public class GodAngel : MonoBehaviour
     [SerializeField]
     bool hasArraived = false;
 
-    bool working = false;
-
-    public float HasArrivedThresh = 3f;
+    public bool working = false;
 
     public bool wantsToMate = false;
+
     public bool foundMate = false;
 
     [Header("Stats")]
@@ -105,12 +110,12 @@ public class GodAngel : MonoBehaviour
     [SerializeField]
     AnimationCurve ageToHorney;
 
+    GameObject globalStats;
     #endregion
 
     // Start is called before the first frame update
     void Awake()
     {
-        #region // Set Traits
         TraitsDic.Add("MaxAge", MaxAge);
         TraitsDic.Add("MaxEnergy", MaxEnergy);
         TraitsDic.Add("MaxFood", MaxFood);
@@ -120,70 +125,92 @@ public class GodAngel : MonoBehaviour
         TraitsDic.Add("WorkEnergyCost", WorkEnergyCost);
         TraitsDic.Add("AgentSpeed", AgentSpeed);
         TraitsDic.Add("SearchRadius", SearchRadius);
+
         Traits = new float[9];
-        for(int i = 0; i < 9; i++)
+        for (int i = 0; i < 9; i++)
         {
             Traits[i] = TraitsDic.ElementAt(i).Value;
         }
-        #endregion
 
-        #region // Set NavMesh
-        navMeshAgent = gameObject.GetComponent(typeof(NavMeshAgent)) as NavMeshAgent;
-        navMeshAgent.speed = AgentSpeed;
-        #endregion
+        aiDestinationSetter = GetComponent<AIDestinationSetter>();
+
+        GameObject targetParent = GameObject.Find("AgentsTargets");
+        DestinationTarget = Instantiate(DestinationTargetPrefab, targetParent.transform);
+        DestinationTarget.name = gameObject.name + ("Target");
+        DestinationTarget.transform.parent = targetParent.transform;
+
+        AstarAiPath = gameObject.GetComponent(typeof(AIPath)) as AIPath;
+        AstarAiPath.maxSpeed = AgentSpeed;
 
         Needs = new float[4];
+
+        globalStats = GameObject.Find("GlobalStats");
     }
 
-       // Update is called once per frame
+    // Update is called once per frame
     void Update()
     {
         if (JustBorn == true)
         {
-            MaxAge = Traits[0];
-            MaxEnergy = Traits[1];
-            MaxFood = Traits[2];
-            MaxReproductiveUrge = Traits[3];
+            //MaxAge = Traits[0];
+            //MaxEnergy = Traits[1];
+            //MaxFood = Traits[2];
+            //MaxReproductiveUrge = Traits[3];
             //SpeedCost = Traits[4];
             //WorkFoodCost = Traits[5];
-            WorkEnergyCost = Traits[6];
+            //WorkEnergyCost = Traits[6];
             //AgentSpeed = Traits[7];
             //SearchRadius = Traits[8];
             energy = 100f;
             food = 70f;
 
-            navMeshAgent.speed = AgentSpeed;
+            FoodSearchTime = 0f;
             currentAge = 0f;
-            reproductiveUrge = 0f;
+            reproductiveUrge = 0.5f;
             wantsToMate = false;
             Needs[HORNEY] = 0f;
             JustBorn = false;
+            //mostUrgentNeedIndex = HUNGRY;
+            //closestWork = null;
         }
-
-        currentAge = currentAge + Time.deltaTime;
-        SearchTime = SearchTime + Time.deltaTime;
-
-        reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.2f);
-        reproductiveUrge = UnityEngine.Mathf.Clamp(reproductiveUrge, MinReproductiveUrge, MaxReproductiveUrge);
 
         AgentDecisionMaking();
         ExecuteDecision();
+    }
 
-        if (food <= 3f || energy <= 3f)
+    void LateUpdate()
+    {
+        currentAge = currentAge + Time.deltaTime;
+        FoodSearchTime = FoodSearchTime + Time.deltaTime;
+        globalStats.GetComponent<GlobalStats>().GodForce += 0.05f * Time.deltaTime;
+
+        reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.1f);
+        reproductiveUrge = UnityEngine.Mathf.Clamp(reproductiveUrge, MinReproductiveUrge, MaxReproductiveUrge);
+
+        if (food <= 3f)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
-            _globalStats.GetComponent<GlobalStats>().GodAngelsDied += 1;
+            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Hunger");
+        }
+        if (energy <= 3f)
+        {
+            Destroy(gameObject);
+            GameObject _globalStats = GameObject.Find("GlobalStats");
+            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Exhaustion");
         }
         if (currentAge >= MaxAge)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
-            _globalStats.GetComponent<GlobalStats>().GodAngelsDied += 1;
+            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            Debug.Log("Agent Died of Old Age");
         }
     }
 
-    private void OnTriggerStay(Collider _collider)
+    private void OnTriggerStay2D(Collider2D _collider)
     {
         if ((_collider.tag == "Work") && (mostUrgentNeedIndex == WORK))
         {
@@ -211,12 +238,8 @@ public class GodAngel : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider _collider)
+    private void OnTriggerExit2D(Collider2D _collider)
     {
-        if ((_collider.tag == "Work"))
-        {
-            working = false;
-        }
         if (_collider.CompareTag("Food"))
         {
             eating = false;
@@ -264,16 +287,17 @@ public class GodAngel : MonoBehaviour
     {
         float closestObjectDistance = 1000f;
         GameObject _closestObject = null;
-        //get all object in a given radius
-        Collider[] _objectColliders = Physics.OverlapSphere(_agentPosition, _searchRadius, LayerMask.GetMask(_layerMask));
 
-        foreach (Collider _object in _objectColliders) //Loop over the given object found
+        //get all object in a given radius
+        Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_agentPosition, _searchRadius, LayerMask.GetMask(_layerMask));
+
+        foreach (Collider2D _object in _objectColliders) //Loop over the given object found
         {
             Vector3 objectPosition = _object.transform.position; //get object position
-
+            Vector3 thisPosition = gameObject.transform.position;
             // find distance to object
-            Vector3 rawDistanceToObject = transform.position - objectPosition;
-            float distanceToObject = Math.Abs(rawDistanceToObject.magnitude);
+            //Vector3 rawDistanceToObject = transform.position - objectPosition;
+            float distanceToObject = Vector3.Distance(objectPosition, thisPosition);
 
             //check if distance is smaller the the closest one yet
             if (distanceToObject < closestObjectDistance)
@@ -283,9 +307,35 @@ public class GodAngel : MonoBehaviour
                     _closestObject = _object.gameObject; //current object is closest else continue
                     closestObjectDistance = distanceToObject;
                 }
-                if (_object.gameObject.name == this.gameObject.name)
+            }
+        }
+
+        return _closestObject;
+    }
+
+    GameObject FindClosestMate(Vector3 _agentPosition, float _searchRadius, string _layerMask)
+    {
+        float closestObjectDistance = 1000f;
+        GameObject _closestObject = null;
+
+        //get all object in a given radius
+        Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_agentPosition, _searchRadius, LayerMask.GetMask(_layerMask));
+
+        foreach (Collider2D _object in _objectColliders) //Loop over the given object found
+        {
+            Vector3 objectPosition = _object.transform.position; //get object position
+            Vector3 thisPosition = gameObject.transform.position;
+            // find distance to object
+            //Vector3 rawDistanceToObject = transform.position - objectPosition;
+            float distanceToObject = Vector3.Distance(objectPosition, thisPosition);
+
+            //check if distance is smaller the the closest one yet
+            if (distanceToObject < closestObjectDistance)
+            {
+                if (_object.gameObject.name != this.gameObject.name && _object.GetComponent<Agent>().wantsToMate)
                 {
-                    _closestObject = null;
+                    _closestObject = _object.gameObject; //current object is closest else continue
+                    closestObjectDistance = distanceToObject;
                 }
             }
         }
@@ -293,14 +343,14 @@ public class GodAngel : MonoBehaviour
         return _closestObject;
     }
 
-    void MoveTo(Vector3 _target)
+    void MoveTo(GameObject _target)
     {
-        navMeshAgent.isStopped = false;
-        navMeshAgent.SetDestination(_target);
-        //float _velocityMag;
-        //_velocityMag = navMeshAgent.velocity.magnitude;
-        energy = energy - (Time.deltaTime * SpeedCost);
-        food = food - (Time.deltaTime * SpeedCost);
+        aiDestinationSetter.target = _target.transform;
+
+        float _velocity = GetComponent<Rigidbody2D>().velocity.magnitude;
+
+        energy = energy - (_velocity * SpeedCost);
+        food = food - (_velocity * SpeedCost);
     }
 
     void Work(float _workFoodCost, float _workEnergyCost, GameObject _closestWork)
@@ -352,9 +402,9 @@ public class GodAngel : MonoBehaviour
         }
     }
 
-    Vector3 RandomLocation(float _minX, float _maxX, float _minZ, float _maxZ)
+    Vector3 RandomLocation(float _minX, float _maxX, float _minY, float _maxY)
     {
-        Vector3 _location = new Vector3(UnityEngine.Random.Range(_minX, _maxX), 0, UnityEngine.Random.Range(_minZ, _maxZ));
+        Vector3 _location = new Vector3(UnityEngine.Random.Range(_minX, _maxX), UnityEngine.Random.Range(_minY, _maxY), 0);
 
         return _location;
     }
@@ -368,9 +418,9 @@ public class GodAngel : MonoBehaviour
         }
         if (eating == false)
         {
-            RemapedSearchTime = SearchTime;
-            RemapedSearchTime = Remap(SearchTime, 0f, MaxSearchTime, 0f, 1f) * 100f;
-            Needs[HUNGRY] = foodToHunger.Evaluate(food) * searchTimeToHunger.Evaluate(RemapedSearchTime);
+
+            RemapedSearchTime = Remap(FoodSearchTime, 0f, MaxSearchTime, 0f, 1f);
+            Needs[HUNGRY] = foodToHunger.Evaluate(food) - searchTimeToHunger.Evaluate(RemapedSearchTime);
             hungry = Needs[HUNGRY];
         }
 
@@ -410,10 +460,11 @@ public class GodAngel : MonoBehaviour
 
     void ExecuteDecision()
     {
-        distToPoint = Math.Abs(Vector3.Distance(transform.position, SearchPoint));
+        distToPoint = Math.Abs(Vector3.Distance(transform.position, DestinationTarget.transform.position));
         if (distToPoint < 2f)
         {
             searching = false;
+            hasArraived = true;
         }
 
 
@@ -426,10 +477,12 @@ public class GodAngel : MonoBehaviour
             wantsToMate = false;
             eating = false;
             sleeping = false;
+            hasArraived = false;
+            //FoodSearchTime = 0f;
 
             if (working == true)
             {
-                navMeshAgent.SetDestination(transform.position);
+                aiDestinationSetter.target = transform;
             }
 
             // if agent is not working
@@ -438,29 +491,31 @@ public class GodAngel : MonoBehaviour
                 closestWork = FindClosestObject(transform.position, SearchRadius, "Work"); //find Closest Workplace
 
                 // found close workplace //
-                if (closestWork != null)
+                if (closestWork != null && closestWork.GetComponent<WorkPlace>().WorkersNeeded)
                 {
                     //move to workplace
-                    MoveTo(closestWork.transform.position);
+                    MoveTo(closestWork);
                     searching = false;
                 }
 
                 // Has not found close work place //
-                if (closestWork == null)
+                if (closestWork == null || closestWork.GetComponent<WorkPlace>().WorkersNeeded == false)
                 {
                     //if You are not searching find a new searchPoint
                     if (searching == false)
                     {
                         //get random location
-                        Vector3 _location = RandomLocation(-SearchRadius * 2, SearchRadius * 2, -SearchRadius * 2, SearchRadius * 2);
-                        _location = transform.position + _location;
+                        Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
+                        _location += transform.position;
+
                         //Check if location is valid
-                        bool PositionValid = Physics.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
                             searching = true;
-                            MoveTo(SearchPoint);
+                            DestinationTarget.transform.position = SearchPoint;
+                            MoveTo(DestinationTarget);
                         }
 
                         if (PositionValid == false)
@@ -472,7 +527,8 @@ public class GodAngel : MonoBehaviour
                     // if you are searching continue search
                     if (searching == true)
                     {
-                        MoveTo(SearchPoint);
+                        DestinationTarget.transform.position = SearchPoint;
+                        MoveTo(DestinationTarget);
                     }
                 }
 
@@ -488,10 +544,11 @@ public class GodAngel : MonoBehaviour
             wantsToMate = false;
             working = false;
             sleeping = false;
+            hasArraived = false;
 
             if (eating == true)
             {
-                navMeshAgent.SetDestination(transform.position);
+                aiDestinationSetter.target = transform;
                 if (closestFood == null)
                 {
                     eating = false;
@@ -506,9 +563,9 @@ public class GodAngel : MonoBehaviour
                 // found close Food //
                 if (closestFood != null)
                 {
-                    SearchTime = 0f;
+                    FoodSearchTime = 0f;
                     //move to Food
-                    MoveTo(closestFood.transform.position);
+                    MoveTo(closestFood);
                     searching = false;
                 }
 
@@ -519,15 +576,16 @@ public class GodAngel : MonoBehaviour
                     if (searching == false)
                     {
                         //get random location
-                        Vector3 _location = RandomLocation(-SearchRadius * 2, SearchRadius * 2, -SearchRadius * 2, SearchRadius * 2);
+                        Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
                         //Check if location is valid
-                        bool PositionValid = Physics.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
                             searching = true;
-                            MoveTo(SearchPoint);
+                            DestinationTarget.transform.position = SearchPoint;
+                            MoveTo(DestinationTarget);
                         }
 
                         if (PositionValid == false)
@@ -539,7 +597,8 @@ public class GodAngel : MonoBehaviour
                     // if you are searching continue search
                     if (searching == true)
                     {
-                        MoveTo(SearchPoint);
+                        DestinationTarget.transform.position = SearchPoint;
+                        MoveTo(DestinationTarget);
                     }
                 }
 
@@ -552,21 +611,25 @@ public class GodAngel : MonoBehaviour
             SpriteRenderer _renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
             _renderer.material.color = Color.cyan;
 
+            //FoodSearchTime = 0f;
+
             wantsToMate = false;
             working = false;
             eating = false;
-            if (searching == false)
+
+            if (searching == false && sleeping == false)
             {
                 //get random location
                 Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                 _location = transform.position + _location;
                 //Check if location is valid
-                bool PositionValid = Physics.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                 if (PositionValid)
                 {
                     SearchPoint = _location;
                     searching = true;
-                    MoveTo(SearchPoint);
+                    DestinationTarget.transform.position = SearchPoint;
+                    MoveTo(DestinationTarget);
                 }
 
                 if (PositionValid == false)
@@ -575,19 +638,11 @@ public class GodAngel : MonoBehaviour
                 }
             }
 
-            if (searching == true)
+            if (hasArraived == true)
             {
-                if (!navMeshAgent.pathPending)
-                {
-                    if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
-                    {
-                        if (!navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f)
-                        {
-                            navMeshAgent.SetDestination(transform.position);
-                            Sleep();
-                        }
-                    }
-                }
+                searching = false;
+                sleeping = true;
+                Sleep();
             }
         }
 
@@ -596,16 +651,20 @@ public class GodAngel : MonoBehaviour
             SpriteRenderer _renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
             _renderer.material.color = Color.magenta;
 
+            //FoodSearchTime = 0f;
+
             wantsToMate = true;
             working = false;
             eating = false;
             sleeping = false;
+            hasArraived = false;
 
             if (foundMate)
             {
                 if (closestMate != null)
                 {
-                    MoveTo(closestMate.transform.position);
+                    searching = false;
+                    MoveTo(closestMate);
                 }
                 if (closestMate == null)
                 {
@@ -615,7 +674,7 @@ public class GodAngel : MonoBehaviour
 
             if (foundMate == false) // dont have mate
             {
-                closestMate = FindClosestObject(transform.position, SearchRadius, "Agent"); // find close agents
+                closestMate = FindClosestMate(transform.position, SearchRadius, "Agent"); // find close agents
 
                 // found agent
                 if (closestMate != null)
@@ -623,20 +682,21 @@ public class GodAngel : MonoBehaviour
                     //check if he wants to mate
                     if (closestMate.transform.GetComponent<Agent>().wantsToMate)
                     {
-                        MoveTo(closestMate.transform.position);
+                        MoveTo(closestMate);
                         searching = false;
                         foundMate = true;
                     }
                     if (closestMate.transform.GetComponent<Agent>().wantsToMate == false)
                     {
-                        Vector3 _location = RandomLocation(-SearchRadius * 2, SearchRadius * 2, -SearchRadius * 2, SearchRadius * 2);
+                        Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
-                        bool PositionValid = Physics.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
                             searching = true;
-                            MoveTo(SearchPoint);
+                            DestinationTarget.transform.position = SearchPoint;
+                            MoveTo(DestinationTarget);
                         }
                         if (PositionValid == false)
                         {
@@ -651,15 +711,16 @@ public class GodAngel : MonoBehaviour
                     //if You are not searching find a new searchPoint
                     if (searching == false)
                     {
-                        Vector3 _location = RandomLocation(-SearchRadius * 2, SearchRadius * 2, -SearchRadius * 2, SearchRadius * 2);
+                        Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
-                        bool PositionValid = Physics.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
 
                         if (PositionValid)
                         {
                             SearchPoint = _location;
                             searching = true;
-                            MoveTo(SearchPoint);
+                            DestinationTarget.transform.position = SearchPoint;
+                            MoveTo(DestinationTarget);
                         }
                         if (PositionValid == false)
                         {
@@ -669,7 +730,8 @@ public class GodAngel : MonoBehaviour
 
                     if (searching == true)
                     {
-                        MoveTo(SearchPoint);
+                        DestinationTarget.transform.position = SearchPoint;
+                        MoveTo(DestinationTarget);
                     }
                 }
             }
@@ -681,6 +743,5 @@ public class GodAngel : MonoBehaviour
         float _remapedValue = (value - from1) / (to1 - from1) * (to2 - from2) + from2;
         return _remapedValue;
     }
-
 }
 

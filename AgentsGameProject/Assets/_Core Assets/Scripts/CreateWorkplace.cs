@@ -52,22 +52,16 @@ public class CreateWorkplace : MonoBehaviour
 
                 v3 = Camera.main.ScreenToWorldPoint(v3);
 
-                if (newWorkplace.gameObject.tag != "Work")
-                {
-                    newWorkplace.transform.position = v3 + offset;
-                }
-                if (newWorkplace.gameObject.tag == "Work")
-                {
-                    v3 = newWorkplace.GetComponent<WorkPlace>().grid.WorldToCell(v3);
+                v3 = newWorkplace.GetComponent<WorkPlace>().grid.WorldToCell(v3);
 
-                    v3.x += 0.5f;
-                    v3.y += 0.5f;
+                v3.x += 0.5f;
+                v3.y += 0.5f;
 
-                    newWorkplace.transform.position = v3;
+                newWorkplace.transform.position = v3;
 
-                    //Vector3Int _lastPosition = newWorkplace.GetComponent<WorkPlace>().LastPosition; //get last node position
-                    //newWorkplace.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable
-                }
+                //Vector3Int _lastPosition = newWorkplace.GetComponent<WorkPlace>().LastPosition; //get last node position
+                //newWorkplace.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable    
+
             }
 
             if (Input.GetMouseButtonDown(0))
