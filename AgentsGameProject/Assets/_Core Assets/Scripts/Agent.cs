@@ -421,15 +421,14 @@ public class Agent : MonoBehaviour
 
             //Check if location is valid
             Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(transform.position, 0.4f, LayerMask.GetMask("Agent")); //check agent on location
-            bool PositionValid = Physics2D.Raycast(_birthPosition, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground")); //check on ground
+
+            bool PositionValid = Physics2D.CircleCast(_birthPosition, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));//check on ground
 
             if (PositionValid && _objectColliders.Length == 0)
             {
                 j = 21;
             }
         }
-            
-            //bool PositionValid = Physics.Raycast(_birthPosition, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
 
         Quaternion _rotation = new Quaternion(0, 0, 0, 0);
         GameObject _baby = Instantiate(AgentPrefab, _birthPosition, _rotation); // create a baby as a child object
@@ -685,7 +684,7 @@ public class Agent : MonoBehaviour
                         _location += transform.position;
 
                         //Check if location is valid
-                        bool PositionValid = Physics2D.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
@@ -755,7 +754,7 @@ public class Agent : MonoBehaviour
                         Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
                         //Check if location is valid
-                        bool PositionValid = Physics2D.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
@@ -799,7 +798,7 @@ public class Agent : MonoBehaviour
                 Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                 _location = transform.position + _location;
                 //Check if location is valid
-                bool PositionValid = Physics2D.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                 if (PositionValid)
                 {
                     SearchPoint = _location;
@@ -866,7 +865,7 @@ public class Agent : MonoBehaviour
                     {
                         Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
-                        bool PositionValid = Physics2D.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
                         if (PositionValid)
                         {
                             SearchPoint = _location;
@@ -889,7 +888,7 @@ public class Agent : MonoBehaviour
                     {
                         Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
                         _location = transform.position + _location;
-                        bool PositionValid = Physics2D.Raycast(_location, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
+                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
 
                         if (PositionValid)
                         {

@@ -12092,7 +12092,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb44bb92293eaa7468bfcec50a32433c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 397987972}
   LandTileMap: {fileID: 1011316902}
   WaterTileMap: {fileID: 2034679453}
   LandTile: {fileID: 11400000, guid: 2132335cd09e86a4380b2bc6f3a68f06, type: 2}

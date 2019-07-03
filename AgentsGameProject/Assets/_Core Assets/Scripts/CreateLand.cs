@@ -8,7 +8,7 @@ using Pathfinding;
 
 public class CreateLand : MonoBehaviour
 {
-    public Grid grid;
+    Grid grid;
     public Tilemap LandTileMap;
     public Tilemap WaterTileMap;
     public TileBase LandTile;
@@ -20,9 +20,10 @@ public class CreateLand : MonoBehaviour
     [HideInInspector]
     public bool creatingLand;
 
-    private void Awake()
+    void Awake()
     {
         hoverTile = GameObject.Find("HoverTile");
+        grid = GameObject.Find("Grid").GetComponent<Grid>();
     }
 
     void Update()

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class DragObjects : MonoBehaviour
 {
@@ -11,14 +12,24 @@ public class DragObjects : MonoBehaviour
     bool dragging;
     Vector3 v3;
     int mask;
+    Tilemap tileMap;
+    int mapWidth;
+    int mapHeight;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        tileMap = GameObject.Find("Tilemap_BaseWater").GetComponent<Tilemap>();
         int grnd = 1 << LayerMask.NameToLayer("Work");
         int fly = 1 << LayerMask.NameToLayer("Agent");
         mask = grnd | fly;
+        mapWidth = tileMap.size.x;
+        mapHeight = tileMap.size.y;
+        //Debug.Log("map width " + mapWidth);
+        //Debug.Log("map height " + mapHeight);
+
     }
+
 
     // Update is called once per frame
     void Update()
@@ -81,13 +92,15 @@ public class DragObjects : MonoBehaviour
                 {
                     Vector3Int position = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(transformToDrag.position);
 
-                    position.x += 18;
-                    position.y += 17;
+                    position.x += mapWidth / 2;
+                    position.y += (mapHeight / 2) - 1;
 
                     transformToDrag.GetComponent<WorkPlace>().LastPosition = position;
 
                     transformToDrag.GetComponent<WorkPlace>().UpdateNode(position, false);
                 }
+
+                transformToDrag = null;
             }
         }
     }

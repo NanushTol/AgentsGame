@@ -59,13 +59,13 @@ public class WorkPlace : MonoBehaviour
         GridNodeBase node = gg.GetNode(x, y);
 
         AstarPath.active.AddWorkItem(ctx => {
-            var grid = AstarPath.active.data.gridGraph;
+            var PfGridGraph = AstarPath.active.data.gridGraph;
 
             // Mark a single node as unwalkable
-            grid.GetNode(x, y).Walkable = false;
+            PfGridGraph.GetNode(x, y).Walkable = false;
 
             // Recalculate the connections for that node as well as its neighbours
-            grid.CalculateConnectionsForCellAndNeighbours(x, y);
+            PfGridGraph.CalculateConnectionsForCellAndNeighbours(x, y);
         });
 
         //transform.GetChild(1).localScale = new Vector3(GrowingRadius * 2f, 0.1f, GrowingRadius * 2f);
@@ -184,13 +184,13 @@ public class WorkPlace : MonoBehaviour
     public void UpdateNode(Vector3Int _position, bool _walkable)
     {
         AstarPath.active.AddWorkItem(ctx => {
-            var grid = AstarPath.active.data.gridGraph;
+            var PfGridGraph = AstarPath.active.data.gridGraph;
 
             // Mark a single node as unwalkable
-            grid.GetNode(_position.x, _position.y).Walkable = _walkable;
+            PfGridGraph.GetNode(_position.x, _position.y).Walkable = _walkable;
 
             // Recalculate the connections for that node as well as its neighbours
-            grid.CalculateConnectionsForCellAndNeighbours(_position.x, _position.y);
+            PfGridGraph.CalculateConnectionsForCellAndNeighbours(_position.x, _position.y);
         });
     }
 

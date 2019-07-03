@@ -92,13 +92,13 @@ MonoBehaviour:
   MinReproductiveUrge: 0
   SpeedCost: 0.4
   WorkFoodCost: 2
-  WorkEnergyCost: 2.2
+  WorkEnergyCost: 1.6
   AgentSpeed: 5
   SearchRadius: 4
   BiteSize: 3
   SleepEfficiency: 2
   FoodFullThreshold: 60
-  AwakeThreshold: 70
+  AwakeThreshold: 90
   Mutaion: 0.15
   GfPerBirth: 0.5
   GeaneAvrage: 0
@@ -218,9 +218,9 @@ MonoBehaviour:
       inWeight: 0.28007612
       outWeight: 0
     - serializedVersion: 3
-      time: 90.04975
+      time: 70.23017
       value: 1
-      inSlope: -1.4714044
+      inSlope: -2.9097948
       outSlope: 0
       tangentMode: 69
       weightedMode: 0
