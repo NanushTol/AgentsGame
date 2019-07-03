@@ -99,6 +99,8 @@ public class GodAngel : MonoBehaviour
     public float AwakeThreshold = 70f;
     public float Mutaion = 0.15f;
 
+    public Color GodAngelColor;
+
     [SerializeField]
     AnimationCurve foodToHunger;
     [SerializeField]

@@ -98,6 +98,9 @@ public class Agent : MonoBehaviour
     public float Mutaion = 0.15f;
     public float GfPerBirth;
     public float GeaneAvrage;
+    public Color AgentColor;
+
+
     public Vector3 _birthPosition;
 
 
@@ -118,7 +121,9 @@ public class Agent : MonoBehaviour
     void Awake()
     {
         SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
-        _renderer.material.color = new Color(0.962f, 0.276f, 0.448f, 1f);
+        _renderer.color = AgentColor;
+            //new Color(0.962f, 0.276f, 0.448f, 1f);
+        //F54772
 
         TraitsDic.Add("MaxAge", MaxAge);
         TraitsDic.Add("MaxEnergy", MaxEnergy);
@@ -166,6 +171,9 @@ public class Agent : MonoBehaviour
             WorkEnergyCost = Traits[6];
             //AgentSpeed = Traits[7];
             //SearchRadius = Traits[8];
+            SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
+            _renderer.color = AgentColor;
+
             energy = 100f;
             food = 20f;
 
@@ -187,6 +195,11 @@ public class Agent : MonoBehaviour
             //WorkEnergyCost = Traits[6];
             AgentSpeed = Traits[7];
             SearchRadius = Traits[8];
+            SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
+            _renderer.color = AgentColor;
+
+            
+
             energy = 100f;
             food = 20f;
 
@@ -462,6 +475,19 @@ public class Agent : MonoBehaviour
                 _babyTraits[i] = ((_mate.GetComponent<Agent>().Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + _mate.GetComponent<Agent>().Traits[i]);
             }
         }
+
+        float h, s, v;
+        float mateH, mateS, mateV;
+
+        //Color _rgbColor = _baby.GetComponent<Agent>().AgentColor;
+
+        Color.RGBToHSV(AgentColor, out h, out s, out v);
+        Color.RGBToHSV(_mate.GetComponent<Agent>().AgentColor, out mateH, out mateS, out mateV);
+        h = (h + mateH) / 2f + 0.05f;
+
+        Color babyColor = Color.HSVToRGB(h, s, v);
+        _baby.GetComponent<Agent>().AgentColor = babyColor;
+
     }
 
     public void ReproduceGodAngel(GameObject _mate)
@@ -513,6 +539,9 @@ public class Agent : MonoBehaviour
         _baby.GetComponent<Agent>().SearchRadius = (_mate.GetComponent<GodAngel>().SearchRadius + SearchRadius) / 2f;
         _baby.GetComponent<Agent>().SpeedCost = (_mate.GetComponent<GodAngel>().SpeedCost + SpeedCost) / 2f;
         _baby.GetComponent<Agent>().WorkFoodCost = (_mate.GetComponent<GodAngel>().WorkFoodCost + WorkFoodCost) / 2f;
+
+        _baby.GetComponent<Agent>().AgentColor = _mate.GetComponent<GodAngel>().GodAngelColor;
+        //_baby.GetComponent<Agent>().Color = ;
 
         //for (int i = 0; i < _babyTraits.Length; i++)
         //{

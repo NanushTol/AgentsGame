@@ -20,9 +20,10 @@ public class DragObjects : MonoBehaviour
     void Awake()
     {
         tileMap = GameObject.Find("Tilemap_BaseWater").GetComponent<Tilemap>();
-        int grnd = 1 << LayerMask.NameToLayer("Work");
-        int fly = 1 << LayerMask.NameToLayer("Agent");
-        mask = grnd | fly;
+        int work = 1 << LayerMask.NameToLayer("Work");
+        int agent = 1 << LayerMask.NameToLayer("Agent");
+        int godAngel = 1 << LayerMask.NameToLayer("GodAngel");
+        mask = work | agent | godAngel;
         mapWidth = tileMap.size.x;
         mapHeight = tileMap.size.y;
         //Debug.Log("map width " + mapWidth);

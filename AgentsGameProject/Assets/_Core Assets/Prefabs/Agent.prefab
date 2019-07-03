@@ -101,6 +101,7 @@ MonoBehaviour:
   Mutaion: 0.15
   GfPerBirth: 0.5
   GeaneAvrage: 0
+  AgentColor: {r: 0.9607843, g: 0.2784314, b: 0.44705883, a: 1}
   _birthPosition: {x: 0, y: 0, z: 0}
   foodToHunger:
     serializedVersion: 2

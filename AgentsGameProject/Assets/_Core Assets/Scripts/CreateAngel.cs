@@ -12,6 +12,8 @@ public class CreateAngel : MonoBehaviour
     public TMP_InputField SpeedField;
     public TMP_InputField SpeedCostField;
     public TMP_InputField WorkFoodCostField;
+    public GameObject ColorButton;
+
     public GameObject globalStats;
     public float BaseGfCost;
 
@@ -43,6 +45,7 @@ public class CreateAngel : MonoBehaviour
     public float FoodFullThreshold = 60f;
     public float AwakeThreshold = 70f;
     public float Mutaion = 0.15f;
+    public Color GodAngelColor;
     #endregion
 
     #region //local variables
@@ -72,6 +75,7 @@ public class CreateAngel : MonoBehaviour
         AgentSpeed = float.Parse(SpeedField.GetComponent<TMP_InputField>().text);
         SpeedCost = float.Parse(SpeedCostField.GetComponent<TMP_InputField>().text);
         WorkFoodCost = float.Parse(WorkFoodCostField.GetComponent<TMP_InputField>().text);
+        GodAngelColor = ColorButton.GetComponent<Image>().color;
 
         GfCostSearchRadius = Mathf.Abs(SearchRadius - globalStats.GetComponent<GlobalStats>().AvrageSearchRadius);
         GfCostAgentSpeed = Mathf.Abs(AgentSpeed - globalStats.GetComponent<GlobalStats>().AvrageSpeed);
@@ -149,6 +153,10 @@ public class CreateAngel : MonoBehaviour
             newBornAngel.GetComponent<GodAngel>().foundMate = false;
             newBornAngel.GetComponent<GodAngel>().horney = 1f;
             newBornAngel.GetComponent<GodAngel>().reproductiveUrge = 0.0f;
+
+            newBornAngel.GetComponent<GodAngel>().GodAngelColor = GodAngelColor;
+            SpriteRenderer _renderer = newBornAngel.transform.GetChild(2).GetComponent<SpriteRenderer>();
+            _renderer.color = GodAngelColor;
         }
     }
 }
