@@ -23,6 +23,7 @@ public class DragObjects : MonoBehaviour
         int work = 1 << LayerMask.NameToLayer("Work");
         int agent = 1 << LayerMask.NameToLayer("Agent");
         int godAngel = 1 << LayerMask.NameToLayer("GodAngel");
+        //int food = 1 << LayerMask.NameToLayer("Food");
         mask = work | agent | godAngel;
         mapWidth = tileMap.size.x;
         mapHeight = tileMap.size.y;
@@ -58,28 +59,35 @@ public class DragObjects : MonoBehaviour
         {
             if (dragging)
             {
-                if (Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground")))
+                if(transformToDrag != null)
                 {
-                    v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
-
-                    v3 = Camera.main.ScreenToWorldPoint(v3);
-
-                    if (transformToDrag.gameObject.tag != "Work")
+                    if (Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground")))
                     {
-                        transformToDrag.position = v3 + offset;
+                        v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
+
+                        v3 = Camera.main.ScreenToWorldPoint(v3);
+
+                        if (transformToDrag.gameObject.tag != "Work")
+                        {
+                            transformToDrag.position = v3 + offset;
+                        }
+                        if (transformToDrag.gameObject.tag == "Work")
+                        {
+                            v3 = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(v3);
+
+                            v3.x += 0.5f;
+                            v3.y += 0.5f;
+
+                            transformToDrag.position = v3;
+
+                            Vector3Int _lastPosition = transformToDrag.GetComponent<WorkPlace>().LastPosition; //get last node position
+                            transformToDrag.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable
+                        }
                     }
-                    if (transformToDrag.gameObject.tag == "Work")
-                    {
-                        v3 = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(v3);
-
-                        v3.x += 0.5f;
-                        v3.y += 0.5f;
-
-                        transformToDrag.position = v3;
-
-                        Vector3Int _lastPosition = transformToDrag.GetComponent<WorkPlace>().LastPosition; //get last node position
-                        transformToDrag.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable
-                    }
+                }
+                if(transformToDrag == null)
+                {
+                    dragging = false;
                 }
             }
         }

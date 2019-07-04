@@ -9,16 +9,18 @@ public class PauseMenu : MonoBehaviour
 
     float lastTimeScale;
     CreateLand createLand;
+    CreateWorkplace createWorkplace;
 
     private void Awake()
     {
         createLand = GameObject.Find("CreateLandButton").GetComponent<CreateLand>();
+        createWorkplace = GameObject.Find("CreateWorkplaceButton").GetComponent<CreateWorkplace>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && createLand.creatingLand == false)
+        if (Input.GetKeyDown(KeyCode.Escape) && createLand.creatingLand == false && createWorkplace.creatingWorkplace == false)
         {
             if (GameIsPaused)
             {

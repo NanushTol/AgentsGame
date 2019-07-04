@@ -8,6 +8,7 @@ using Pathfinding;
 
 public class CreateLand : MonoBehaviour
 {
+    public float LandCost = 3f;
     Grid grid;
     public Tilemap LandTileMap;
     public Tilemap WaterTileMap;
@@ -16,6 +17,7 @@ public class CreateLand : MonoBehaviour
 
     GameObject hoverTile;
     Vector3 hoverTileOffset = new Vector3(0.5f, 0.5f, 0f);
+    GlobalStats globalStats;
 
     [HideInInspector]
     public bool creatingLand;
@@ -24,6 +26,7 @@ public class CreateLand : MonoBehaviour
     {
         hoverTile = GameObject.Find("HoverTile");
         grid = GameObject.Find("Grid").GetComponent<Grid>();
+        globalStats = GameObject.Find("GlobalStats").GetComponent<GlobalStats>();
     }
 
     void Update()
@@ -41,52 +44,72 @@ public class CreateLand : MonoBehaviour
 
             if (Input.GetMouseButton(0))
             {
-                LandTileMap.SetTile(position, LandTile);
-                WaterTileMap.SetTile(position, null);
+                if(globalStats.GodForce > LandCost && LandTileMap.GetTile(position) == null) //create land on left click
+                {
+                    LandTileMap.SetTile(position, LandTile);  //remove water
+                    WaterTileMap.SetTile(position, null); // create land
 
-                position.x += 18;
-                position.y += 17;
+                    globalStats.GodForce -= LandCost; // update god force
 
-                var gg = AstarPath.active.data.gridGraph;
-                int x = position.x;
-                int y = position.y;
-                GridNodeBase node = gg.GetNode(x, y);
+                    //refresh colliders
+                    WaterTileMap.GetComponent<CompositeCollider2D>().enabled = false;
+                    WaterTileMap.GetComponent<CompositeCollider2D>().enabled = true; 
 
-                AstarPath.active.AddWorkItem(ctx => {
-                    var grid = AstarPath.active.data.gridGraph;
+                    // update positions for pathfinder
+                    position.x += 18;
+                    position.y += 17;
 
-                    // Mark a single node as unwalkable
-                    grid.GetNode(x, y).Walkable = true;
+                    //update pathfinder grid
+                    var gg = AstarPath.active.data.gridGraph;
+                    int x = position.x;
+                    int y = position.y;
+                    GridNodeBase node = gg.GetNode(x, y);
 
-                    // Recalculate the connections for that node as well as its neighbours
-                    grid.CalculateConnectionsForCellAndNeighbours(x, y);
-                });
+                    AstarPath.active.AddWorkItem(ctx => {
+                        var grid = AstarPath.active.data.gridGraph;
 
+                        // Mark a single node as unwalkable
+                        grid.GetNode(x, y).Walkable = true;
+
+                        // Recalculate the connections for that node as well as its neighbours
+                        grid.CalculateConnectionsForCellAndNeighbours(x, y);
+                    });
+                }
             }
 
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(1)) // remove land on right click
             {
-                
-                LandTileMap.SetTile(position, null);
-                WaterTileMap.SetTile(position, WaterTile);
+                if (LandTileMap.GetTile(position) != null)
+                {
+                    LandTileMap.SetTile(position, null); //remove land
+                    WaterTileMap.SetTile(position, WaterTile); // return water
 
-                position.x += 18;
-                position.y += 17;
+                    //refresh colliders
+                    WaterTileMap.GetComponent<CompositeCollider2D>().enabled = false;
+                    WaterTileMap.GetComponent<CompositeCollider2D>().enabled = true;
 
-                var gg = AstarPath.active.data.gridGraph;
-                int x = position.x;
-                int y = position.y;
-                GridNodeBase node = gg.GetNode(x, y);
+                    globalStats.GodForce += LandCost; // update god force
 
-                AstarPath.active.AddWorkItem(ctx => {
-                    var grid = AstarPath.active.data.gridGraph;
+                    // update positions for pathfinder
+                    position.x += 18;
+                    position.y += 17;
 
-                    // Mark a single node as unwalkable
-                    grid.GetNode(x, y).Walkable = false;
+                    //update pathfinder grid
+                    var gg = AstarPath.active.data.gridGraph;
+                    int x = position.x;
+                    int y = position.y;
+                    GridNodeBase node = gg.GetNode(x, y);
 
-                    // Recalculate the connections for that node as well as its neighbours
-                    grid.CalculateConnectionsForCellAndNeighbours(x, y);
-                });
+                    AstarPath.active.AddWorkItem(ctx => {
+                        var grid = AstarPath.active.data.gridGraph;
+
+                        // Mark a single node as unwalkable
+                        grid.GetNode(x, y).Walkable = false;
+
+                        // Recalculate the connections for that node as well as its neighbours
+                        grid.CalculateConnectionsForCellAndNeighbours(x, y);
+                    });
+                }
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

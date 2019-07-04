@@ -19,7 +19,7 @@ public class CreateWorkplace : MonoBehaviour
     Quaternion rotation = new Quaternion(0, 0, 0, 0);
     RaycastHit hit;
     float yOffset = 5f;
-    bool creatingWorkplace;
+    public bool creatingWorkplace;
 
     Vector3 v3;
     float distance;

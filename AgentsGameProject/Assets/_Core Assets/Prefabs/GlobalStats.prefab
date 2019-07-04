@@ -55,5 +55,7 @@ MonoBehaviour:
   GodAngelsPopulation: 0
   GodAngelsDied: 0
   GodAngelsCreated: 0
-  GodForce: 0
+  GodForce: 10
+  rotating: 0
+  moving: 1
   TimerInterval: 1

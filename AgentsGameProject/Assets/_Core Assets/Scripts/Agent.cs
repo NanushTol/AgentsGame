@@ -39,7 +39,9 @@ public class Agent : MonoBehaviour
     Vector3 SearchPoint;
 
     public float FoodSearchTime;
-    public float RemapedSearchTime;
+    public float RemapedFoodSearchTime;
+    float workSearchTime = 0f;
+    float remapedWorkSearchTime;
 
     [SerializeField]
     bool searching = false;
@@ -73,9 +75,6 @@ public class Agent : MonoBehaviour
     float food = 1f;
     public float energy = 1f;
     public float reproductiveUrge = 0f;
-
-    public string GoingForWork;
-        public string GoingForFood;
 
     [Header("Traits")]
     public string MissionInLife = "Builder";
@@ -112,6 +111,8 @@ public class Agent : MonoBehaviour
         AnimationCurve energyToTiredness;
     [SerializeField]
         AnimationCurve energyToReadyness;
+    [SerializeField]
+        AnimationCurve searchTimeToReadyness;
     [SerializeField]
         AnimationCurve ageToHorney;
 
@@ -221,6 +222,7 @@ public class Agent : MonoBehaviour
     {
         currentAge = currentAge + Time.deltaTime;
         FoodSearchTime = FoodSearchTime + Time.deltaTime;
+        workSearchTime = workSearchTime + Time.deltaTime;
         globalStats.GetComponent<GlobalStats>().GodForce += 0.05f * Time.deltaTime;
 
         reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.1f);
@@ -452,17 +454,6 @@ public class Agent : MonoBehaviour
         // Deside which perent's trait to take by chance
         float _randomHeritage = UnityEngine.Random.Range(0, 1); //get chance
         
-        /*
-        for (int i = 0; i < _babyTraits.Length; i++)
-        {
-            //_babyTraits[i] = ((Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + Traits[i]);
-            GeaneAvrage = (_mate.GetComponent<Agent>().Traits[i] + Traits[i]) / 2;
-            _babyTraits[i] = (GeaneAvrage * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + GeaneAvrage;
-        }*/
-
-        // ((Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + Traits[i]);
-        //((_mate.GetComponent<Agent>().Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + Traits[i]);
-        
         for (int i = 0; i < _babyTraits.Length; i++)
         {
             //var _element = _babyTraits.ElementAt(i);
@@ -483,7 +474,9 @@ public class Agent : MonoBehaviour
 
         Color.RGBToHSV(AgentColor, out h, out s, out v);
         Color.RGBToHSV(_mate.GetComponent<Agent>().AgentColor, out mateH, out mateS, out mateV);
-        h = (h + mateH) / 2f + 0.05f;
+        h = (h + mateH) / 2f;
+        h += (h * UnityEngine.Random.Range(-0.05f, 0.05f));
+        h = Mathf.Clamp(h, 0f, 360f);
 
         Color babyColor = Color.HSVToRGB(h, s, v);
         _baby.GetComponent<Agent>().AgentColor = babyColor;
@@ -617,51 +610,60 @@ public class Agent : MonoBehaviour
 
     public void AgentDecisionMaking()
     {
-            if (eating)
-            {
-                Needs[HUNGRY] = 100;
-                hungry = Needs[HUNGRY];
-            }
-            if (eating == false)
-            {
-
-            RemapedSearchTime = Remap(FoodSearchTime, 0f, MaxSearchTime, 0f, 1f);
-            Needs[HUNGRY] = foodToHunger.Evaluate(food) - searchTimeToHunger.Evaluate(RemapedSearchTime);
+        if (eating)
+        {
+            Needs[HUNGRY] = 100;
             hungry = Needs[HUNGRY];
-            }
-            
-            if (sleeping)
-            {
-                Needs[TIRED] = 100;
-                tierd = Needs[TIRED];
-            }
-            if (sleeping == false)
-            {
-                Needs[TIRED] = energyToTiredness.Evaluate(energy);
-                tierd = energyToTiredness.Evaluate(energy);
-            }
-            
-            Needs[WORK] = energyToReadyness.Evaluate(energy);
-            readyForWork = Needs[WORK];
+        }
+        if (eating == false)
+        {
 
-            Needs[HORNEY] = ageToHorney.Evaluate(currentAge) * reproductiveUrge;
-            horney = Needs[HORNEY];
+            RemapedFoodSearchTime = Remap(FoodSearchTime, 0f, MaxSearchTime, 0f, 1f);
+            Needs[HUNGRY] = foodToHunger.Evaluate(food) - (searchTimeToHunger.Evaluate(RemapedFoodSearchTime) * 100f);
+            hungry = Needs[HUNGRY];
+        }
 
-            float _mostUrgentNeedvalue = 0.0f;
-            int _mostUrgentNeedIndex = 100;
 
-            int i = 0;
-            foreach (float _need in Needs)
+
+        if (sleeping)
+        {
+            Needs[TIRED] = 100;
+            tierd = Needs[TIRED];
+        }
+        if (sleeping == false)
+        {
+            Needs[TIRED] = energyToTiredness.Evaluate(energy);
+            tierd = energyToTiredness.Evaluate(energy);
+        }
+
+
+
+        remapedWorkSearchTime = Remap(workSearchTime, 0f, MaxSearchTime, 0f, 1f);
+        Needs[WORK] = energyToReadyness.Evaluate(energy) - (searchTimeToReadyness.Evaluate(remapedWorkSearchTime) * 100f);
+        readyForWork = Needs[WORK];
+
+
+
+        Needs[HORNEY] = ageToHorney.Evaluate(currentAge) * reproductiveUrge;
+        horney = Needs[HORNEY];
+
+
+
+        float _mostUrgentNeedvalue = 0.0f;
+        int _mostUrgentNeedIndex = 100;
+
+        int i = 0;
+        foreach (float _need in Needs)
+        {
+            i++;
+            if (_need > _mostUrgentNeedvalue)
             {
-                i++;
-                if (_need > _mostUrgentNeedvalue)
-                {
-                    _mostUrgentNeedvalue = _need;
-                    _mostUrgentNeedIndex = i - 1;
-                    mostUrgentNeed = ConvertNeedIndexToString(_mostUrgentNeedIndex);
-                    mostUrgentNeedIndex = _mostUrgentNeedIndex;
-                }
+                _mostUrgentNeedvalue = _need;
+                _mostUrgentNeedIndex = i - 1;
+                mostUrgentNeed = ConvertNeedIndexToString(_mostUrgentNeedIndex);
+                mostUrgentNeedIndex = _mostUrgentNeedIndex;
             }
+        }
     }
 
     void ExecuteDecision()
@@ -684,7 +686,8 @@ public class Agent : MonoBehaviour
             eating = false;
             sleeping = false;
             hasArraived = false;
-            //FoodSearchTime = 0f;
+            FoodSearchTime = 0f;
+
 
             if (working == true)
             {
@@ -699,6 +702,7 @@ public class Agent : MonoBehaviour
                 // found close workplace //
                 if (closestWork != null && closestWork.GetComponent<WorkPlace>().WorkersNeeded)
                 {
+                    workSearchTime = 0f;
                     //move to workplace
                     MoveTo(closestWork);
                     searching = false;
@@ -751,6 +755,7 @@ public class Agent : MonoBehaviour
             working = false;
             sleeping = false;
             hasArraived = false;
+            workSearchTime = 0f;
 
             if (eating == true)
             {
@@ -817,13 +822,14 @@ public class Agent : MonoBehaviour
             SpriteRenderer _renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
             _renderer.material.color = Color.cyan;
 
-            //FoodSearchTime = 0f;
-
             wantsToMate = false;
             working = false;
             eating = false;
+            FoodSearchTime = 0f;
+            workSearchTime = 0f;
 
-            if(searching == false && sleeping == false)
+
+            if (searching == false && sleeping == false)
             {
                 //get random location
                 Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
@@ -857,13 +863,14 @@ public class Agent : MonoBehaviour
             SpriteRenderer _renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
             _renderer.material.color = Color.magenta;
 
-            //FoodSearchTime = 0f;
-
             wantsToMate = true;
             working = false;
             eating = false;
             sleeping = false;
             hasArraived = false;
+            FoodSearchTime = 0f;
+            workSearchTime = 0f;
+
 
             if (foundMate)
             {

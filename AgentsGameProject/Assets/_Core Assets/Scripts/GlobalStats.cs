@@ -105,8 +105,8 @@ public class GlobalStats : MonoBehaviour
             Stats[10] = AvrageSpeedCost;
         }
         Stats[11] = GodForce;
-        //Stats[12] = environment.GetComponent<Environment>().Temperature;
-        //Stats[13] = environment.GetComponent<Environment>().HeatEfficiency;
+        Stats[12] = environment.GetComponent<Environment>().Temperature;
+        Stats[13] = environment.GetComponent<Environment>().HeatEfficiency;
         Stats[5] = RunTime;
 
         if (Input.GetKeyDown(KeyCode.R))

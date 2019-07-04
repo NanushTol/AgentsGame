@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.Rendering.PostProcessing;
+
 
 public class Environment : MonoBehaviour
 {
@@ -8,27 +11,52 @@ public class Environment : MonoBehaviour
     public float Temperature;
     public float TempIn;
     public float TempOut;
+    public float HeatEfficiency;
+
+    [HideInInspector]
     public float WorkTempIn;
+
+    [HideInInspector]
+    public Color GroundTemperatureColor;
 
     [Header("Variables")]
     public float WorkTempCost = 0.001f;
 
     public AnimationCurve HeatToEfficiency;
 
-    public float HeatEfficiency;
-
-    public GameObject ground;
     public Gradient gradient;
-    public Color GroundTemperatureColor;
+    
+    
+
+
+    PostProcessVolume ppVolume;
+    Vignette ppVignette;
+
+
+    void Start()
+    {
+        //ppVignette = ScriptableObject.CreateInstance<Vignette>();
+        PostProcessVolume volume = GameObject.Find("PostProcessing").GetComponent<PostProcessVolume>();
+        volume.profile.TryGetSettings(out ppVignette);
+
+        //ppVignette = GameObject.Find("PostProcessing").GetComponent<PostProcessVolume>().profile.GetComponent<Vignette>();
+        ppVignette.enabled.Override(true);
+        ppVignette.intensity.Override(0f);
+        ppVignette.color.Override(Color.white);
+
+        //ppVolume = PostProcessManager.instance.QuickVolume(LayerMask.GetMask("PostProcess"), 100f, ppVignette);
+    }
 
     void Update()
     {
         HeatEfficiency = HeatToEfficiency.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f));
 
         GroundTemperatureColor = gradient.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f));
-        ground.GetComponent<Renderer>().material.color = GroundTemperatureColor;
 
         Temperature = Temperature + ((TempIn + WorkTempIn) - TempOut) * Time.deltaTime;
+
+        ppVignette.color.value = GroundTemperatureColor;
+        ppVignette.intensity.value = Remap(HeatEfficiency, 1f, 0f, 0f, 0.42f);
     }
 
     void LateUpdate()

@@ -150,14 +150,17 @@ public class WorkPlace : MonoBehaviour
             {
                 if (foodSource.GetComponent<Food>().FoodValue < 20) // feed fruit
                 {
-                    foodSource.GetComponent<Food>().FoodValue += WorkEfficiency * Time.deltaTime * agentsWorking.Length;// * environment.GetComponent<Environment>().HeatEfficiency;
+                    foodSource.GetComponent<Food>().FoodValue += WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.GetComponent<Environment>().HeatEfficiency;
 
-                    Production = Production - (WorkEfficiency * Time.deltaTime * agentsWorking.Length);// * environment.GetComponent<Environment>().HeatEfficiency);
+                    Production = Production - (WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.GetComponent<Environment>().HeatEfficiency);
 
-                    //environment.GetComponent<Environment>().WorkTempIn += environment.GetComponent<Environment>().WorkTempCost * Time.deltaTime;
+                    environment.GetComponent<Environment>().WorkTempIn += environment.GetComponent<Environment>().WorkTempCost * Time.deltaTime;
 
                     feedingFruit = true;
                 }
+
+
+
                 if (foodSource.GetComponent<Food>().FoodValue >= 20) // Finish feeding and relese fruit
                 {
                     foodSource.tag = "Food";

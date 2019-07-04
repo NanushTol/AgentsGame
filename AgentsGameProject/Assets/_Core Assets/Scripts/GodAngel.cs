@@ -663,7 +663,7 @@ public class GodAngel : MonoBehaviour
 
             if (foundMate)
             {
-                if (closestMate != null)
+                if (closestMate != null && closestMate.GetComponent<Agent>().wantsToMate)
                 {
                     searching = false;
                     MoveTo(closestMate);
