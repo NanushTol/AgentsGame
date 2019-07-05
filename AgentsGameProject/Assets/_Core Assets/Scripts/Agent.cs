@@ -391,29 +391,67 @@ public class Agent : MonoBehaviour
         return _closestObject;
     }
 
-    GameObject FindClosestMate(Vector3 _agentPosition, float _searchRadius, string _layerMask)
+    GameObject FindClosestMate(Vector3 _agentPosition, float _searchRadius)
     {
+        int agent = 1 << LayerMask.NameToLayer("Agent");
+        int godAngel = 1 << LayerMask.NameToLayer("GodAngel");
+        int mask = agent | godAngel;
+
         float closestObjectDistance = 1000f;
         GameObject _closestObject = null;
 
         //get all object in a given radius
-        Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_agentPosition, _searchRadius, LayerMask.GetMask(_layerMask));
+        Collider2D[] _objectColliders = Physics2D.OverlapCircleAll(_agentPosition, _searchRadius, mask);
 
-        foreach (Collider2D _object in _objectColliders) //Loop over the given object found
+        // no others found
+        if (_objectColliders.Length <= 0)
         {
-            Vector3 objectPosition = _object.transform.position; //get object position
-            Vector3 thisPosition = gameObject.transform.position;
-            // find distance to object
-            //Vector3 rawDistanceToObject = transform.position - objectPosition;
-            float distanceToObject = Vector3.Distance(objectPosition, thisPosition);
+            _closestObject = null;
+        } 
 
-            //check if distance is smaller the the closest one yet
-            if (distanceToObject < closestObjectDistance)
+        // found others
+        else if(_objectColliders.Length > 0)
+        {
+            foreach (Collider2D _object in _objectColliders) //Loop over the given object found
             {
-                if (_object.gameObject.name != this.gameObject.name && _object.GetComponent<Agent>().wantsToMate)
+                if (_object.gameObject.name != this.gameObject.name)
                 {
-                    _closestObject = _object.gameObject; //current object is closest else continue
-                    closestObjectDistance = distanceToObject;
+                    //get objects position
+                    Vector3 objectPosition = _object.transform.position;
+                    Vector3 thisPosition = gameObject.transform.position;
+
+                    // find distance to object
+                    float distanceToObject = Vector3.Distance(objectPosition, thisPosition);
+
+                    if(_object.tag == "Agent")
+                    {
+                        if (_object.GetComponent<Agent>().wantsToMate)
+                        {
+                            //check if distance is smaller the the closest one yet
+                            if (distanceToObject < closestObjectDistance)
+                            {
+                                _closestObject = _object.gameObject;
+                                closestObjectDistance = distanceToObject;
+                            }
+                        }
+                    }
+                    else if (_object.tag == "GodAngel")
+                    {
+                        if (_object.GetComponent<GodAngel>().wantsToMate)
+                        {
+                            //check if distance is smaller the the closest one yet
+                            if (distanceToObject < closestObjectDistance)
+                            {
+                                _closestObject = _object.gameObject;
+                                closestObjectDistance = distanceToObject;
+                            }
+                        }
+                    }
+                    
+                    else
+                    {
+                        _closestObject = null;
+                    } 
                 }
             }
         }
@@ -896,20 +934,7 @@ public class Agent : MonoBehaviour
             {
                 if(closestMate != null)
                 {
-                    if (closestMate.tag == ("Agent"))
-                    {
-                        if (closestMate.GetComponent<Agent>().wantsToMate)
-                        {
-                            searching = false;
-                            MoveTo(closestMate);
-                        }
-                        if (closestMate.GetComponent<Agent>().wantsToMate == false)
-                        {
-                            closestMate = null;
-                        }
-                    }
-
-                    else if(closestMate.tag == ("GodAngel"))
+                    if (closestMate.tag == ("GodAngel"))
                     {
                         if (closestMate.GetComponent<GodAngel>().wantsToMate)
                         {
@@ -920,7 +945,20 @@ public class Agent : MonoBehaviour
                         {
                             closestMate = null;
                         }
-                    }   
+                    }
+
+                    else if (closestMate.tag == ("Agent"))
+                    {
+                        if (closestMate.GetComponent<Agent>().wantsToMate)
+                        {
+                            searching = false;
+                            MoveTo(closestMate);
+                        }
+                        if (closestMate.GetComponent<Agent>().wantsToMate == false)
+                        {
+                            closestMate = null;
+                        }
+                    } 
                 }
                 if(closestMate == null)
                 {
@@ -930,34 +968,22 @@ public class Agent : MonoBehaviour
 
             if (foundMate == false) // dont have mate
             {
-                closestMate = FindClosestMate(transform.position, SearchRadius, "Agent"); // find close agents
+                closestMate = FindClosestMate(transform.position, SearchRadius); // find closest mate
 
                 // found agent
                 if (closestMate != null) 
                 {
-                    //check if he wants to mate
-                    if (closestMate.transform.GetComponent<Agent>().wantsToMate)
+                    if (closestMate.tag == ("GodAngel"))
                     {
-                        MoveTo(closestMate);
-                        searching = false;
-                        foundMate = true;
-                    }
-                    if (closestMate.transform.GetComponent<Agent>().wantsToMate == false)
-                    {
-                        Vector3 _location = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius);
-                        _location = transform.position + _location;
-                        bool PositionValid = Physics2D.CircleCast(_location, 0.55f, Camera.main.transform.forward, 100f, LayerMask.GetMask("Ground"));
-                        if (PositionValid)
-                        {
-                            SearchPoint = _location;
-                            searching = true;
-                            DestinationTarget.transform.position = SearchPoint;
-                            MoveTo(DestinationTarget);
-                        }
-                        if (PositionValid == false)
-                        {
                             searching = false;
-                        }
+                            MoveTo(closestMate);
+                    }
+
+                    else if (closestMate.tag == ("Agent"))
+                    {
+
+                            searching = false;
+                            MoveTo(closestMate);
                     }
                 }
                 

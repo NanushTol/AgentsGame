@@ -9019,7 +9019,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 220.2, y: 0.000015258789}
+  m_AnchoredPosition: {x: 220.2002, y: 0}
   m_SizeDelta: {x: 4.48, y: 130.77}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &567298532
@@ -11256,7 +11256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &716505553
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11279,7 +11279,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.030273438, y: 462.33914}
+  m_AnchoredPosition: {x: -0.049957275, y: -229}
   m_SizeDelta: {x: -0.099975586, y: -924.678}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &716505554
@@ -13448,17 +13448,17 @@ PrefabInstance:
     - target: {fileID: 300681778666496619, guid: 67b5f51618c6e224d8b85d8041f30d6f,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2038208597483455995, guid: 67b5f51618c6e224d8b85d8041f30d6f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3
+      value: 1.12
       objectReference: {fileID: 0}
     - target: {fileID: 2038208597483455995, guid: 67b5f51618c6e224d8b85d8041f30d6f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.32
+      value: -1.84
       objectReference: {fileID: 0}
     - target: {fileID: 2038208597483455995, guid: 67b5f51618c6e224d8b85d8041f30d6f,
         type: 3}
@@ -13504,6 +13504,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: currentAge
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: food
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: energy
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: reproductiveUrge
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4086031959198471563, guid: 67b5f51618c6e224d8b85d8041f30d6f, type: 3}
@@ -20957,7 +20977,7 @@ MonoBehaviour:
   HeatEfficiency: 0
   WorkTempIn: 0
   GroundTemperatureColor: {r: 0, g: 0, b: 0, a: 0}
-  WorkTempCost: 0.014
+  WorkTempCost: 0.013
   HeatToEfficiency:
     serializedVersion: 2
     m_Curve:
@@ -22117,6 +22137,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: currentAge
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: food
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: energy
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 3102577599314634660, guid: 67b5f51618c6e224d8b85d8041f30d6f,
+        type: 3}
+      propertyPath: reproductiveUrge
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67b5f51618c6e224d8b85d8041f30d6f, type: 3}
 --- !u!4 &1422316033 stripped
@@ -22136,6 +22176,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GlobalStats
+      objectReference: {fileID: 0}
+    - target: {fileID: -5632991465901743404, guid: 4b57cce95ff2c504f9ce3f366c45ad6b,
+        type: 3}
+      propertyPath: GodForce
+      value: 10000
       objectReference: {fileID: 0}
     - target: {fileID: 6118129466537226591, guid: 4b57cce95ff2c504f9ce3f366c45ad6b,
         type: 3}
