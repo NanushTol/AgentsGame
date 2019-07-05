@@ -40,8 +40,8 @@ public class Agent : MonoBehaviour
 
     public float FoodSearchTime;
     public float RemapedFoodSearchTime;
-    float workSearchTime = 0f;
-    float remapedWorkSearchTime;
+    public float workSearchTime = 0f;
+    public float remapedWorkSearchTime;
 
     [SerializeField]
     bool searching = false;
@@ -60,7 +60,8 @@ public class Agent : MonoBehaviour
     [Header("Stats")]
 
         public string mostUrgentNeed = ("null");
-        private int mostUrgentNeedIndex;
+        [HideInInspector]
+        public int mostUrgentNeedIndex;
         [SerializeField]
             float readyForWork;
         [SerializeField]
@@ -175,7 +176,7 @@ public class Agent : MonoBehaviour
             SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
             _renderer.color = AgentColor;
 
-            energy = 100f;
+            energy = 90f;
             food = 20f;
 
             FoodSearchTime = 0f;
@@ -221,8 +222,23 @@ public class Agent : MonoBehaviour
     void LateUpdate()
     {
         currentAge = currentAge + Time.deltaTime;
-        FoodSearchTime = FoodSearchTime + Time.deltaTime;
-        workSearchTime = workSearchTime + Time.deltaTime;
+        
+        
+
+        if(FoodSearchTime > MaxSearchTime * 2)
+        {
+            FoodSearchTime = 0f;
+        }
+        if (workSearchTime > MaxSearchTime * 2)
+        {
+            workSearchTime = 0f;
+        }
+
+        if(FoodSearchTime > MaxSearchTime)
+        {
+            reproductiveUrge = reproductiveUrge * 0f;
+        }
+
         globalStats.GetComponent<GlobalStats>().GodForce += 0.05f * Time.deltaTime;
 
         reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.1f);
@@ -281,7 +297,7 @@ public class Agent : MonoBehaviour
         {
             if(_collider.GetComponent<Agent>().wantsToMate == true)
             {
-                if (energy > _collider.transform.GetComponent<Agent>().energy)
+                if (currentAge + energy > _collider.transform.GetComponent<Agent>().currentAge + _collider.transform.GetComponent<Agent>().energy)
                 {
                     Reproduce(_collider.transform.gameObject);
                 }
@@ -644,7 +660,7 @@ public class Agent : MonoBehaviour
 
 
 
-        Needs[HORNEY] = ageToHorney.Evaluate(currentAge) * reproductiveUrge;
+        Needs[HORNEY] = ageToHorney.Evaluate(currentAge) * reproductiveUrge * (Remap(globalStats.GetComponent<GlobalStats>().Population, 0f, 150f, 1f, 0f));
         horney = Needs[HORNEY];
 
 
@@ -686,7 +702,7 @@ public class Agent : MonoBehaviour
             eating = false;
             sleeping = false;
             hasArraived = false;
-            FoodSearchTime = 0f;
+            //FoodSearchTime = 0f;
 
 
             if (working == true)
@@ -711,6 +727,8 @@ public class Agent : MonoBehaviour
                 // Has not found close work place //
                 if (closestWork == null || closestWork.GetComponent<WorkPlace>().WorkersNeeded == false)
                 {
+                    workSearchTime = workSearchTime + Time.deltaTime;
+
                     //if You are not searching find a new searchPoint
                     if (searching == false)
                     {
@@ -755,7 +773,7 @@ public class Agent : MonoBehaviour
             working = false;
             sleeping = false;
             hasArraived = false;
-            workSearchTime = 0f;
+            //workSearchTime = 0f;
 
             if (eating == true)
             {
@@ -783,6 +801,8 @@ public class Agent : MonoBehaviour
                 // Has not found close Food //
                 if (closestFood == null)
                 {
+                    FoodSearchTime = FoodSearchTime + Time.deltaTime;
+
                     //if You are not searching find a new searchPoint
                     if (searching == false)
                     {
@@ -825,8 +845,8 @@ public class Agent : MonoBehaviour
             wantsToMate = false;
             working = false;
             eating = false;
-            FoodSearchTime = 0f;
-            workSearchTime = 0f;
+            //FoodSearchTime = 0f;
+            //workSearchTime = 0f;
 
 
             if (searching == false && sleeping == false)
@@ -868,16 +888,39 @@ public class Agent : MonoBehaviour
             eating = false;
             sleeping = false;
             hasArraived = false;
-            FoodSearchTime = 0f;
-            workSearchTime = 0f;
+            //FoodSearchTime = 0f;
+            //workSearchTime = 0f;
 
 
             if (foundMate)
             {
                 if(closestMate != null)
                 {
-                    searching = false;
-                    MoveTo(closestMate);
+                    if (closestMate.tag == ("Agent"))
+                    {
+                        if (closestMate.GetComponent<Agent>().wantsToMate)
+                        {
+                            searching = false;
+                            MoveTo(closestMate);
+                        }
+                        if (closestMate.GetComponent<Agent>().wantsToMate == false)
+                        {
+                            closestMate = null;
+                        }
+                    }
+
+                    else if(closestMate.tag == ("GodAngel"))
+                    {
+                        if (closestMate.GetComponent<GodAngel>().wantsToMate)
+                        {
+                            searching = false;
+                            MoveTo(closestMate);
+                        }
+                        if (closestMate.GetComponent<GodAngel>().wantsToMate == false)
+                        {
+                            closestMate = null;
+                        }
+                    }   
                 }
                 if(closestMate == null)
                 {

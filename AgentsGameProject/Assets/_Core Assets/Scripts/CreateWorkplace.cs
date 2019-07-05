@@ -19,32 +19,23 @@ public class CreateWorkplace : MonoBehaviour
     Quaternion rotation = new Quaternion(0, 0, 0, 0);
     RaycastHit hit;
     float yOffset = 5f;
-    public bool creatingWorkplace;
+    public bool creatingWorkplace = false;
 
+    float lastTimeScale;
     Vector3 v3;
     float distance;
     Vector3 offset;
 
     #endregion
-    private void Awake()
-    {
-
-    }
     void Update()
     {
         if (creatingWorkplace)
         {
             
-            Time.timeScale = 0f;
-            float zOffset = Camera.main.transform.position.z;
-                //Camera.main.nearClipPlane + Camera.main.transform.position.z;
-            //Camera.main.transform.position.z * (-1);
-                //
 
-            //mousePos = Input.mousePosition;
-            //newWorkplace.transform.position = Camera.main.ScreenToWorldPoint(new Vector2(mousePos.x, mousePos.y));
-            //Vector3 positionOffset = new Vector3 (newWorkplace.transform.position.x, newWorkplace.transform.position.y,0f);
-            //newWorkplace.transform.position = positionOffset;
+            Time.timeScale = 0f;
+
+            float zOffset = Camera.main.transform.position.z;
 
             if (Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground")))
             {
@@ -79,14 +70,14 @@ public class CreateWorkplace : MonoBehaviour
 
                 newWorkplace.GetComponent<WorkPlace>().UpdateNode(position, false);
                 creatingWorkplace = false;
-                Time.timeScale = 1f;
+                Time.timeScale = lastTimeScale;
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Destroy(newWorkplace);
                 creatingWorkplace = false;
-                Time.timeScale = 1f;
+                Time.timeScale = lastTimeScale;
             }
         }
     }
@@ -96,6 +87,7 @@ public class CreateWorkplace : MonoBehaviour
         {
             newWorkplace = Instantiate(WorkplacePrefab, new Vector3(0f, 0f, -5f), rotation);
             creatingWorkplace = true;
+            lastTimeScale = Time.timeScale;
         }
     }
 }

@@ -31,7 +31,7 @@ public class GlobalStats : MonoBehaviour
     public float TimerInterval = 1f;
 
     float updateTimer = 2f;
-    GameObject environment;
+    Environment environment;
     //public GameObject NumOfAgentsVal;
     
 
@@ -40,7 +40,7 @@ public class GlobalStats : MonoBehaviour
     {
         Stats = new float[14];
         startTime = Time.time;
-        environment = GameObject.Find("Environment");
+        environment = GameObject.Find("Environment").GetComponent<Environment>();
     }
 
     // Update is called once per frame
@@ -105,8 +105,8 @@ public class GlobalStats : MonoBehaviour
             Stats[10] = AvrageSpeedCost;
         }
         Stats[11] = GodForce;
-        Stats[12] = environment.GetComponent<Environment>().Temperature;
-        Stats[13] = environment.GetComponent<Environment>().HeatEfficiency;
+        Stats[12] = environment.Temperature;
+        Stats[13] = environment.HeatEfficiency;
         Stats[5] = RunTime;
 
         if (Input.GetKeyDown(KeyCode.R))

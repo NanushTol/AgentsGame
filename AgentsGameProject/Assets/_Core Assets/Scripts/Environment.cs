@@ -20,14 +20,11 @@ public class Environment : MonoBehaviour
     public Color GroundTemperatureColor;
 
     [Header("Variables")]
-    public float WorkTempCost = 0.001f;
+    public float WorkTempCost;
 
     public AnimationCurve HeatToEfficiency;
 
     public Gradient gradient;
-    
-    
-
 
     PostProcessVolume ppVolume;
     Vignette ppVignette;
@@ -49,11 +46,12 @@ public class Environment : MonoBehaviour
 
     void Update()
     {
-        HeatEfficiency = HeatToEfficiency.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f));
+        HeatEfficiency = HeatToEfficiency.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f)); // temperature to heat efficiency
 
-        GroundTemperatureColor = gradient.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f));
+        GroundTemperatureColor = gradient.Evaluate(Remap(Temperature, 0f, 38f, 0f, 1f)); // temperature to color
 
-        Temperature = Temperature + ((TempIn + WorkTempIn) - TempOut) * Time.deltaTime;
+        //TempIn = TempIn * Time.deltaTime;
+        //TempOut = TempOut * Time.deltaTime;
 
         ppVignette.color.value = GroundTemperatureColor;
         ppVignette.intensity.value = Remap(HeatEfficiency, 1f, 0f, 0f, 0.42f);
@@ -61,6 +59,7 @@ public class Environment : MonoBehaviour
 
     void LateUpdate()
     {
+        Temperature = Temperature + (((TempIn + WorkTempIn) - TempOut) * Time.deltaTime); // temperature calculation
         WorkTempIn = 0f;
     }
 

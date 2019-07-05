@@ -193,21 +193,21 @@ public class GodAngel : MonoBehaviour
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
-            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            _globalStats.GetComponent<GlobalStats>().GodAngelsDied += 1;
             Debug.Log("Agent Died of Hunger");
         }
         if (energy <= 3f)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
-            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            _globalStats.GetComponent<GlobalStats>().GodAngelsDied += 1;
             Debug.Log("Agent Died of Exhaustion");
         }
         if (currentAge >= MaxAge)
         {
             Destroy(gameObject);
             GameObject _globalStats = GameObject.Find("GlobalStats");
-            _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
+            _globalStats.GetComponent<GlobalStats>().GodAngelsDied += 1;
             Debug.Log("Agent Died of Old Age");
         }
     }
@@ -663,10 +663,17 @@ public class GodAngel : MonoBehaviour
 
             if (foundMate)
             {
-                if (closestMate != null && closestMate.GetComponent<Agent>().wantsToMate)
+                if (closestMate != null)
                 {
-                    searching = false;
-                    MoveTo(closestMate);
+                    if (closestMate.GetComponent<Agent>().wantsToMate)
+                    {
+                        searching = false;
+                        MoveTo(closestMate);
+                    }
+                    if (closestMate.GetComponent<Agent>().wantsToMate == false)
+                    {
+                        closestMate = null;
+                    }
                 }
                 if (closestMate == null)
                 {

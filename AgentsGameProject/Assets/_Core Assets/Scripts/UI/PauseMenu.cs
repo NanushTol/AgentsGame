@@ -10,17 +10,20 @@ public class PauseMenu : MonoBehaviour
     float lastTimeScale;
     CreateLand createLand;
     CreateWorkplace createWorkplace;
+    CreateAngel createAngel;
 
     private void Awake()
     {
         createLand = GameObject.Find("CreateLandButton").GetComponent<CreateLand>();
         createWorkplace = GameObject.Find("CreateWorkplaceButton").GetComponent<CreateWorkplace>();
+        createAngel = GameObject.Find("CreateGodAngelButton").GetComponent<CreateAngel>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && createLand.creatingLand == false && createWorkplace.creatingWorkplace == false)
+        if (Input.GetKeyDown(KeyCode.Escape) && createLand.creatingLand == false && createWorkplace.creatingWorkplace == false 
+            && createAngel.creatingGodAngel == false)
         {
             if (GameIsPaused)
             {

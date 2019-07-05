@@ -30,7 +30,7 @@ public class WorkPlace : MonoBehaviour
 
     GameObject foodSource = null;
 
-    GameObject environment;
+    Environment environment;
 
     float spherecastTimer = 0;
 
@@ -41,7 +41,7 @@ public class WorkPlace : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        environment = GameObject.Find("Environment");
+        environment = GameObject.Find("Environment").GetComponent<Environment>();
         grid = GameObject.Find("Grid").GetComponent<Grid>();
     }
     private void Start()
@@ -86,7 +86,7 @@ public class WorkPlace : MonoBehaviour
 
             for(int a = 0; a < _objectColliders.Length; a++)
             {
-                if (_objectColliders[a].GetComponent<Agent>().working)
+                if (_objectColliders[a].GetComponent<Agent>().mostUrgentNeedIndex == 2) // most urgent need = Work
                 {
                     CurrntlyWorking += 1;
                 }
@@ -150,11 +150,11 @@ public class WorkPlace : MonoBehaviour
             {
                 if (foodSource.GetComponent<Food>().FoodValue < 20) // feed fruit
                 {
-                    foodSource.GetComponent<Food>().FoodValue += WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.GetComponent<Environment>().HeatEfficiency;
+                    foodSource.GetComponent<Food>().FoodValue += WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.HeatEfficiency;
 
-                    Production = Production - (WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.GetComponent<Environment>().HeatEfficiency);
+                    Production = Production - (WorkEfficiency * Time.deltaTime * agentsWorking.Length * environment.HeatEfficiency);
 
-                    environment.GetComponent<Environment>().WorkTempIn += environment.GetComponent<Environment>().WorkTempCost * Time.deltaTime;
+                    environment.WorkTempIn += environment.WorkTempCost * agentsWorking.Length;
 
                     feedingFruit = true;
                 }

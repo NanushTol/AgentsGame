@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6118129466537226591}
   - component: {fileID: -5632991465901743404}
+  - component: {fileID: 871795587}
   m_Layer: 0
   m_Name: GlobalStats
   m_TagString: Untagged
@@ -57,5 +58,18 @@ MonoBehaviour:
   GodAngelsCreated: 0
   GodForce: 10
   rotating: 0
-  moving: 1
+  moving: 0
   TimerInterval: 1
+--- !u!114 &871795587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9063451382894800961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efc54546533221040a52f43ea859c96f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TimeNote: {fileID: 0}

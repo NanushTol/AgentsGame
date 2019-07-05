@@ -63,7 +63,9 @@ MonoBehaviour:
   JustBornWithAngel: 0
   SearchPoint: {x: 0, y: 0, z: 0}
   FoodSearchTime: 0
-  RemapedSearchTime: 0
+  RemapedFoodSearchTime: 0
+  workSearchTime: 0
+  remapedWorkSearchTime: 0
   searching: 0
   eating: 0
   sleeping: 0
@@ -72,6 +74,7 @@ MonoBehaviour:
   foundMate: 0
   working: 0
   mostUrgentNeed: null
+  mostUrgentNeedIndex: 0
   readyForWork: 0
   hungry: 0
   tierd: 0
@@ -80,8 +83,6 @@ MonoBehaviour:
   food: 100
   energy: 100
   reproductiveUrge: 0
-  GoingForWork: 
-  GoingForFood: 
   MissionInLife: Builder
   MaxAge: 60
   MaxSearchTime: 7
@@ -280,6 +281,39 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  searchTimeToReadyness:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.80064684
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1.3
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   ageToHorney:
     serializedVersion: 2
     m_Curve:
@@ -293,7 +327,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.06410859
     - serializedVersion: 3
-      time: 15.047058
+      time: 12.617432
       value: 0
       inSlope: 0
       outSlope: 0
@@ -311,8 +345,8 @@ MonoBehaviour:
       inWeight: 0.11188309
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 44.705845
-      value: 56.263733
+      time: 45
+      value: 58.13185
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -321,7 +355,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 60
-      value: 95
+      value: 100
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -374,7 +408,7 @@ MonoBehaviour:
   version: 2
   radius: 0.5
   height: 0.01
-  repathRate: 0.5
+  repathRate: 1
   canSearch: 1
   canMove: 1
   maxSpeed: 5
@@ -423,8 +457,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   smoothType: 0
-  subdivisions: 2
-  iterations: 2
+  subdivisions: 1
+  iterations: 1
   strength: 0.5
   uniformLength: 0
   maxSegmentLength: 2

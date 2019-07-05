@@ -10,14 +10,6 @@ public class SetTimeScale : MonoBehaviour
 
     public void setTimeScale()
     {
-
-        if (float.Parse(TimeScaleField.GetComponent<TMP_InputField>().text) == 0f)
-        {
-            Time.timeScale = 0.1f;
-        }
-        else
-        {
-            Time.timeScale = float.Parse(TimeScaleField.GetComponent<TMP_InputField>().text);
-        }
+        Time.timeScale = float.Parse(TimeScaleField.GetComponent<TMP_InputField>().text);
     }
 }

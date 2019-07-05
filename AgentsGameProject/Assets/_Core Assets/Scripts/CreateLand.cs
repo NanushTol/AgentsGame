@@ -14,25 +14,31 @@ public class CreateLand : MonoBehaviour
     public Tilemap WaterTileMap;
     public TileBase LandTile;
     public TileBase WaterTile;
+    public GameObject note;
 
     GameObject hoverTile;
     Vector3 hoverTileOffset = new Vector3(0.5f, 0.5f, 0f);
     GlobalStats globalStats;
 
+
+
     [HideInInspector]
-    public bool creatingLand;
+    public bool creatingLand = false;
 
     void Awake()
     {
         hoverTile = GameObject.Find("HoverTile");
         grid = GameObject.Find("Grid").GetComponent<Grid>();
         globalStats = GameObject.Find("GlobalStats").GetComponent<GlobalStats>();
+        //note = GameObject.Find("LandCreationNote");
+        
     }
 
     void Update()
     {
         if (creatingLand)
         {
+            note.SetActive(true);
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -114,6 +120,7 @@ public class CreateLand : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                note.SetActive(false);
                 hoverTile.transform.position = new Vector3(0f,-20f,0f);
                 creatingLand = false;
             }

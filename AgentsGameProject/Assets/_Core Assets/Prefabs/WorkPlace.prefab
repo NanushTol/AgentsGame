@@ -373,9 +373,9 @@ MonoBehaviour:
   FoodPrefab: {fileID: 1014644278780718483, guid: 33262e633f1157e44acd7e15326fc91a,
     type: 3}
   Production: 0
-  GrowingRadius: 7
-  WorkersRadius: 1.2
-  WorkEfficiency: 2.8
+  GrowingRadius: 5
+  WorkersRadius: 1.5
+  WorkEfficiency: 1.4
   MaxWorkers: 6
   CurrntlyWorking: 0
   WorkingColor: {r: 0.7459787, g: 1, b: 0, a: 1}

@@ -57,16 +57,20 @@ public class CreateAngel : MonoBehaviour
     RaycastHit hit;
     float yOffset = 5f;
     Vector3 creationPoint;
-    bool creatingGodAngel;
+    [HideInInspector]
+    public bool creatingGodAngel;
     float distance;
     Vector3 v3;
     Grid grid;
+    float lastTimeScale;
 
     #endregion
     private void Awake()
     {
         GodForceCosts = new float[5];
         grid = GameObject.Find("Grid").GetComponent<Grid>();
+
+
     }
     void Update()
     {
@@ -95,7 +99,7 @@ public class CreateAngel : MonoBehaviour
 
         if (creatingGodAngel)
         {
-
+            
             Time.timeScale = 0f;
 
 
@@ -112,33 +116,35 @@ public class CreateAngel : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-                globalStats.GetComponent<GlobalStats>().GodForce -= BaseGfCost;
+                globalStats.GetComponent<GlobalStats>().GodForce -= gfSum;
+
+                globalStats.GetComponent<GlobalStats>().GodAngelsCreated += 1;
+                
 
                 creatingGodAngel = false;
-                Time.timeScale = 1f;
+                Time.timeScale = lastTimeScale;
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Destroy(newBornAngel);
                 creatingGodAngel = false;
-                Time.timeScale = 1f;
+                Time.timeScale = lastTimeScale;
             }
         }
     }
 
     public void CreateAngelFunc()
     {
-        if (globalStats.GetComponent<GlobalStats>().GodForce > 0)
+        if (globalStats.GetComponent<GlobalStats>().GodForce > gfSum)
         {
             creatingGodAngel = true;
+
+            lastTimeScale = Time.timeScale;
 
             creationPoint.Set(20f, 0.4f, 0f);
 
             newBornAngel = Instantiate(AngelPrefab, creationPoint, rotation);
-
-            globalStats.GetComponent<GlobalStats>().GodAngelsCreated += 1;
-            globalStats.GetComponent<GlobalStats>().GodForce -= gfSum;
 
 
             newBornAngel.GetComponent<GodAngel>().SearchRadius = SearchRadius;
