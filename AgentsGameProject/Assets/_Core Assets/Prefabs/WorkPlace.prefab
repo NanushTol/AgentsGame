@@ -370,18 +370,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  FoodPrefab: {fileID: 1014644278780718483, guid: 33262e633f1157e44acd7e15326fc91a,
-    type: 3}
-  Production: 0
-  GrowingRadius: 5
-  WorkersRadius: 1.5
-  WorkEfficiency: 1.4
-  MaxWorkers: 6
-  CurrntlyWorking: 0
-  WorkingColor: {r: 0.7459787, g: 1, b: 0, a: 1}
-  NotWorkingColor: {r: 0.6509804, g: 0.6509804, b: 0.6509804, a: 1}
+  typeOfWorkplace: 0
   WorkersNeeded: 0
   LastPosition: {x: 0, y: 0, z: 0}
+  WorkEfficiency: 1
+  Production: 0
+  WorkplaceColor: {r: 0.53333336, g: 0.96470594, b: 0.28235295, a: 1}
 --- !u!58 &1990877763
 CircleCollider2D:
   m_ObjectHideFlags: 0

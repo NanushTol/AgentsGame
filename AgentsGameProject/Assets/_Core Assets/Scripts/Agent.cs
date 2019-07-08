@@ -234,9 +234,14 @@ public class Agent : MonoBehaviour
             workSearchTime = 0f;
         }
 
-        if(FoodSearchTime > MaxSearchTime)
+        if(FoodSearchTime > MaxSearchTime - (MaxSearchTime * 0.15f))
         {
             reproductiveUrge = reproductiveUrge * 0f;
+            FoodSearchTime += Time.deltaTime;
+        }
+        if (workSearchTime > MaxSearchTime - (MaxSearchTime * 0.15f))
+        {
+            workSearchTime += Time.deltaTime;
         }
 
         globalStats.GetComponent<GlobalStats>().GodForce += 0.05f * Time.deltaTime;
@@ -666,14 +671,14 @@ public class Agent : MonoBehaviour
     {
         if (eating)
         {
-            Needs[HUNGRY] = 100;
+            Needs[HUNGRY] = 1;
             hungry = Needs[HUNGRY];
         }
         if (eating == false)
         {
 
             RemapedFoodSearchTime = Remap(FoodSearchTime, 0f, MaxSearchTime, 0f, 1f);
-            Needs[HUNGRY] = foodToHunger.Evaluate(food) - (searchTimeToHunger.Evaluate(RemapedFoodSearchTime) * 100f);
+            Needs[HUNGRY] = foodToHunger.Evaluate(Remap(food, 0f, MaxFood, 0f, 1f)) - (searchTimeToHunger.Evaluate(RemapedFoodSearchTime));
             hungry = Needs[HUNGRY];
         }
 
@@ -681,24 +686,24 @@ public class Agent : MonoBehaviour
 
         if (sleeping)
         {
-            Needs[TIRED] = 100;
+            Needs[TIRED] = 1;
             tierd = Needs[TIRED];
         }
         if (sleeping == false)
         {
-            Needs[TIRED] = energyToTiredness.Evaluate(energy);
+            Needs[TIRED] = energyToTiredness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f)));
             tierd = energyToTiredness.Evaluate(energy);
         }
 
 
 
         remapedWorkSearchTime = Remap(workSearchTime, 0f, MaxSearchTime, 0f, 1f);
-        Needs[WORK] = energyToReadyness.Evaluate(energy) - (searchTimeToReadyness.Evaluate(remapedWorkSearchTime) * 100f);
+        Needs[WORK] = energyToReadyness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f))) - (searchTimeToReadyness.Evaluate(remapedWorkSearchTime));
         readyForWork = Needs[WORK];
 
 
 
-        Needs[HORNEY] = ageToHorney.Evaluate(currentAge) * reproductiveUrge * (Remap(globalStats.GetComponent<GlobalStats>().Population, 0f, 150f, 1f, 0f));
+        Needs[HORNEY] = ageToHorney.Evaluate(Remap(currentAge, 0f, MaxAge, 0f, 1f)) * reproductiveUrge * (Remap(globalStats.GetComponent<GlobalStats>().Population, 0f, 150f, 1f, 0f));
         horney = Needs[HORNEY];
 
 
