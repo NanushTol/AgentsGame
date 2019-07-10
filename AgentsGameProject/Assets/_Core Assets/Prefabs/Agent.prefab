@@ -53,19 +53,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e388c55f99b7947928e5ef5e465489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distToPoint: 0
-  closestMate: {fileID: 0}
-  DestinationTargetPrefab: {fileID: 5795783880048244167, guid: 1b72ad65139c1724d9017b7d5c1c44da,
-    type: 3}
   AgentPrefab: {fileID: 300681778666496619}
-  Traits: []
   JustBorn: 0
   JustBornWithAngel: 0
-  SearchPoint: {x: 0, y: 0, z: 0}
-  FoodSearchTime: 0
-  RemapedFoodSearchTime: 0
-  workSearchTime: 0
-  remapedWorkSearchTime: 0
   searching: 0
   eating: 0
   sleeping: 0
@@ -73,6 +63,7 @@ MonoBehaviour:
   wantsToMate: 0
   foundMate: 0
   working: 0
+  distToPoint: 0
   mostUrgentNeed: null
   mostUrgentNeedIndex: 0
   readyForWork: 0
@@ -82,14 +73,24 @@ MonoBehaviour:
   currentAge: 0
   food: 100
   energy: 100
-  reproductiveUrge: 0
-  MissionInLife: Builder
-  MaxAge: 60
+  reproductiveMultiplier: 0
   MaxSearchTime: 7
+  FoodSearchTime: 0
+  RemapedFoodSearchTime: 0
+  WorkSearchTime: 0
+  RemapedWorkSearchTime: 0
+  MissionInLife: Builder
+  AgentColor: {r: 0.9607843, g: 0.2784314, b: 0.44705883, a: 1}
+  MaxAge: 60
+  ReproductiveUrge: 5
+  FoodConsumption: 5
+  EnergyConsumption: 5
+  WorkingSpeed: 5
+  Size: 5
   MaxEnergy: 100
   MaxFood: 100
-  MaxReproductiveUrge: 1
-  MinReproductiveUrge: 0
+  MaxReproductiveMultiplier: 1
+  MinReproductiveUrgeMultiplier: 0
   SpeedCost: 0.4
   WorkFoodCost: 2
   WorkEnergyCost: 1.6
@@ -102,8 +103,8 @@ MonoBehaviour:
   Mutaion: 0.15
   GfPerBirth: 0.5
   GeaneAvrage: 0
-  AgentColor: {r: 0.9607843, g: 0.2784314, b: 0.44705883, a: 1}
-  _birthPosition: {x: 0, y: 0, z: 0}
+  DestinationTargetPrefab: {fileID: 5795783880048244167, guid: 1b72ad65139c1724d9017b7d5c1c44da,
+    type: 3}
   foodToHunger:
     serializedVersion: 2
     m_Curve:
@@ -356,6 +357,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  Traits: []
 --- !u!114 &1647192999387235613
 MonoBehaviour:
   m_ObjectHideFlags: 0

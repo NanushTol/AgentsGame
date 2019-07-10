@@ -16,6 +16,8 @@ public class CreateLand : MonoBehaviour
     public TileBase WaterTile;
     public GameObject note;
 
+    public MapCreator mapCreator;
+
     GameObject hoverTile;
     Vector3 hoverTileOffset = new Vector3(0.5f, 0.5f, 0f);
     GlobalStats globalStats;
@@ -62,8 +64,8 @@ public class CreateLand : MonoBehaviour
                     WaterTileMap.GetComponent<CompositeCollider2D>().enabled = true; 
 
                     // update positions for pathfinder
-                    position.x += 18;
-                    position.y += 17;
+                    position.x += mapCreator.MapWidth;
+                    position.y += mapCreator.MapHeight;
 
                     //update pathfinder grid
                     var gg = AstarPath.active.data.gridGraph;
@@ -97,8 +99,8 @@ public class CreateLand : MonoBehaviour
                     globalStats.GodForce += LandCost; // update god force
 
                     // update positions for pathfinder
-                    position.x += 18;
-                    position.y += 17;
+                    position.x += mapCreator.MapWidth;
+                    position.y += mapCreator.MapHeight;
 
                     //update pathfinder grid
                     var gg = AstarPath.active.data.gridGraph;

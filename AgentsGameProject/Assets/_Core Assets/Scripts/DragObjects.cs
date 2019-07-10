@@ -16,9 +16,13 @@ public class DragObjects : MonoBehaviour
     int mapWidth;
     int mapHeight;
 
+    MapCreator mapCreator;
+
     // Start is called before the first frame update
     void Awake()
     {
+        mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
+
         tileMap = GameObject.Find("Tilemap_BaseWater").GetComponent<Tilemap>();
         int work = 1 << LayerMask.NameToLayer("Work");
         int agent = 1 << LayerMask.NameToLayer("Agent");
@@ -101,8 +105,8 @@ public class DragObjects : MonoBehaviour
                 {
                     Vector3Int position = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(transformToDrag.position);
 
-                    position.x += mapWidth / 2;
-                    position.y += (mapHeight / 2) - 1;
+                    position.x += mapCreator.MapWidth / 2;
+                    position.y += (mapCreator.MapHeight / 2) - 1;
 
                     transformToDrag.GetComponent<WorkPlace>().LastPosition = position;
 

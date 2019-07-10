@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class CameraControl : MonoBehaviour
 {
-    public float ScrollSens = 1f;
+    public float ScrollSensitivity = 1f;
     float cameraSize;
 
     Vector3 cameraPos;
 
-    public float sensitivity = 0.5f;
+    public float PanSensitivity = 0.5f;
+
+    public float MinZoom;
+    public float MaxZoom;
+
 
     // Start is called before the first frame update
     void Start()
@@ -20,18 +24,19 @@ public class CameraControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        cameraSize -= Input.mouseScrollDelta.y * ScrollSens;
-        GetComponent<Camera>().orthographicSize = Mathf.Clamp(cameraSize, 5f, 18f);
+        cameraSize -= Input.mouseScrollDelta.y * ScrollSensitivity;
+        cameraSize = Mathf.Clamp(cameraSize, MinZoom, MaxZoom);
+        GetComponent<Camera>().orthographicSize = cameraSize;
 
         if (Input.GetMouseButton(2))
         {
             var mouseX = Input.GetAxis("MouseX");
             var mouseY = Input.GetAxis("MouseY");
 
-
+            // Camera Pan
             cameraPos = transform.position;
-            cameraPos += transform.right * mouseX * sensitivity * (-1);
-            cameraPos += transform.up * mouseY * sensitivity * (-1);
+            cameraPos += transform.right * mouseX * PanSensitivity * (-1) * cameraSize;
+            cameraPos += transform.up * mouseY * PanSensitivity * (-1) * cameraSize;
             transform.position = cameraPos;
         }
     }

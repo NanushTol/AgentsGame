@@ -7,90 +7,86 @@ using Pathfinding;
 
 public class Agent : MonoBehaviour
 {
-
-    public float distToPoint;
-
-    GameObject closestFood = null;
-    GameObject closestWork = null;
-    public GameObject closestMate = null;
-
-    AIPath AstarAiPath;
-    AIDestinationSetter aiDestinationSetter;
-    GameObject DestinationTarget;
-    public GameObject DestinationTargetPrefab;
-
     public GameObject AgentPrefab;
 
-
-    public Dictionary<string, float> TraitsDic = new Dictionary<string, float>();
-    public float[] Traits;
+    #region // Agent's States
+    [Header("States")]
     public bool JustBorn;
     public bool JustBornWithAngel;
-
-    float timer = 0f;
-
-    private float[] Needs;
-    private const int HUNGRY = 0;
-    private const int TIRED = 1;
-    private const int WORK = 2;
-    private const int HORNEY = 3;
-
-    [SerializeField]
-    Vector3 SearchPoint;
-
-    public float FoodSearchTime;
-    public float RemapedFoodSearchTime;
-    public float workSearchTime = 0f;
-    public float remapedWorkSearchTime;
-
-    [SerializeField]
-    bool searching = false;
-    [SerializeField]
-    bool eating = false;
-    [SerializeField]
-    bool sleeping = false;
-    [SerializeField]
-    bool hasArraived = false;
-    
-    
+    public bool searching = false;
+    public bool eating = false;
+    public bool sleeping = false;
+    public bool hasArraived = false;
     public bool wantsToMate = false;
     public bool foundMate = false;
     public bool working;
+    #endregion
 
-    [Header("Stats")]
 
-        public string mostUrgentNeed = ("null");
-        [HideInInspector]
-        public int mostUrgentNeedIndex;
-        [SerializeField]
-            float readyForWork;
-        [SerializeField]
-            float hungry = 0.0f;
-        [SerializeField]
-            float tierd = 0.0f;
-        [SerializeField]
+    #region // Statistics
+    [Header("Statistics")]
+    public float distToPoint;
+
+    public string mostUrgentNeed = ("null");
+    [HideInInspector]
+    public int mostUrgentNeedIndex;
+
+    public float readyForWork = 0.0f;
+    public float hungry = 0.0f;
+    public float tierd = 0.0f;
     public float horney = 0.0f;
 
     public float currentAge;
-    [SerializeField]
-    float food = 1f;
+    public float food = 1f;
     public float energy = 1f;
-    public float reproductiveUrge = 0f;
+    public float reproductiveMultiplier = 0f;
+    #endregion
 
-    [Header("Traits")]
-    public string MissionInLife = "Builder";
-    public float MaxAge = 60f;
+
+    #region // Searching Variables
     public float MaxSearchTime = 7f;
+    public float FoodSearchTime;
+    public float RemapedFoodSearchTime;
+    public float WorkSearchTime = 0f;
+    public float RemapedWorkSearchTime;
+    #endregion
+
+
+    #region // Traits
+    [Header("Traits")]
+
+    public string MissionInLife = "Builder";
+
+    public Color AgentColor;
+
+    public float MaxAge = 60f;
+
+    public float ReproductiveUrge;
+
+    public float FoodConsumption;
+
+    public float EnergyConsumption;
+
+    public float WorkingSpeed = 0f;
+
+    public float Size;
+
+    #endregion
+
+
+    #region //Shared Parameters
+    [Header("Shared Parameters")]
+
+    public float ConsumptionScale = 0.1f;
     public float MaxEnergy = 100;
     public float MaxFood = 100;
-    public float MaxReproductiveUrge = 1f;
-    public float MinReproductiveUrge = 0f;
+    public float MaxReproductiveMultiplier = 1f;
+    public float MinReproductiveUrgeMultiplier = 0f;
     public float SpeedCost = 0.3f;
     public float WorkFoodCost = 1.8f;
     public float WorkEnergyCost = 1.2f;
     public float AgentSpeed = 10f;
     public float SearchRadius = 8f;
-
     public float BiteSize = 2f;
     public float SleepEfficiency = 2f;
     public float FoodFullThreshold = 60f;
@@ -98,62 +94,110 @@ public class Agent : MonoBehaviour
     public float Mutaion = 0.15f;
     public float GfPerBirth;
     public float GeaneAvrage;
-    public Color AgentColor;
+
+    #endregion
 
 
-    public Vector3 _birthPosition;
+    #region // General Variables
 
+    float timer = 0f;
+    Vector3 SearchPoint;
+    Vector3 _birthPosition;
 
-    [SerializeField]
-        AnimationCurve foodToHunger;
-    [SerializeField]
-        AnimationCurve searchTimeToHunger;
-    [SerializeField]
-        AnimationCurve energyToTiredness;
-    [SerializeField]
-        AnimationCurve energyToReadyness;
-    [SerializeField]
-        AnimationCurve searchTimeToReadyness;
-    [SerializeField]
-        AnimationCurve ageToHorney;
+    GameObject closestFood = null;
+    GameObject closestWork = null;
+    GameObject closestMate = null;
 
     GameObject globalStats;
+
+    #endregion
+
+
+    #region // AStar Variables
+    AIPath AstarAiPath;
+    AIDestinationSetter aiDestinationSetter;
+    GameObject DestinationTarget;
+    public GameObject DestinationTargetPrefab;
+    #endregion
+
+
+    #region // Needs
+    private float[] Needs;
+    private const int HUNGRY = 0;
+    private const int TIRED = 1;
+    private const int WORK = 2;
+    private const int HORNEY = 3;
+    #endregion
+
+
+    #region // Fuzzy Logic Graphs
+
+    [Header("Hunger Graphs")]
+    public AnimationCurve foodToHunger;
+    public AnimationCurve searchTimeToHunger;
+
+    [Header("Energy Graphs")]
+    public AnimationCurve energyToTiredness;
+    public AnimationCurve energyToReadyness;
+    public AnimationCurve searchTimeToReadyness;
+
+    [Header("Horny Graphs")]
+    public AnimationCurve ageToHorney;
+
+    #endregion
+
+
+    //public Dictionary<string, float> TraitsDic = new Dictionary<string, float>();
+    [HideInInspector]
+    public float[] Traits;
 
     // Start is called before the first frame update
     void Awake()
     {
         SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
         _renderer.color = AgentColor;
-            //new Color(0.962f, 0.276f, 0.448f, 1f);
+        //new Color(0.962f, 0.276f, 0.448f, 1f);
         //F54772
 
+
+        #region //OLD Traits Array & dicionary, Key & Value Assignments
+        /*
         TraitsDic.Add("MaxAge", MaxAge);
-        TraitsDic.Add("MaxEnergy", MaxEnergy);
-        TraitsDic.Add("MaxFood", MaxFood);
-        TraitsDic.Add("MaxReproductiveUrge", MaxReproductiveUrge);
-        TraitsDic.Add("SpeedCost", SpeedCost);
-        TraitsDic.Add("WorkFoodCost", WorkFoodCost);
-        TraitsDic.Add("WorkEnergyCost", WorkEnergyCost);
-        TraitsDic.Add("AgentSpeed", AgentSpeed);
-        TraitsDic.Add("SearchRadius", SearchRadius);
+        TraitsDic.Add("ReproductiveMultiplier", ReproductiveMultiplier);
+        TraitsDic.Add("FoodConsumption", FoodConsumption);
+        TraitsDic.Add("EnergyConsumption", EnergyConsumption);
+        TraitsDic.Add("WorkingSpeed", WorkingSpeed);
+        TraitsDic.Add("Size", Size);
 
         Traits = new float[9];
         for(int i = 0; i < 9; i++)
         {
             Traits[i] = TraitsDic.ElementAt(i).Value;
         }
+        */
+        #endregion
 
-        aiDestinationSetter = GetComponent<AIDestinationSetter>();
+        Traits = new float[6];
 
+        Traits[0] = MaxAge;
+        Traits[1] = ReproductiveUrge;
+        Traits[2] = FoodConsumption;
+        Traits[3] = EnergyConsumption;
+        Traits[4] = WorkingSpeed;
+        Traits[5] = Size;
+
+        Needs = new float[4];
+
+
+        #region // Pathfinding
         GameObject targetParent = GameObject.Find("AgentsTargets");
+        aiDestinationSetter = GetComponent<AIDestinationSetter>();
         DestinationTarget = Instantiate(DestinationTargetPrefab, targetParent.transform);
         DestinationTarget.name = gameObject.name + ("Target");
         DestinationTarget.transform.parent = targetParent.transform;
-
         AstarAiPath = gameObject.GetComponent(typeof(AIPath)) as AIPath;
         AstarAiPath.maxSpeed = AgentSpeed;
-
-        Needs = new float[4];
+        #endregion
 
         globalStats = GameObject.Find("GlobalStats");
     }
@@ -162,17 +206,15 @@ public class Agent : MonoBehaviour
     void Update()
     {
 
-        if (JustBornWithAngel == true)
+        if (JustBorn == true)
         {
             MaxAge = Traits[0];
-            MaxEnergy = Traits[1];
-            MaxFood = Traits[2];
-            MaxReproductiveUrge = Traits[3];
-            //SpeedCost = Traits[4];
-            //WorkFoodCost = Traits[5];
-            WorkEnergyCost = Traits[6];
-            //AgentSpeed = Traits[7];
-            //SearchRadius = Traits[8];
+            ReproductiveUrge = Traits[1];
+            FoodConsumption = Traits[2];
+            EnergyConsumption = Traits[3];
+            WorkingSpeed = Traits[4];
+            Size = Traits[5];
+
             SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
             _renderer.color = AgentColor;
 
@@ -181,39 +223,12 @@ public class Agent : MonoBehaviour
 
             FoodSearchTime = 0f;
             currentAge = 0f;
-            reproductiveUrge = 0f;
-            wantsToMate = false;
-            Needs[HORNEY] = 0f;
-            JustBornWithAngel = false;
-        }
-        if (JustBorn == true)
-        {
-            //MaxAge = Traits[0];
-            //MaxEnergy = Traits[1];
-            //MaxFood = Traits[2];
-            //MaxReproductiveUrge = Traits[3];
-            SpeedCost = Traits[4];
-            WorkFoodCost = Traits[5];
-            //WorkEnergyCost = Traits[6];
-            AgentSpeed = Traits[7];
-            SearchRadius = Traits[8];
-            SpriteRenderer _renderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
-            _renderer.color = AgentColor;
-
-            
-
-            energy = 100f;
-            food = 20f;
-
-            FoodSearchTime = 0f;
-            currentAge = 0f;
-            reproductiveUrge = 0f;
+            reproductiveMultiplier = 0f;
             wantsToMate = false;
             Needs[HORNEY] = 0f;
             JustBorn = false;
-            //mostUrgentNeedIndex = HUNGRY;
-            //closestWork = null;
         }
+        
 
         AgentDecisionMaking();
         ExecuteDecision();
@@ -229,25 +244,25 @@ public class Agent : MonoBehaviour
         {
             FoodSearchTime = 0f;
         }
-        if (workSearchTime > MaxSearchTime * 2)
+        if (WorkSearchTime > MaxSearchTime * 2)
         {
-            workSearchTime = 0f;
+            WorkSearchTime = 0f;
         }
 
         if(FoodSearchTime > MaxSearchTime - (MaxSearchTime * 0.15f))
         {
-            reproductiveUrge = reproductiveUrge * 0f;
+            reproductiveMultiplier = reproductiveMultiplier * 0f;
             FoodSearchTime += Time.deltaTime;
         }
-        if (workSearchTime > MaxSearchTime - (MaxSearchTime * 0.15f))
+        if (WorkSearchTime > MaxSearchTime - (MaxSearchTime * 0.15f))
         {
-            workSearchTime += Time.deltaTime;
+            WorkSearchTime += Time.deltaTime;
         }
 
         globalStats.GetComponent<GlobalStats>().GodForce += 0.05f * Time.deltaTime;
 
-        reproductiveUrge = reproductiveUrge + ((Time.deltaTime) * 0.1f);
-        reproductiveUrge = UnityEngine.Mathf.Clamp(reproductiveUrge, MinReproductiveUrge, MaxReproductiveUrge);
+        reproductiveMultiplier = reproductiveMultiplier + ((Time.deltaTime) * 0.1f);
+        reproductiveMultiplier = UnityEngine.Mathf.Clamp(reproductiveMultiplier, MinReproductiveUrgeMultiplier, MaxReproductiveMultiplier);
 
         if (food <= 3f)
         {
@@ -276,7 +291,7 @@ public class Agent : MonoBehaviour
     {
         if((_collider.tag == "Work") && (mostUrgentNeedIndex == WORK))
         {
-            Work(WorkFoodCost, WorkEnergyCost, closestWork);
+            Work(FoodConsumption, EnergyConsumption, WorkingSpeed, Size, closestWork);
             working = true;
         }
         if (_collider.CompareTag("Food") && mostUrgentNeedIndex == HUNGRY)
@@ -302,7 +317,7 @@ public class Agent : MonoBehaviour
         {
             if(_collider.GetComponent<Agent>().wantsToMate == true)
             {
-                if (currentAge + energy > _collider.transform.GetComponent<Agent>().currentAge + _collider.transform.GetComponent<Agent>().energy)
+                if (currentAge + energy + name.Length > _collider.transform.GetComponent<Agent>().currentAge + _collider.transform.GetComponent<Agent>().energy + _collider.transform.GetComponent<Agent>().name.Length)
                 {
                     Reproduce(_collider.transform.gameObject);
                 }
@@ -466,25 +481,24 @@ public class Agent : MonoBehaviour
 
     public void Reproduce(GameObject _mate)
     {
-        // reset reproductive urges
+        // reset this & partner reproductive urges
 
-            _mate.GetComponent<Agent>().wantsToMate = false;
-            _mate.GetComponent<Agent>().foundMate = false;
-            _mate.GetComponent<Agent>().horney = 1f;
-            _mate.GetComponent<Agent>().reproductiveUrge = 0.0f;
+        _mate.GetComponent<Agent>().wantsToMate = false;
+        _mate.GetComponent<Agent>().foundMate = false;
+        _mate.GetComponent<Agent>().horney = 1f;
+        _mate.GetComponent<Agent>().reproductiveMultiplier = 0.0f;
 
         wantsToMate = false;
         foundMate = false;
         horney = 1f;
-        reproductiveUrge = 0.0f;
+        reproductiveMultiplier = 0.0f;
 
-        GameObject _globalStats = GameObject.Find("GlobalStats");
-        _globalStats.GetComponent<GlobalStats>().AgentsBorn += 1;
-        _globalStats.GetComponent<GlobalStats>().GodForce += GfPerBirth;
+        globalStats.GetComponent<GlobalStats>().AgentsBorn += 1;
+        globalStats.GetComponent<GlobalStats>().GodForce += GfPerBirth;
 
-       
+        #region // Create Baby
         //get random location
-        for(int j = 0; j < 30; j++)
+        for (int j = 0; j < 30; j++)
         {
             _birthPosition = RandomLocation(-SearchRadius, SearchRadius, -SearchRadius, SearchRadius) + gameObject.transform.position;
 
@@ -501,45 +515,76 @@ public class Agent : MonoBehaviour
             }
         }
 
+
+
+        //Instantiate Baby
         Quaternion _rotation = new Quaternion(0, 0, 0, 0);
         GameObject _baby = Instantiate(AgentPrefab, _birthPosition, _rotation); // create a baby as a child object
         _baby.name = "Agent (clone) " + UnityEngine.Random.Range(1000, 1999);
         _baby.GetComponent<Agent>().JustBorn = true;
-        
+
+        #endregion
+
+
+        #region // Set Baby's Traits
         float[] _babyTraits = _baby.GetComponent<Agent>().Traits; // get baby traits
 
+
+
         _baby.GetComponent<Agent>().MissionInLife = MissionInLife; //set mission in life to self mission
+
+
 
         // Deside which perent's trait to take by chance
         float _randomHeritage = UnityEngine.Random.Range(0, 1); //get chance
         
+        //Loop Traits & mutate
         for (int i = 0; i < _babyTraits.Length; i++)
         {
-            //var _element = _babyTraits.ElementAt(i);
+
             if (_randomHeritage <= 0.50) // baby get self trait
             {
                 _babyTraits[i] = ((Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + Traits[i]);
             }
-            if (_randomHeritage > 0.50) // baby get mate trait
+            else if (_randomHeritage > 0.50) // baby get mate trait
             {
                 _babyTraits[i] = ((_mate.GetComponent<Agent>().Traits[i] * (UnityEngine.Random.Range(-Mutaion, Mutaion))) + _mate.GetComponent<Agent>().Traits[i]);
             }
+
+            if(i > 0) // dont clamp max life
+            {
+                _babyTraits[i] = Mathf.Clamp(_babyTraits[i], 1f, 10f); // limit trait from 1 to 10
+            }
         }
 
+        #endregion
+
+
+        #region // Baby Color Settings
+        // baby Color
         float h, s, v;
         float mateH, mateS, mateV;
 
-        //Color _rgbColor = _baby.GetComponent<Agent>().AgentColor;
-
+        //Conver self Color To HSV
         Color.RGBToHSV(AgentColor, out h, out s, out v);
+
+        // Conver Partners Color to HSV
         Color.RGBToHSV(_mate.GetComponent<Agent>().AgentColor, out mateH, out mateS, out mateV);
+
+
+        // Average Colors
         h = (h + mateH) / 2f;
+
+        // Mutate Color by 5%
         h += (h * UnityEngine.Random.Range(-0.05f, 0.05f));
+
+        // clamp to valid values
         h = Mathf.Clamp(h, 0f, 360f);
 
+        // Assign Color to baby
         Color babyColor = Color.HSVToRGB(h, s, v);
         _baby.GetComponent<Agent>().AgentColor = babyColor;
-
+        #endregion
     }
 
     public void ReproduceGodAngel(GameObject _mate)
@@ -554,7 +599,7 @@ public class Agent : MonoBehaviour
         wantsToMate = false;
         foundMate = false;
         horney = 1f;
-        reproductiveUrge = 0.0f;
+        reproductiveMultiplier = 0.0f;
 
         GameObject _globalStats = GameObject.Find("GlobalStats");
         _globalStats.GetComponent<GlobalStats>().AgentsBorn += 1;
@@ -607,23 +652,23 @@ public class Agent : MonoBehaviour
 
         float _velocity = GetComponent<Rigidbody2D>().velocity.magnitude;
 
-        energy = energy - (_velocity * SpeedCost);
-        food = food - (_velocity * SpeedCost);
+        energy = energy - (_velocity * EnergyConsumption * Size * Time.deltaTime * ConsumptionScale);
+        food = food - (_velocity * FoodConsumption * Size * Time.deltaTime * ConsumptionScale);
     }
 
-    void Work(float _workFoodCost, float _workEnergyCost, GameObject _closestWork)
+    void Work(float _workFoodCost, float _workEnergyCost, float _workingSpeed, float _size, GameObject _closestWork)
     {
         working = true;
         float _workPlaceEfficiency = _closestWork.GetComponent<WorkPlace>().WorkEfficiency;
         float _workPlaceProduction = _closestWork.GetComponent<WorkPlace>().Production;
 
         //create Production
-        _workPlaceProduction = (_workPlaceProduction + _workPlaceEfficiency) * Time.deltaTime;
+        _workPlaceProduction += _workPlaceEfficiency * _workingSpeed * Time.deltaTime;
         _closestWork.GetComponent<WorkPlace>().Production = _workPlaceProduction;
 
         //reduce Energy & Food
-        food = food - (_workFoodCost * Time.deltaTime);
-        energy = energy - (_workEnergyCost * Time.deltaTime);
+        food = food - (_size * _workFoodCost * Time.deltaTime * ConsumptionScale);
+        energy = energy - (_size * _workEnergyCost * Time.deltaTime * ConsumptionScale);
     }
 
     void Eat(GameObject _food)
@@ -697,13 +742,13 @@ public class Agent : MonoBehaviour
 
 
 
-        remapedWorkSearchTime = Remap(workSearchTime, 0f, MaxSearchTime, 0f, 1f);
-        Needs[WORK] = energyToReadyness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f))) - (searchTimeToReadyness.Evaluate(remapedWorkSearchTime));
+        RemapedWorkSearchTime = Remap(WorkSearchTime, 0f, MaxSearchTime, 0f, 1f);
+        Needs[WORK] = energyToReadyness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f))) - (searchTimeToReadyness.Evaluate(RemapedWorkSearchTime));
         readyForWork = Needs[WORK];
 
 
 
-        Needs[HORNEY] = ageToHorney.Evaluate(Remap(currentAge, 0f, MaxAge, 0f, 1f)) * reproductiveUrge * (Remap(globalStats.GetComponent<GlobalStats>().Population, 0f, 150f, 1f, 0f));
+        Needs[HORNEY] = ageToHorney.Evaluate(Remap(currentAge, 0f, MaxAge, 0f, 1f)) * reproductiveMultiplier * (Remap(globalStats.GetComponent<GlobalStats>().Population, 0f, 150f, 1f, 0f));
         horney = Needs[HORNEY];
 
 
@@ -761,7 +806,7 @@ public class Agent : MonoBehaviour
                 // found close workplace //
                 if (closestWork != null && closestWork.GetComponent<WorkPlace>().WorkersNeeded)
                 {
-                    workSearchTime = 0f;
+                    WorkSearchTime = 0f;
                     //move to workplace
                     MoveTo(closestWork);
                     searching = false;
@@ -770,7 +815,7 @@ public class Agent : MonoBehaviour
                 // Has not found close work place //
                 if (closestWork == null || closestWork.GetComponent<WorkPlace>().WorkersNeeded == false)
                 {
-                    workSearchTime = workSearchTime + Time.deltaTime;
+                    WorkSearchTime = WorkSearchTime + Time.deltaTime;
 
                     //if You are not searching find a new searchPoint
                     if (searching == false)
