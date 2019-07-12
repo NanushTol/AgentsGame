@@ -12,6 +12,8 @@ TagManager:
   - Wall
   - Resource
   - Wood
+  - Stone
+  - Mineral
   layers:
   - Default
   - TransparentFX

@@ -9,7 +9,7 @@ public class GenericBuilding : MonoBehaviour
     [HideInInspector]
     public Grid grid;
 
-    public enum TypeOfWorkplace { BasicFarm, WoodMill }
+    public enum TypeOfWorkplace { BasicFarm, WoodMill, StoneQuarry }
     public TypeOfWorkplace typeOfWorkplace;
 
     [HideInInspector]
@@ -62,6 +62,15 @@ public class GenericBuilding : MonoBehaviour
                 upkeep[0] = 0f; // GodForce
                 upkeep[1] = cupData.WoodMillEnergyUpkeep; // Energy
                 upkeep[2] = cupData.WoodMillWaterUpkeep; // Water
+                upkeep[3] = 0f; // Stone
+                upkeep[4] = 0f; // Wood
+                upkeep[5] = 0f; // Minerals
+                break;
+
+            case TypeOfWorkplace.StoneQuarry:
+                upkeep[0] = 0f; // GodForce
+                upkeep[1] = cupData.StoneQuarryEnergyUpkeep; // Energy
+                upkeep[2] = cupData.StoneQuarryWaterUpkeep; // Water
                 upkeep[3] = 0f; // Stone
                 upkeep[4] = 0f; // Wood
                 upkeep[5] = 0f; // Minerals

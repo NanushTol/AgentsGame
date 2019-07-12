@@ -29,6 +29,7 @@ public class DisplayCup : MonoBehaviour
     {
         cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
         parentName = this.transform.parent.transform.parent.transform.parent.name;
+        parentName = parentName.Substring(0, parentName.Length - 6);
 
         switch (displayCupType)
         {

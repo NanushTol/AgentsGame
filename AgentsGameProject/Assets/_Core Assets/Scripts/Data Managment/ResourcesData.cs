@@ -46,6 +46,7 @@ public class ResourcesData : MonoBehaviour
     void Update()
     {
         WoodProduction = 0;
+        StoneProduction = 0;
     }
 
     void LateUpdate()

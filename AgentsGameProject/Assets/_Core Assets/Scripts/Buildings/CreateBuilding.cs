@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class CreateBuilding : MonoBehaviour
 {
-    public enum BuildingType { WoodMill, BasicFarm}
+    public enum BuildingType { WoodMill, StoneQuarry, BasicFarm}
     public BuildingType buildingType;
 
     GameObject buildingPrefab;
@@ -64,8 +64,8 @@ public class CreateBuilding : MonoBehaviour
             && foodCost <=resourcesData.FoodAmount)
         {
             lastTimeScale = Time.timeScale;
-            creatingBuilding = true;
             newBuilding = Instantiate(buildingPrefab, new Vector3(0f, 0f, -5f), rotation);
+            creatingBuilding = true;
         }
     }
 
@@ -90,7 +90,7 @@ public class CreateBuilding : MonoBehaviour
         // left mouse Click
         if (Input.GetMouseButtonDown(0))
         {
-            if (buildingType == BuildingType.WoodMill)
+            if (buildingType == BuildingType.WoodMill || buildingType == BuildingType.StoneQuarry)
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Resource"));
@@ -99,8 +99,9 @@ public class CreateBuilding : MonoBehaviour
                 {
                     if (hit.transform.CompareTag(tag))
                     {
+                        // Deactivate resource graphics & trigger
                         hit.collider.enabled = false;
-                        hit.transform.GetChild(1).gameObject.SetActive(false);
+                        hit.transform.GetChild(1).gameObject.SetActive(false); 
                         hit.transform.GetChild(2).gameObject.SetActive(false);
 
                         PlaceBuilding();
@@ -138,7 +139,15 @@ public class CreateBuilding : MonoBehaviour
                 woodCost = cupData.WoodMillWoodCost;
                 stoneCost = cupData.WoodMillStoneCost;
                 tag = "Wood";
-                buildingPrefab = AssetDatabase.LoadAssetAtPath("Assets/_Core Assets/Prefabs/Buildings/WoodMill.prefab", typeof(Object)) as GameObject;
+                buildingPrefab = Resources.Load("WoodMill", typeof(GameObject)) as GameObject;
+                break;
+                
+
+            case BuildingType.StoneQuarry:
+                woodCost = cupData.StoneQuarryStoneCost;
+                stoneCost = cupData.StoneQuarryWoodCost;
+                tag = "Stone";
+                buildingPrefab = Resources.Load("StoneQuarry", typeof(GameObject)) as GameObject;
                 break;
         }
     }

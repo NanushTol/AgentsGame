@@ -11,6 +11,13 @@ public class CostsUpkeepProductionData : MonoBehaviour
     public float WoodMillWaterUpkeep;
     public float WoodMillWoodProduction;
 
+    [Header("Stone Quarry")]
+    public float StoneQuarryStoneCost;
+    public float StoneQuarryWoodCost;
+    public float StoneQuarryEnergyUpkeep;
+    public float StoneQuarryWaterUpkeep;
+    public float StoneQuarryWoodProduction;
+
     [Header("Basic Farm")]
     public float BasicFarmStoneCost;
     public float BasicFarmWoodCost; 
@@ -18,6 +25,7 @@ public class CostsUpkeepProductionData : MonoBehaviour
     public float BasicFarmWaterUpkeep;
     public float BasicFarmMineralsUpkeep;
     public float BasicFarmProduction;
+
 
     public Dictionary<string, float> CupData;
 
@@ -30,6 +38,12 @@ public class CostsUpkeepProductionData : MonoBehaviour
             {"WoodMillEnergyUpkeep", WoodMillEnergyUpkeep},
             {"WoodMillWaterUpkeep", WoodMillWaterUpkeep},
             {"WoodMillWoodProduction", WoodMillWoodProduction},
+
+            {"StoneQuarryStoneCost", StoneQuarryStoneCost},
+            {"StoneQuarryWoodCost", StoneQuarryWoodCost},
+            {"StoneQuarryEnergyUpkeep", StoneQuarryEnergyUpkeep},
+            {"StoneQuarryWaterUpkeep", StoneQuarryWaterUpkeep},
+            {"StoneQuarryWoodProduction", StoneQuarryWoodProduction},
 
             {"BasicFarmStoneCost", BasicFarmStoneCost},
             {"BasicFarmWoodCost", BasicFarmWoodCost},
