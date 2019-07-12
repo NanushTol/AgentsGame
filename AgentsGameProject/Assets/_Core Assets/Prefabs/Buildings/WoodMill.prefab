@@ -365,7 +365,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5336263684939104929}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71703f0b1a681374f8e892cc007a85e6, type: 3}
   m_Name: 
@@ -377,6 +377,7 @@ MonoBehaviour:
   WorkEfficiency: 1
   WorkersNeeded: 0
   Production: 0
+  BuildingWorking: 0
 --- !u!114 &158382551850123946
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -87,6 +87,7 @@ MonoBehaviour:
   EnergyConsumption: 5
   WorkingSpeed: 5
   Size: 5
+  ConsumptionScale: 0.1
   MaxEnergy: 100
   MaxFood: 100
   MaxReproductiveMultiplier: 1
