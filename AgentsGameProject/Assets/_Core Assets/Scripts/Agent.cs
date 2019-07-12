@@ -659,12 +659,12 @@ public class Agent : MonoBehaviour
     void Work(float _workFoodCost, float _workEnergyCost, float _workingSpeed, float _size, GameObject _closestWork)
     {
         working = true;
-        float _workPlaceEfficiency = _closestWork.GetComponent<WorkPlace>().WorkEfficiency;
-        float _workPlaceProduction = _closestWork.GetComponent<WorkPlace>().Production;
+        float _workPlaceEfficiency = _closestWork.GetComponent<GenericBuilding>().WorkEfficiency;
+        float _workPlaceProduction = _closestWork.GetComponent<GenericBuilding>().Production;
 
         //create Production
         _workPlaceProduction += _workPlaceEfficiency * _workingSpeed * Time.deltaTime;
-        _closestWork.GetComponent<WorkPlace>().Production = _workPlaceProduction;
+        _closestWork.GetComponent<GenericBuilding>().Production = _workPlaceProduction;
 
         //reduce Energy & Food
         food = food - (_size * _workFoodCost * Time.deltaTime * ConsumptionScale);
@@ -804,7 +804,7 @@ public class Agent : MonoBehaviour
                 closestWork = FindClosestObject(transform.position, SearchRadius, "Work"); //find Closest Workplace
 
                 // found close workplace //
-                if (closestWork != null && closestWork.GetComponent<WorkPlace>().WorkersNeeded)
+                if (closestWork != null && closestWork.GetComponent<GenericBuilding>().WorkersNeeded)
                 {
                     WorkSearchTime = 0f;
                     //move to workplace
@@ -813,7 +813,7 @@ public class Agent : MonoBehaviour
                 }
 
                 // Has not found close work place //
-                if (closestWork == null || closestWork.GetComponent<WorkPlace>().WorkersNeeded == false)
+                if (closestWork == null || closestWork.GetComponent<GenericBuilding>().WorkersNeeded == false)
                 {
                     WorkSearchTime = WorkSearchTime + Time.deltaTime;
 

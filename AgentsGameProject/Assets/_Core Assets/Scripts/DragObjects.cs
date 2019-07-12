@@ -28,7 +28,7 @@ public class DragObjects : MonoBehaviour
         int agent = 1 << LayerMask.NameToLayer("Agent");
         int godAngel = 1 << LayerMask.NameToLayer("GodAngel");
         //int food = 1 << LayerMask.NameToLayer("Food");
-        mask = work | agent | godAngel;
+        mask = agent | godAngel;
         mapWidth = tileMap.size.x;
         mapHeight = tileMap.size.y;
         //Debug.Log("map width " + mapWidth);
@@ -77,15 +77,15 @@ public class DragObjects : MonoBehaviour
                         }
                         if (transformToDrag.gameObject.tag == "Work")
                         {
-                            v3 = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(v3);
+                            v3 = transformToDrag.GetComponent<GenericBuilding>().grid.WorldToCell(v3);
 
                             v3.x += 0.5f;
                             v3.y += 0.5f;
 
                             transformToDrag.position = v3;
 
-                            Vector3Int _lastPosition = transformToDrag.GetComponent<WorkPlace>().LastPosition; //get last node position
-                            transformToDrag.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable
+                            Vector3Int _lastPosition = transformToDrag.GetComponent<GenericBuilding>().LastPosition; //get last node position
+                            transformToDrag.GetComponent<GenericBuilding>().UpdateNode(_lastPosition, true); // set last position node to walkable
                         }
                     }
                 }
@@ -103,14 +103,14 @@ public class DragObjects : MonoBehaviour
                 dragging = false;
                 if (transformToDrag.gameObject.tag == "Work")
                 {
-                    Vector3Int position = transformToDrag.GetComponent<WorkPlace>().grid.WorldToCell(transformToDrag.position);
+                    Vector3Int position = transformToDrag.GetComponent<GenericBuilding>().grid.WorldToCell(transformToDrag.position);
 
                     position.x += mapCreator.MapWidth / 2;
                     position.y += (mapCreator.MapHeight / 2) - 1;
 
-                    transformToDrag.GetComponent<WorkPlace>().LastPosition = position;
+                    transformToDrag.GetComponent<GenericBuilding>().LastPosition = position;
 
-                    transformToDrag.GetComponent<WorkPlace>().UpdateNode(position, false);
+                    transformToDrag.GetComponent<GenericBuilding>().UpdateNode(position, false);
                 }
 
                 transformToDrag = null;

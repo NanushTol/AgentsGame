@@ -267,6 +267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5336263684939104931}
   - component: {fileID: 7410545204260727679}
+  - component: {fileID: 7586748127995642342}
   m_Layer: 16
   m_Name: Resource
   m_TagString: Resource
@@ -310,6 +311,22 @@ MonoBehaviour:
   WoodResourceColor: {r: 0.54901963, g: 0.38431373, b: 0.22352941, a: 1}
   StoneResourceColor: {r: 0.56078434, g: 0.56078434, b: 0.56078434, a: 1}
   MineralResourceColor: {r: 1, g: 0.40784314, b: 0.6784314, a: 1}
+--- !u!58 &7586748127995642342
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336263684939104929}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.55
 --- !u!1 &6522412230074994623
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ using TMPro;
 public class CreateWorkplace : MonoBehaviour
 {
     public GameObject WorkplacePrefab;
-    public GameObject globalStats;
+    public GameObject gameManager;
     public float BaseGfCost;
     public Vector2 mousePos;
 
@@ -25,54 +25,51 @@ public class CreateWorkplace : MonoBehaviour
     Vector3 v3;
     float distance;
     Vector3 offset;
-
     #endregion
+
     void Update()
     {
         if (creatingWorkplace)
         {
-            
-
             Time.timeScale = 0f;
 
             float zOffset = Camera.main.transform.position.z;
 
+            // Ground Check
             if (Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground")))
             {
                 v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
 
                 v3 = Camera.main.ScreenToWorldPoint(v3);
 
-                v3 = newWorkplace.GetComponent<WorkPlace>().grid.WorldToCell(v3);
+                v3 = newWorkplace.GetComponent<GenericBuilding>().grid.WorldToCell(v3);
 
                 v3.x += 0.5f;
                 v3.y += 0.5f;
 
                 newWorkplace.transform.position = v3;
-
-                //Vector3Int _lastPosition = newWorkplace.GetComponent<WorkPlace>().LastPosition; //get last node position
-                //newWorkplace.GetComponent<WorkPlace>().UpdateNode(_lastPosition, true); // set last position node to walkable    
-
             }
 
+            // left mouse Click
             if (Input.GetMouseButtonDown(0))
             {
                 //CreationPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, zOffset));
 
-                globalStats.GetComponent<GlobalStats>().GodForce -= BaseGfCost;
+                gameManager.GetComponent<ResourcesData>().GodForceAmount -= BaseGfCost;
 
-                Vector3Int position = newWorkplace.GetComponent<WorkPlace>().grid.WorldToCell(newWorkplace.transform.position);
+                Vector3Int position = newWorkplace.GetComponent<GenericBuilding>().grid.WorldToCell(newWorkplace.transform.position);
 
                 position.x += 18;
                 position.y += 17;
 
-                newWorkplace.GetComponent<WorkPlace>().LastPosition = position;
+                newWorkplace.GetComponent<GenericBuilding>().LastPosition = position;
 
-                newWorkplace.GetComponent<WorkPlace>().UpdateNode(position, false);
+                newWorkplace.GetComponent<GenericBuilding>().UpdateNode(position, false);
                 creatingWorkplace = false;
                 Time.timeScale = lastTimeScale;
             }
 
+            // Escape key
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Destroy(newWorkplace);
@@ -81,9 +78,12 @@ public class CreateWorkplace : MonoBehaviour
             }
         }
     }
+
+
+
     public void CreateWorkplaceFunc()
     {
-        if(globalStats.GetComponent<GlobalStats>().GodForce > BaseGfCost)
+        if(gameManager.GetComponent<ResourcesData>().GodForceAmount > BaseGfCost)
         {
             newWorkplace = Instantiate(WorkplacePrefab, new Vector3(0f, 0f, -5f), rotation);
             creatingWorkplace = true;
