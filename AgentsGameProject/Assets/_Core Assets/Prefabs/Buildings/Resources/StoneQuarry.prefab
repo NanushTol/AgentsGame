@@ -374,11 +374,16 @@ MonoBehaviour:
   typeOfWorkplace: 2
   LastPosition: {x: 0, y: 0, z: 0}
   WorkplaceColor: {r: 0.56078434, g: 0.56078434, b: 0.56078434, a: 1}
+  WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
+  NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
   WorkEfficiency: 1
   WorkersNeeded: 0
+  MaxWorkers: 0
   Production: 0
+  addedValue: 0
   AgentsWorking: 0
   BuildingWorking: 0
+  BuildingScript: {fileID: 0}
 --- !u!114 &9163329280159614903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,9 +397,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxWorkers: 6
-  WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
-  NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
-  CurrntlyWorking: 0
 --- !u!58 &1990877763
 CircleCollider2D:
   m_ObjectHideFlags: 0

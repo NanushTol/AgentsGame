@@ -16,7 +16,7 @@ public class CostsUpkeepProductionData : MonoBehaviour
     public float StoneQuarryWoodCost;
     public float StoneQuarryEnergyUpkeep;
     public float StoneQuarryWaterUpkeep;
-    public float StoneQuarryWoodProduction;
+    public float StoneQuarryProduction;
 
     [Header("Basic Farm")]
     public float BasicFarmStoneCost;
@@ -24,8 +24,21 @@ public class CostsUpkeepProductionData : MonoBehaviour
     public float BasicFarmEnergyUpkeep;
     public float BasicFarmWaterUpkeep;
     public float BasicFarmMineralsUpkeep;
-    public float BasicFarmProduction;
+    public float BasicFarmFoodProduction;
 
+    [Header("Power Plant")]
+    public float PowerPlantStoneCost;
+    public float PowerPlantWoodCost;
+    public float PowerPlantWaterUpkeep;
+    public float PowerPlantProduction;
+    public float PowerPlantBaseProduction;
+
+    [Header("Basic Water Pump")]
+    public float BasicWaterPumpStoneCost;
+    public float BasicWaterPumpWoodCost;
+    public float BasicWaterPumpEnergyUpkeep;
+    public float BasicWaterPumpWaterProduction;
+    public float BasicWaterPumpWaterBaseProduction;
 
     public Dictionary<string, float> CupData;
 
@@ -43,14 +56,24 @@ public class CostsUpkeepProductionData : MonoBehaviour
             {"StoneQuarryWoodCost", StoneQuarryWoodCost},
             {"StoneQuarryEnergyUpkeep", StoneQuarryEnergyUpkeep},
             {"StoneQuarryWaterUpkeep", StoneQuarryWaterUpkeep},
-            {"StoneQuarryWoodProduction", StoneQuarryWoodProduction},
+            {"StoneQuarryWoodProduction", StoneQuarryProduction},
 
             {"BasicFarmStoneCost", BasicFarmStoneCost},
             {"BasicFarmWoodCost", BasicFarmWoodCost},
             {"BasicFarmEnergyUpkeep", BasicFarmEnergyUpkeep},
             {"BasicFarmWaterUpkeep", BasicFarmWaterUpkeep},
             {"BasicFarmMineralsUpkeep", BasicFarmMineralsUpkeep},
-            {"BasicFarmProduction", BasicFarmProduction}
+            {"BasicFarmFoodProduction", BasicFarmFoodProduction},
+
+            {"PowerPlantStoneCost", PowerPlantStoneCost},
+            {"PowerPlantWoodCost", PowerPlantWoodCost},
+            {"PowerPlantWaterUpkeep", PowerPlantWaterUpkeep},
+            {"PowerPlantEnergyProduction", PowerPlantProduction},
+
+            {"BasicWaterPumpStoneCost", BasicWaterPumpStoneCost},
+            {"BasicWaterPumpWoodCost", BasicWaterPumpWoodCost},
+            {"BasicWaterPumpEnergyUpkeep", BasicWaterPumpEnergyUpkeep},
+            {"BasicWaterPumpWaterProduction", BasicWaterPumpWaterProduction}
         };
     }
 }

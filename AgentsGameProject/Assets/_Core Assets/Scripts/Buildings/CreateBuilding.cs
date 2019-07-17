@@ -5,7 +5,7 @@ using UnityEditor;
 
 public class CreateBuilding : MonoBehaviour
 {
-    public enum BuildingType { WoodMill, StoneQuarry, BasicFarm}
+    public enum BuildingType { WoodMill, StoneQuarry, BasicFarm, PowerPlant, BasicWaterPump }
     public BuildingType buildingType;
 
     GameObject buildingPrefab;
@@ -58,6 +58,11 @@ public class CreateBuilding : MonoBehaviour
 
         GetBuildingPrefabAndCosts();
 
+        if (buildingType == BuildingType.PowerPlant)
+        {
+            resourcesData.EnergyProduction += 0.1f;
+        }
+
         // Check costs against avilable resources
         if (stoneCost <= resourcesData.StoneAmount && woodCost <= resourcesData.WoodAmount
             && mineralsCost <= resourcesData.MineralsAmount && godForceCost <= resourcesData.GodForceAmount 
@@ -90,7 +95,7 @@ public class CreateBuilding : MonoBehaviour
         // left mouse Click
         if (Input.GetMouseButtonDown(0))
         {
-            if (buildingType == BuildingType.WoodMill || buildingType == BuildingType.StoneQuarry)
+            if (buildingType == BuildingType.WoodMill || buildingType == BuildingType.StoneQuarry || buildingType == BuildingType.PowerPlant)
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Resource"));
@@ -112,9 +117,29 @@ public class CreateBuilding : MonoBehaviour
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground"));
-                if (hit.transform.CompareTag(tag))
+                if (hit)
                 {
                     PlaceBuilding();
+                }
+            }
+            else if (buildingType == BuildingType.BasicWaterPump)
+            {
+                Vector3Int v3position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
+
+                Vector2 position;
+
+                position.x = v3position.x;
+                position.y = v3position.y;
+
+                Collider2D _waterHit = Physics2D.OverlapCircle(position, 1f, LayerMask.GetMask("Water"));
+                if (_waterHit)
+                {
+                    RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
+                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground"));
+                    if (hit)
+                    {
+                        PlaceBuilding();
+                    }
                 }
             }
 
@@ -149,6 +174,28 @@ public class CreateBuilding : MonoBehaviour
                 tag = "Stone";
                 buildingPrefab = Resources.Load("StoneQuarry", typeof(GameObject)) as GameObject;
                 break;
+
+            case BuildingType.PowerPlant:
+                woodCost = cupData.PowerPlantStoneCost;
+                stoneCost = cupData.PowerPlantWoodCost;
+                tag = "LandOil";
+                buildingPrefab = Resources.Load("PowerPlant", typeof(GameObject)) as GameObject;
+                break;
+
+            case BuildingType.BasicFarm:
+                woodCost = cupData.PowerPlantStoneCost;
+                stoneCost = cupData.PowerPlantWoodCost;
+                //tag = "LandOil";
+                buildingPrefab = Resources.Load("BasicFarm", typeof(GameObject)) as GameObject;
+                break;
+
+            case BuildingType.BasicWaterPump:
+                woodCost = cupData.BasicWaterPumpWoodCost;
+                stoneCost = cupData.BasicWaterPumpStoneCost;
+                //tag = "LandOil";
+                buildingPrefab = Resources.Load("BasicWaterPump", typeof(GameObject)) as GameObject;
+                break;
+
         }
     }
 
@@ -159,6 +206,8 @@ public class CreateBuilding : MonoBehaviour
         resourcesData.MineralsAmount -= mineralsCost;
         resourcesData.FoodAmount -= foodCost;
         resourcesData.GodForceAmount -= godForceCost;
+
+        
 
         Vector3Int position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
 

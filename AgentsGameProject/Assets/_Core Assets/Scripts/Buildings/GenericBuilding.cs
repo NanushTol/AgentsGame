@@ -9,7 +9,7 @@ public class GenericBuilding : MonoBehaviour
     [HideInInspector]
     public Grid grid;
 
-    public enum TypeOfWorkplace { BasicFarm, WoodMill, StoneQuarry }
+    public enum TypeOfWorkplace { BasicFarm, WoodMill, StoneQuarry, PowerPlant, BasicWaterPump}
     public TypeOfWorkplace typeOfWorkplace;
 
     [HideInInspector]
@@ -17,24 +17,33 @@ public class GenericBuilding : MonoBehaviour
 
     public Color WorkplaceColor;
 
+    public Color WorkingColor = new Color(0.52f, 0.96f, 0.27f, 1f);
+    public Color NotWorkingColor = new Color(0.65f, 0.65f, 0.65f, 1f);
+
     MapCreator mapCreator;
     CostsUpkeepProductionData cupData;
     ResourcesData resourcesData;
 
     [HideInInspector]
-    public float WorkEfficiency;
+    public float WorkEfficiency = 1f;
 
     //variables accessed by agents
     [HideInInspector]
     public bool WorkersNeeded;
     [HideInInspector]
+    public int MaxWorkers;
+    [HideInInspector]
     public float Production = 0.0f;
+    [HideInInspector]
+    public float addedValue;
     [HideInInspector]
     public int AgentsWorking;
 
     float[] upkeep = new float[6];
     [HideInInspector]
     public bool BuildingWorking;
+    [HideInInspector]
+    public Component BuildingScript;
 
     // Start is called before the first frame update
     void Awake()
@@ -75,6 +84,24 @@ public class GenericBuilding : MonoBehaviour
                 upkeep[4] = 0f; // Wood
                 upkeep[5] = 0f; // Minerals
                 break;
+
+            case TypeOfWorkplace.PowerPlant:
+                upkeep[0] = 0f; // GodForce
+                upkeep[1] = 0f; // Energy
+                upkeep[2] = cupData.PowerPlantWaterUpkeep; // Water
+                upkeep[3] = 0f; // Stone
+                upkeep[4] = 0f; // Wood
+                upkeep[5] = 0f; // Minerals
+                break;
+
+            case TypeOfWorkplace.BasicWaterPump:
+                upkeep[0] = 0f; // GodForce
+                upkeep[1] = cupData.BasicWaterPumpEnergyUpkeep; // Energy
+                upkeep[2] = 0f; // Water
+                upkeep[3] = 0f; // Stone
+                upkeep[4] = 0f; // Wood
+                upkeep[5] = 0f; // Minerals
+                break;
         }
 
     }
@@ -105,6 +132,7 @@ public class GenericBuilding : MonoBehaviour
 
     void Update()
     {
+        //check Upkeep to see if building can work
         if (resourcesData.GodForceAmount > upkeep[0] &&
             resourcesData.EnergyProduction > upkeep[1] &&
             resourcesData.WaterProduction > upkeep[2] &&
@@ -123,12 +151,50 @@ public class GenericBuilding : MonoBehaviour
             BuildingWorking = true;
             transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
         }
+
+        //update Building Color & state
         else
         {
             BuildingWorking = false;
             transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
-        
+
+
+        // If the building is working
+        if (BuildingWorking)
+        {
+            if (AgentsWorking <= MaxWorkers)
+            {
+
+                WorkersNeeded = true;
+
+                if (AgentsWorking == MaxWorkers)
+                {
+                    WorkersNeeded = false;
+                }
+
+            }
+            if (AgentsWorking > MaxWorkers)
+            {
+                AgentsWorking = MaxWorkers;
+                WorkersNeeded = false;
+            }
+
+            UpdateVacancyBar(AgentsWorking);
+
+
+            if (Production > 0)
+            {
+                addedValue = Production;
+            }
+
+        }
+
+        //update that workers are not needed if the building dosent work
+        else if (BuildingWorking == false)
+        {
+            WorkersNeeded = false;
+        }
     }
 
     public void UpdateNode(Vector3Int _position, bool _walkable)
@@ -144,5 +210,19 @@ public class GenericBuilding : MonoBehaviour
         });
     }
 
-    
+    void UpdateVacancyBar(int _agentsWorking)
+    {
+        Transform vacancyBar = transform.GetChild(0);
+
+        for (int j = 0; j < MaxWorkers; j++)
+        {
+            vacancyBar.transform.GetChild(j).gameObject.GetComponent<SpriteRenderer>().color = NotWorkingColor;
+        }
+
+        for (int i = 0; i < _agentsWorking; i++)
+        {
+            vacancyBar.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = WorkingColor;
+        }
+
+    }
 }

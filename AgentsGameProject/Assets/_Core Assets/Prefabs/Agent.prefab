@@ -87,7 +87,7 @@ MonoBehaviour:
   EnergyConsumption: 5
   WorkingSpeed: 5
   Size: 5
-  ConsumptionScale: 0.1
+  ConsumptionScale: 0.2
   MaxEnergy: 100
   MaxFood: 100
   MaxReproductiveMultiplier: 1
@@ -128,10 +128,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.35
-      value: 0.09
-      inSlope: -6.133333
-      outSlope: -0.12307694
+      time: 0.449823
+      value: 0.19989012
+      inSlope: -3.2427354
+      outSlope: -0.3451437
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
@@ -203,7 +203,7 @@ MonoBehaviour:
       inWeight: 0.63636386
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5
+      time: 0.40045166
       value: 0.6
       inSlope: 0
       outSlope: 0
@@ -213,9 +213,9 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 0.7
-      value: 0.01
-      inSlope: -2.9500003
-      outSlope: 0
+      value: 0.051351316
+      inSlope: -1.8315866
+      outSlope: -0.13783772
       tangentMode: 69
       weightedMode: 0
       inWeight: 0

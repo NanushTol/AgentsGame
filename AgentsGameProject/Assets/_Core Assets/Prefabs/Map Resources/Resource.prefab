@@ -311,6 +311,7 @@ MonoBehaviour:
   WoodResourceColor: {r: 0.54901963, g: 0.38431373, b: 0.22352941, a: 1}
   StoneResourceColor: {r: 0.56078434, g: 0.56078434, b: 0.56078434, a: 1}
   MineralResourceColor: {r: 1, g: 0.40784314, b: 0.6784314, a: 1}
+  EnergyResourceColor: {r: 0.64705884, g: 0.2509804, b: 0.9960785, a: 1}
 --- !u!58 &7586748127995642342
 CircleCollider2D:
   m_ObjectHideFlags: 0

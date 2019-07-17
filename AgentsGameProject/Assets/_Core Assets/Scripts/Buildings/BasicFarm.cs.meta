@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - FoodPrefab: {fileID: 1014644278780718483, guid: 33262e633f1157e44acd7e15326fc91a,
       type: 3}
-  executionOrder: 0
+  executionOrder: -3
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

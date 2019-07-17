@@ -117,13 +117,16 @@ public class DisplayResources : MonoBehaviour
         }
         else if (IsItADisplaySign == false)
         {
-            if (index == 0 || index == 2 || index == 4 || index == 7 || index == 9 || index == 11) // Amounts
+            if (index == 0 || index == 4 || index == 7 || index == 9 || index == 11) // Amounts
             {
-                this.gameObject.GetComponent<TextMeshProUGUI>().text = Mathf.Abs(resourcesManager.ResourceByIndex[index]).ToString("0");
+                this.gameObject.GetComponent<TextMeshProUGUI>().text = 
+                    Mathf.Abs(resourcesManager.ResourceByIndex[index]).ToString("0");
             }
             else //Production
             {
-                this.gameObject.GetComponent<TextMeshProUGUI>().text = Mathf.Abs(resourcesManager.ResourceByIndex[index] * 1 / Time.deltaTime).ToString("0.00");
+                this.gameObject.GetComponent<TextMeshProUGUI>().text = 
+                    Mathf.Abs(resourcesManager.ResourceByIndex[index]
+                    * 1 / Time.smoothDeltaTime).ToString("0.00");
             }
         }
     }

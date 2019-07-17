@@ -11,7 +11,7 @@ public class Resource : MonoBehaviour
 {
     public Grid grid;
 
-    public enum TypeOfResource {Stone, Wood, Mineral}
+    public enum TypeOfResource {Stone, Wood, Mineral, LandOil, WaterOil, Thermal, Wind, Solar }
     public TypeOfResource typeOfResource;
 
     [HideInInspector]
@@ -23,7 +23,7 @@ public class Resource : MonoBehaviour
     public Color WoodResourceColor;
     public Color StoneResourceColor;
     public Color MineralResourceColor;
-
+    public Color EnergyResourceColor;
 
 
     // Start is called before the first frame update
@@ -45,6 +45,9 @@ public class Resource : MonoBehaviour
                 break;
             case TypeOfResource.Mineral:
                 transform.GetChild(2).gameObject.GetComponent<SpriteRenderer>().color = MineralResourceColor;
+                break;
+            case TypeOfResource.LandOil:
+                transform.GetChild(2).gameObject.GetComponent<SpriteRenderer>().color = EnergyResourceColor;
                 break;
         }
     }

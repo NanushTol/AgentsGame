@@ -111,6 +111,8 @@ public class Agent : MonoBehaviour
 
     GameObject globalStats;
 
+    ResourcesData resourcesData;
+
     #endregion
 
 
@@ -160,6 +162,7 @@ public class Agent : MonoBehaviour
         //new Color(0.962f, 0.276f, 0.448f, 1f);
         //F54772
 
+        resourcesData = GameObject.Find("GameManager").GetComponent<ResourcesData>();
 
         #region //OLD Traits Array & dicionary, Key & Value Assignments
         /*
@@ -680,14 +683,19 @@ public class Agent : MonoBehaviour
     void Eat(GameObject _food)
     {
         eating = true;
+        float _bite;
+
         SpriteRenderer _renderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
         _renderer.material.color = Color.yellow;
 
-        float _foodvalue = _food.GetComponent<Food>().FoodValue;
+        //float _foodvalue = _food.GetComponent<Food>().FoodValue;
+        _bite = (BiteSize * Time.deltaTime);
 
-        food = food + (BiteSize * Time.deltaTime);
+        food = food + _bite;
 
-        _food.GetComponent<Food>().FoodValue = _food.GetComponent<Food>().FoodValue - (BiteSize * Time.deltaTime);
+        _food.GetComponent<Food>().FoodValue -= _bite;
+
+        resourcesData.FoodAmount -= _bite;
     }
 
     void Sleep()
@@ -759,7 +767,7 @@ public class Agent : MonoBehaviour
         if (eating)
         {
             Needs[HUNGRY] = 1;
-            hungry = Needs[HUNGRY];
+            hungry = foodToHunger.Evaluate(Remap(food, 0f, MaxFood, 0f, 1f)) - (searchTimeToHunger.Evaluate(RemapedFoodSearchTime));
         }
         if (eating == false)
         {
@@ -774,12 +782,12 @@ public class Agent : MonoBehaviour
         if (sleeping)
         {
             Needs[TIRED] = 1;
-            tierd = Needs[TIRED];
+            tierd = energyToTiredness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f)));
         }
         if (sleeping == false)
         {
             Needs[TIRED] = energyToTiredness.Evaluate((Remap(energy, 0f, MaxEnergy, 0f, 1f)));
-            tierd = energyToTiredness.Evaluate(energy);
+            tierd = Needs[TIRED];
         }
 
 

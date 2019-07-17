@@ -6,15 +6,6 @@ public class StoneQuarry : MonoBehaviour
 {
     public int MaxWorkers = 6;
 
-    public Color WorkingColor = new Color(0.52f, 0.96f, 0.27f, 1f);
-    public Color NotWorkingColor = new Color(0.65f, 0.65f, 0.65f, 1f);
-
-
-    [HideInInspector]
-    public int CurrntlyWorking;
-
-    float spherecastTimer = 0;
-
     GenericBuilding genericBuilding;
     Environment environment;
     ResourcesData resourcesData;
@@ -28,69 +19,19 @@ public class StoneQuarry : MonoBehaviour
 
         genericBuilding = GetComponent<GenericBuilding>();
 
-        genericBuilding.WorkEfficiency = cupData.WoodMillWoodProduction;
-    }
+        genericBuilding.WorkEfficiency = cupData.StoneQuarryProduction;
 
+        genericBuilding.MaxWorkers = MaxWorkers;
+    }
 
     void Update()
     {
-        spherecastTimer = spherecastTimer + Time.deltaTime;
-
-        // If the building is working
-        if (genericBuilding.BuildingWorking)
+        if(genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
-            if (genericBuilding.AgentsWorking <= MaxWorkers)
-            {
+            resourcesData.StoneProduction += genericBuilding.addedValue;
+            resourcesData.StoneAmount += genericBuilding.addedValue;
 
-                genericBuilding.WorkersNeeded = true;
-
-                if (genericBuilding.AgentsWorking == MaxWorkers)
-                {
-                    genericBuilding.WorkersNeeded = false;
-                }
-
-            }
-            if (genericBuilding.AgentsWorking > MaxWorkers)
-            {
-                genericBuilding.AgentsWorking = MaxWorkers;
-                genericBuilding.WorkersNeeded = false;
-            }
-
-            UpdateVacancyBar(genericBuilding.AgentsWorking);
-
-
-            if (genericBuilding.Production > 0)
-            {
-                float addedValue = genericBuilding.Production;
-                resourcesData.StoneProduction += addedValue;
-                resourcesData.StoneAmount += resourcesData.StoneProduction;
-
-                genericBuilding.Production -= addedValue;
-            }
-
+            genericBuilding.Production -= genericBuilding.addedValue;
         }
-
-        else if (genericBuilding.BuildingWorking == false)
-        {
-            genericBuilding.WorkersNeeded = false;
-        }
-    }
-
-
-
-    void UpdateVacancyBar(int _agentsWorking)
-    {
-        Transform vacancyBar = transform.GetChild(0);
-
-        for (int j = 0; j < MaxWorkers; j++)
-        {
-            vacancyBar.transform.GetChild(j).gameObject.GetComponent<SpriteRenderer>().color = NotWorkingColor;
-        }
-
-        for (int i = 0; i < _agentsWorking; i++)
-        {
-            vacancyBar.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = WorkingColor;
-        }
-
-    }
+    }    
 }

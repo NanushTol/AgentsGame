@@ -40,13 +40,16 @@ public class ResourcesData : MonoBehaviour
 
     void Awake()
     {
-        ResourceByIndex = new float[13];
-        
+        ResourceByIndex = new float[13];  
     }
     void Update()
     {
         WoodProduction = 0;
         StoneProduction = 0;
+        FoodProduction = 0;
+        WaterProduction = 0;
+        EnergyProduction = 0;
+        //MineralsProduction = 100f;
     }
 
     void LateUpdate()
