@@ -4,25 +4,31 @@ using UnityEngine;
 using Pathfinding;
 using UnityEngine.Tilemaps;
 
+/// <summary>
+/// The Basic Building Class
+/// all other buildings types MUST use it!
+/// its main reason to exist is to have a generic class to communicate with the Agents
+/// </summary>
+
 public class GenericBuilding : MonoBehaviour
 {
     [HideInInspector]
     public Grid grid;
-
-    public enum TypeOfWorkplace { BasicFarm, WoodMill, StoneQuarry, PowerPlant, BasicWaterPump}
-    public TypeOfWorkplace typeOfWorkplace;
-
-    [HideInInspector]
-    public Vector3Int LastPosition;
-
+    
+    public BuildingType buildingType;
+ 
     public Color WorkplaceColor;
 
     public Color WorkingColor = new Color(0.52f, 0.96f, 0.27f, 1f);
     public Color NotWorkingColor = new Color(0.65f, 0.65f, 0.65f, 1f);
 
-    MapCreator mapCreator;
-    CostsUpkeepProductionData cupData;
-    ResourcesData resourcesData;
+    [HideInInspector]
+    public ResourcesDataController resourcesDataController;
+
+    [HideInInspector]
+    public Vector3Int LastPosition;
+
+    MapCreator mapCreator; 
 
     [HideInInspector]
     public float WorkEfficiency = 1f;
@@ -43,70 +49,24 @@ public class GenericBuilding : MonoBehaviour
     [HideInInspector]
     public bool BuildingWorking;
     [HideInInspector]
-    public Component BuildingScript;
 
-    // Start is called before the first frame update
+
     void Awake()
     {
-        //environment = GameObject.Find("Environment").GetComponent<Environment>();
+        
         grid = GameObject.Find("Grid").GetComponent<Grid>();
+
         mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
-        cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
-        resourcesData = GameObject.Find("GameManager").GetComponent<ResourcesData>();
+        
+        resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
 
         transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
-
-        switch (typeOfWorkplace)
-        {
-            case TypeOfWorkplace.BasicFarm:
-                upkeep[0] = 0f; // GodForce
-                upkeep[1] = cupData.BasicFarmEnergyUpkeep; // Energy
-                upkeep[2] = cupData.BasicFarmWaterUpkeep; // Water
-                upkeep[3] = 0f; // Stone
-                upkeep[4] = 0f; // Wood
-                upkeep[5] = cupData.BasicFarmMineralsUpkeep; // Minerals
-                break;
-
-            case TypeOfWorkplace.WoodMill:
-                upkeep[0] = 0f; // GodForce
-                upkeep[1] = cupData.WoodMillEnergyUpkeep; // Energy
-                upkeep[2] = cupData.WoodMillWaterUpkeep; // Water
-                upkeep[3] = 0f; // Stone
-                upkeep[4] = 0f; // Wood
-                upkeep[5] = 0f; // Minerals
-                break;
-
-            case TypeOfWorkplace.StoneQuarry:
-                upkeep[0] = 0f; // GodForce
-                upkeep[1] = cupData.StoneQuarryEnergyUpkeep; // Energy
-                upkeep[2] = cupData.StoneQuarryWaterUpkeep; // Water
-                upkeep[3] = 0f; // Stone
-                upkeep[4] = 0f; // Wood
-                upkeep[5] = 0f; // Minerals
-                break;
-
-            case TypeOfWorkplace.PowerPlant:
-                upkeep[0] = 0f; // GodForce
-                upkeep[1] = 0f; // Energy
-                upkeep[2] = cupData.PowerPlantWaterUpkeep; // Water
-                upkeep[3] = 0f; // Stone
-                upkeep[4] = 0f; // Wood
-                upkeep[5] = 0f; // Minerals
-                break;
-
-            case TypeOfWorkplace.BasicWaterPump:
-                upkeep[0] = 0f; // GodForce
-                upkeep[1] = cupData.BasicWaterPumpEnergyUpkeep; // Energy
-                upkeep[2] = 0f; // Water
-                upkeep[3] = 0f; // Stone
-                upkeep[4] = 0f; // Wood
-                upkeep[5] = 0f; // Minerals
-                break;
-        }
-
     }
+
+
     private void Start()
     {
+        // Get Grid Cell Position
         Vector3Int position = grid.WorldToCell(transform.position);
 
         position.x += mapCreator.MapWidth / 2;
@@ -114,6 +74,7 @@ public class GenericBuilding : MonoBehaviour
 
         LastPosition = position;
 
+        // Update Pathfinder Nodes Grid
         var gg = AstarPath.active.data.gridGraph;
         int x = position.x;
         int y = position.y;
@@ -132,37 +93,12 @@ public class GenericBuilding : MonoBehaviour
 
     void Update()
     {
-        //check Upkeep to see if building can work
-        if (resourcesData.GodForceAmount > upkeep[0] &&
-            resourcesData.EnergyProduction > upkeep[1] &&
-            resourcesData.WaterProduction > upkeep[2] &&
-            resourcesData.StoneAmount > upkeep[3] &&
-            resourcesData.WoodAmount > upkeep[4] &&
-            resourcesData.MineralsAmount > upkeep[5])
-        {
-            // subtract upkeep from resources
-            resourcesData.GodForceAmount -= upkeep[0] * Time.deltaTime;
-            resourcesData.EnergyProduction -= upkeep[1] * Time.deltaTime;
-            resourcesData.WaterProduction -= upkeep[2] * Time.deltaTime;
-            resourcesData.StoneAmount -= upkeep[3] * Time.deltaTime;
-            resourcesData.WoodAmount -= upkeep[4] * Time.deltaTime;
-            resourcesData.MineralsAmount -= upkeep[5] * Time.deltaTime;
-
-            BuildingWorking = true;
-            transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
-        }
-
-        //update Building Color & state
-        else
-        {
-            BuildingWorking = false;
-            transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-        }
-
+        CheckUpkeep();
 
         // If the building is working
         if (BuildingWorking)
         {
+            // check if workers are needed
             if (AgentsWorking <= MaxWorkers)
             {
 
@@ -179,6 +115,7 @@ public class GenericBuilding : MonoBehaviour
                 AgentsWorking = MaxWorkers;
                 WorkersNeeded = false;
             }
+
 
             UpdateVacancyBar(AgentsWorking);
 
@@ -197,6 +134,7 @@ public class GenericBuilding : MonoBehaviour
         }
     }
 
+    // Updates the Pathfinder Nodes Grid
     public void UpdateNode(Vector3Int _position, bool _walkable)
     {
         AstarPath.active.AddWorkItem(ctx => {
@@ -224,5 +162,46 @@ public class GenericBuilding : MonoBehaviour
             vacancyBar.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = WorkingColor;
         }
 
+    }
+
+    //Checks to see if there are enought resources to run the building
+    void CheckUpkeep()
+    {
+        //check Upkeep to see if building can work
+        if (resourcesDataController.GetResourceAmount("GodForce") >= buildingType.GodForceUpkeep &&
+            resourcesDataController.GetResourceAmount("Energy") >= buildingType.EnergyUpkeep &&
+            resourcesDataController.GetResourceAmount("Research") >= buildingType.ResearchUpkeep &&
+            resourcesDataController.GetResourceAmount("Food") >= buildingType.FoodUpkeep &&
+            resourcesDataController.GetResourceAmount("Water") >= buildingType.WaterUpkeep &&
+            resourcesDataController.GetResourceAmount("Stone") >= buildingType.StoneUpkeep &&
+            resourcesDataController.GetResourceAmount("Wood") >= buildingType.WoodUpkeep &&
+            resourcesDataController.GetResourceAmount("Minerals") >= buildingType.MineralUpkeep)
+        {
+            UpdateUpkeep();
+
+            BuildingWorking = true;
+            transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
+        }
+
+        //update Building Color & state
+        else
+        {
+            BuildingWorking = false;
+            transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+    }
+
+    //Updates the resources production acording to the building's upkeep
+    void UpdateUpkeep()
+    {
+        // subtract upkeep from resources
+        resourcesDataController.UpdateResourceProduction("GodForce", (-buildingType.GodForceUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Energy", (-buildingType.EnergyUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Research", (-buildingType.ResearchUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Food", (-buildingType.FoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Water", (-buildingType.WaterUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Stone", (-buildingType.StoneUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Wood", (-buildingType.WoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction("Minerals", (-buildingType.MineralUpkeep * Time.deltaTime));
     }
 }

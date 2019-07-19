@@ -371,12 +371,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  typeOfWorkplace: 0
+  buildingType: {fileID: 11400000, guid: 474cd48ba37357b47a7f2252912f6a1d, type: 2}
   LastPosition: {x: 0, y: 0, z: 0}
   WorkplaceColor: {r: 1, g: 0.8117647, b: 0, a: 1}
+  WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
+  NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
   WorkEfficiency: 1
   WorkersNeeded: 0
+  MaxWorkers: 0
   Production: 0
+  addedValue: 0
+  AgentsWorking: 0
+  BuildingWorking: 0
+  BuildingScript: {fileID: 0}
 --- !u!114 &7651491888005423516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,13 +398,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FoodPrefab: {fileID: 1014644278780718483, guid: 33262e633f1157e44acd7e15326fc91a,
     type: 3}
+  FoodProduction: {fileID: 11400000, guid: 69ceaf300f7dade4b9fd3b6b75363dc9, type: 2}
   GrowingRadius: 7
-  WorkersRadius: 1.5
   MaxWorkers: 6
-  CurrntlyWorking: 0
-  WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
-  NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
-  basicFarmEfficiency: 2.3
 --- !u!58 &1990877763
 CircleCollider2D:
   m_ObjectHideFlags: 0

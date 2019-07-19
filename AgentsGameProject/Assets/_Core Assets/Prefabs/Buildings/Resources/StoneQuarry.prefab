@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  typeOfWorkplace: 2
+  buildingType: {fileID: 11400000, guid: 86e247e9da91c9e4483d5e56fc15f7ea, type: 2}
   LastPosition: {x: 0, y: 0, z: 0}
   WorkplaceColor: {r: 0.56078434, g: 0.56078434, b: 0.56078434, a: 1}
   WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}

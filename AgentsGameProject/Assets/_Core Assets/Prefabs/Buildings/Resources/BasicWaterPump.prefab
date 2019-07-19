@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  typeOfWorkplace: 4
+  buildingType: {fileID: 11400000, guid: 2b680b62bf9aa61448a01f58685dc7e1, type: 2}
   LastPosition: {x: 0, y: 0, z: 0}
   WorkplaceColor: {r: 0.2509804, g: 0.6313726, b: 0.86274517, a: 1}
   WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
@@ -397,7 +397,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxWorkers: 6
-  BaseProduction: 1
 --- !u!58 &1990877763
 CircleCollider2D:
   m_ObjectHideFlags: 0

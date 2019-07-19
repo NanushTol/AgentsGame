@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28d8a64320ae6844aeb1e6a5f705c64, type: 3}
+  m_Name: WoodMill
+  m_EditorClassIdentifier: 
+  BuildingPrefab: {fileID: 5336263684939104929, guid: 534754a85d3200842b8d373109f647eb,
+    type: 3}
+  ResourceTag: Wood
+  GodForceUpkeep: 0
+  EnergyUpkeep: 0.1
+  ResearchUpkeep: 0
+  FoodUpkeep: 0
+  WaterUpkeep: 0.1
+  StoneUpkeep: 0
+  WoodUpkeep: 0
+  MineralUpkeep: 0
+  GodForceCost: 0
+  ResearchCost: 0
+  EnergyCost: 0
+  FoodCost: 0
+  WaterCost: 0
+  StoneCost: 5
+  WoodCost: 5
+  MineralCost: 0
+  GodForceProduction: 0
+  EnergyProduction: 0
+  ResearchProduction: 0
+  FoodProduction: 0
+  WaterProduction: 0
+  StoneProduction: 0
+  WoodProduction: 0.1
+  MineralProduction: 0
+  WasteProduction: 0

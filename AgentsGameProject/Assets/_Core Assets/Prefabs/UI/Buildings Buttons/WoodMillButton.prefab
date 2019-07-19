@@ -117,15 +117,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 29.9
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 90.7
       objectReference: {fileID: 0}
     - target: {fileID: 4562007890407578254, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
@@ -137,6 +132,37 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.34752703
       objectReference: {fileID: 0}
+    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 29.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007889235675243, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 46.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007889088087896, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_Name
+      value: WoodMill
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007888647462665, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 95.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: BuildingType
+      value: 
+      objectReference: {fileID: 11400000, guid: 7c829ad622d1b104fb93919a603d71d2,
+        type: 2}
     - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -147,20 +173,15 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007889088087896, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
-      propertyPath: m_Name
-      value: WoodMill
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007889235675243, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 46.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007888647462665, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 95.5
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4562007889088087898, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
@@ -182,25 +203,10 @@ PrefabInstance:
       propertyPath: m_textInfo.wordCount
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3674643034933402545, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 90.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cc5f689d86d2d4bba123d613750e91, type: 3}

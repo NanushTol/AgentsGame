@@ -19,6 +19,8 @@ public class DisplayCup : MonoBehaviour
 
     CostsUpkeepProductionData cupData;
 
+    BuildingType buildingType;
+
     float displayValue;
 
     string parentName;
@@ -27,145 +29,123 @@ public class DisplayCup : MonoBehaviour
 
     void Awake()
     {
-        cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
-        parentName = this.transform.parent.transform.parent.transform.parent.name;
-        parentName = parentName.Substring(0, parentName.Length - 6);
+        //cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
+        //parentName = this.transform.parent.transform.parent.transform.parent.name;
+        //parentName = parentName.Substring(0, parentName.Length - 6);
+
+        buildingType = this.transform.parent.transform.parent.transform.parent.GetComponent<CreateBuilding>().BuildingType;
 
         switch (displayCupType)
         {
             #region //Stone CUP
             case DisplayCupType.StoneCost:
-                varName = parentName + "StoneCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.StoneCost;
                 break;
 
             case DisplayCupType.StoneUpkeep:
-                varName = parentName + "StoneUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.StoneUpkeep;
                 break;
 
             case DisplayCupType.StoneProduction:
-                varName = parentName + "StoneProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.StoneProduction;
                 break;
             #endregion
 
             #region //Wood CUP
             case DisplayCupType.WoodCost:
-                varName = parentName + "WoodCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WoodCost;
                 break;
 
             case DisplayCupType.WoodUpkeep:
-                varName = parentName + "WoodUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WoodUpkeep;
                 break;
 
             case DisplayCupType.WoodProduction:
-                varName = parentName + "WoodProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WoodProduction;
                 break;
             #endregion
 
             #region //Minerals CUP
             case DisplayCupType.MineralsCost:
-                varName = parentName + "MineralsCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.MineralCost;
                 break;
 
             case DisplayCupType.MineralsUpkeep:
-                varName = parentName + "MineralsUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.MineralUpkeep;
                 break;
 
             case DisplayCupType.MineralsProduction:
-                varName = parentName + "MineralsProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.MineralProduction;
                 break;
             #endregion
 
             #region //GodForce CUP
             case DisplayCupType.GodForceCost:
-                varName = parentName + "GodForceCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.GodForceCost;
                 break;
 
             case DisplayCupType.GodForceUpkeep:
-                varName = parentName + "GodForceUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.GodForceUpkeep;
                 break;
 
             case DisplayCupType.GodForceProduction:
-                varName = parentName + "GodForceProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.GodForceProduction;
                 break;
             #endregion
 
             #region //Energy CUP
             case DisplayCupType.EnergyCost:
-                varName = parentName + "EnergyCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.EnergyCost;
                 break;
 
             case DisplayCupType.EnergyUpkeep:
-                varName = parentName + "EnergyUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.EnergyUpkeep;
                 break;
 
             case DisplayCupType.EnergyProduction:
-                varName = parentName + "EnergyProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.EnergyProduction;
                 break;
             #endregion
 
             #region //Research CUP
             case DisplayCupType.ResearchCost:
-                varName = parentName + "ResearchCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.ResearchCost;
                 break;
 
             case DisplayCupType.ResearchUpkeep:
-                varName = parentName + "ResearchUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.ResearchUpkeep;
                 break;
 
             case DisplayCupType.ResearchProduction:
-                varName = parentName + "ResearchProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.ResearchProduction;
                 break;
             #endregion
 
             #region //Food CUP
             case DisplayCupType.FoodCost:
-                varName = parentName + "FoodCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.FoodCost;
                 break;
 
             case DisplayCupType.FoodUpkeep:
-                varName = parentName + "FoodUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.FoodUpkeep;
                 break;
 
             case DisplayCupType.FoodProduction:
-                varName = parentName + "FoodProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.FoodProduction;
                 break;
             #endregion
 
             #region //water CUP
             case DisplayCupType.WaterCost:
-                varName = parentName + "WaterCost";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WaterCost;
                 break;
 
             case DisplayCupType.WaterUpkeep:
-                varName = parentName + "WaterUpkeep";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WaterUpkeep;
                 break;
 
             case DisplayCupType.WaterProduction:
-                varName = parentName + "WaterProduction";
-                displayValue = cupData.CupData[varName];
+                displayValue = buildingType.WaterProduction;
                 break;
             #endregion
         }

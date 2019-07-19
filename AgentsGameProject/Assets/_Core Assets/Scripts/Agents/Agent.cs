@@ -20,6 +20,7 @@ public class Agent : MonoBehaviour
     public bool wantsToMate = false;
     public bool foundMate = false;
     public bool working;
+    public bool InBuilding;
     #endregion
 
 
@@ -55,7 +56,7 @@ public class Agent : MonoBehaviour
     #region // Traits
     [Header("Traits")]
 
-    public string MissionInLife = "Builder";
+    public string AgentType = "Builder";
 
     public Color AgentColor;
 
@@ -111,7 +112,7 @@ public class Agent : MonoBehaviour
 
     GameObject globalStats;
 
-    ResourcesData resourcesData;
+    ResourcesDataController resourcesDataController;
 
     #endregion
 
@@ -162,24 +163,7 @@ public class Agent : MonoBehaviour
         //new Color(0.962f, 0.276f, 0.448f, 1f);
         //F54772
 
-        resourcesData = GameObject.Find("GameManager").GetComponent<ResourcesData>();
-
-        #region //OLD Traits Array & dicionary, Key & Value Assignments
-        /*
-        TraitsDic.Add("MaxAge", MaxAge);
-        TraitsDic.Add("ReproductiveMultiplier", ReproductiveMultiplier);
-        TraitsDic.Add("FoodConsumption", FoodConsumption);
-        TraitsDic.Add("EnergyConsumption", EnergyConsumption);
-        TraitsDic.Add("WorkingSpeed", WorkingSpeed);
-        TraitsDic.Add("Size", Size);
-
-        Traits = new float[9];
-        for(int i = 0; i < 9; i++)
-        {
-            Traits[i] = TraitsDic.ElementAt(i).Value;
-        }
-        */
-        #endregion
+        resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
 
         Traits = new float[6];
 
@@ -270,24 +254,30 @@ public class Agent : MonoBehaviour
 
         if (food <= 3f)
         {
-            Destroy(gameObject);
+            if(InBuilding) closestWork.GetComponent<GenericBuilding>().AgentsWorking -= 1;
+
             GameObject _globalStats = GameObject.Find("GlobalStats");
             _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
             Debug.Log("Agent Died of Hunger");
+            Destroy(gameObject);
         }
         if (energy <= 3f)
         {
-            Destroy(gameObject);
+            if (InBuilding) closestWork.GetComponent<GenericBuilding>().AgentsWorking -= 1;
+            
             GameObject _globalStats = GameObject.Find("GlobalStats");
             _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
             Debug.Log("Agent Died of Exhaustion");
+            Destroy(gameObject);
         }
         if (currentAge >= MaxAge)
         {
-            Destroy(gameObject);
+            if (InBuilding) closestWork.GetComponent<GenericBuilding>().AgentsWorking -= 1;
+            
             GameObject _globalStats = GameObject.Find("GlobalStats");
             _globalStats.GetComponent<GlobalStats>().AgentsDied += 1;
             Debug.Log("Agent Died of Old Age");
+            Destroy(gameObject);
         }
     }
 
@@ -538,7 +528,7 @@ public class Agent : MonoBehaviour
 
 
 
-        _baby.GetComponent<Agent>().MissionInLife = MissionInLife; //set mission in life to self mission
+        _baby.GetComponent<Agent>().AgentType = AgentType; //set mission in life to self mission
 
 
 
@@ -637,7 +627,7 @@ public class Agent : MonoBehaviour
 
         float[] _babyTraits = _baby.GetComponent<Agent>().Traits; // get baby traits
 
-        _baby.GetComponent<Agent>().MissionInLife = MissionInLife; //set mission in life to self mission
+        _baby.GetComponent<Agent>().AgentType = AgentType; //set mission in life to self mission
 
         _baby.GetComponent<Agent>().AgentSpeed = (_mate.GetComponent<GodAngel>().AgentSpeed + AgentSpeed) / 2f;
         _baby.GetComponent<Agent>().SearchRadius = (_mate.GetComponent<GodAngel>().SearchRadius + SearchRadius) / 2f;
@@ -695,7 +685,7 @@ public class Agent : MonoBehaviour
 
         _food.GetComponent<Food>().FoodValue -= _bite;
 
-        resourcesData.FoodAmount -= _bite;
+        resourcesDataController.UpdateResourceProduction("Food", -_bite);
     }
 
     void Sleep()
@@ -721,6 +711,7 @@ public class Agent : MonoBehaviour
 
     void EnterBuilding()
     {
+        InBuilding = true;
         enterPosition = transform.position;
         closestWork.GetComponent<GenericBuilding>().AgentsWorking += 1;
 
@@ -738,6 +729,7 @@ public class Agent : MonoBehaviour
 
     void ExitBuilding()
     {
+        InBuilding = false;
         transform.position = enterPosition;
         closestWork.GetComponent<GenericBuilding>().AgentsWorking -= 1;
 

@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+/// <summary>
+/// "CreateBuilding" used by building buttons
+/// </summary>
+
 public class CreateBuilding : MonoBehaviour
 {
-    public enum BuildingType { WoodMill, StoneQuarry, BasicFarm, PowerPlant, BasicWaterPump }
-    public BuildingType buildingType;
+    public BuildingType BuildingType;
 
     GameObject buildingPrefab;
 
-    CostsUpkeepProductionData cupData;
-    ResourcesData resourcesData;
+    private ResourcesDataController resourcesDataController;
+    
     MapCreator mapCreator;
 
     float woodCost = 0f;
@@ -21,33 +24,34 @@ public class CreateBuilding : MonoBehaviour
     float godForceCost = 0f;
     float foodCost = 0f;
 
-    string tag;
+    string resourceTag;
 
     Quaternion rotation = new Quaternion(0, 0, 0, 0);
     GameObject newBuilding = null;
     float lastTimeScale;
     Vector3 v3;
-    float distance;
     Vector3 offset;
 
     bool creatingBuilding;
 
     void Awake()
     {
-        cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
-        resourcesData = GameObject.Find("GameManager").GetComponent<ResourcesData>();
         mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
+        resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
     }
 
     void Update()
     {
         if (creatingBuilding)
         {
-            PositionBuilding();
+            DisplayBuildingAtMousePosition();
+
+            SelectLocation();
         }
     }
 
-
+    // Initialize Building Creation
+    // Initialized by a button
     public void CreateBuildingFunction()
     {
         woodCost = 0f;
@@ -58,15 +62,12 @@ public class CreateBuilding : MonoBehaviour
 
         GetBuildingPrefabAndCosts();
 
-        if (buildingType == BuildingType.PowerPlant)
-        {
-            resourcesData.EnergyProduction += 0.1f;
-        }
-
         // Check costs against avilable resources
-        if (stoneCost <= resourcesData.StoneAmount && woodCost <= resourcesData.WoodAmount
-            && mineralsCost <= resourcesData.MineralsAmount && godForceCost <= resourcesData.GodForceAmount 
-            && foodCost <=resourcesData.FoodAmount)
+        // if True instatiate a Building 
+        //and enter "Creating Building" Mode
+        if (stoneCost <= resourcesDataController.GetResourceAmount("Stone") && woodCost <= resourcesDataController.GetResourceAmount("Wood")
+            && mineralsCost <= resourcesDataController.GetResourceAmount("Minerals") && godForceCost <= resourcesDataController.GetResourceAmount("GodForce")
+            && foodCost <= resourcesDataController.GetResourceAmount("Food"))
         {
             lastTimeScale = Time.timeScale;
             newBuilding = Instantiate(buildingPrefab, new Vector3(0f, 0f, -5f), rotation);
@@ -74,13 +75,13 @@ public class CreateBuilding : MonoBehaviour
         }
     }
 
-    void PositionBuilding()
+    void DisplayBuildingAtMousePosition()
     {
         Time.timeScale = 0f;
 
         float zOffset = Camera.main.transform.position.z;
 
-        v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, distance);
+        v3 = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
 
         v3 = Camera.main.ScreenToWorldPoint(v3);
 
@@ -90,30 +91,51 @@ public class CreateBuilding : MonoBehaviour
         v3.y += 0.5f;
 
         newBuilding.transform.position = v3;
+    }
 
+    void GetBuildingPrefabAndCosts()
+    {
+        // Get building type & Costs
 
-        // left mouse Click
+        buildingPrefab = BuildingType.BuildingPrefab;
+
+        godForceCost = BuildingType.GodForceCost;
+        foodCost = BuildingType.FoodCost;
+        woodCost = BuildingType.WoodCost;
+        stoneCost = BuildingType.StoneCost;
+        mineralsCost = BuildingType.MineralCost;
+
+        resourceTag = BuildingType.ResourceTag;
+    }
+
+    //get user input and check if selected location is valid for that building type
+    void SelectLocation()
+    {
+
+        // If left mouse Click
         if (Input.GetMouseButtonDown(0))
         {
-            if (buildingType == BuildingType.WoodMill || buildingType == BuildingType.StoneQuarry || buildingType == BuildingType.PowerPlant)
+            // Check if relevent resource is available at selected location
+            // or if location is valid for the relavent type of building
+            // If True place building at location
+            if (BuildingType.name == "WoodMill" || BuildingType.name == "StoneQuarry" || BuildingType.name == "PowerPlant")
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Resource"));
-
                 if (hit)
                 {
-                    if (hit.transform.CompareTag(tag))
+                    if (hit.transform.CompareTag(resourceTag))
                     {
                         // Deactivate resource graphics & trigger
                         hit.collider.enabled = false;
-                        hit.transform.GetChild(1).gameObject.SetActive(false); 
+                        hit.transform.GetChild(1).gameObject.SetActive(false);
                         hit.transform.GetChild(2).gameObject.SetActive(false);
 
                         PlaceBuilding();
                     }
                 }
             }
-            else if (buildingType == BuildingType.BasicFarm)
+            else if (BuildingType.name == "BasicFarm")
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground"));
@@ -122,7 +144,7 @@ public class CreateBuilding : MonoBehaviour
                     PlaceBuilding();
                 }
             }
-            else if (buildingType == BuildingType.BasicWaterPump)
+            else if (BuildingType.name == "BasicWaterPump")
             {
                 Vector3Int v3position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
 
@@ -142,11 +164,9 @@ public class CreateBuilding : MonoBehaviour
                     }
                 }
             }
-
-            
         }
 
-        // Escape key
+        // Cancle building creation
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Destroy(newBuilding);
@@ -154,60 +174,16 @@ public class CreateBuilding : MonoBehaviour
             creatingBuilding = false;
         }
     }
-
-    void GetBuildingPrefabAndCosts()
-    {
-        // Get building type & Get Costs
-        switch (buildingType)
-        {
-            case BuildingType.WoodMill:
-                woodCost = cupData.WoodMillWoodCost;
-                stoneCost = cupData.WoodMillStoneCost;
-                tag = "Wood";
-                buildingPrefab = Resources.Load("WoodMill", typeof(GameObject)) as GameObject;
-                break;
-                
-
-            case BuildingType.StoneQuarry:
-                woodCost = cupData.StoneQuarryStoneCost;
-                stoneCost = cupData.StoneQuarryWoodCost;
-                tag = "Stone";
-                buildingPrefab = Resources.Load("StoneQuarry", typeof(GameObject)) as GameObject;
-                break;
-
-            case BuildingType.PowerPlant:
-                woodCost = cupData.PowerPlantStoneCost;
-                stoneCost = cupData.PowerPlantWoodCost;
-                tag = "LandOil";
-                buildingPrefab = Resources.Load("PowerPlant", typeof(GameObject)) as GameObject;
-                break;
-
-            case BuildingType.BasicFarm:
-                woodCost = cupData.PowerPlantStoneCost;
-                stoneCost = cupData.PowerPlantWoodCost;
-                //tag = "LandOil";
-                buildingPrefab = Resources.Load("BasicFarm", typeof(GameObject)) as GameObject;
-                break;
-
-            case BuildingType.BasicWaterPump:
-                woodCost = cupData.BasicWaterPumpWoodCost;
-                stoneCost = cupData.BasicWaterPumpStoneCost;
-                //tag = "LandOil";
-                buildingPrefab = Resources.Load("BasicWaterPump", typeof(GameObject)) as GameObject;
-                break;
-
-        }
-    }
-
+    
+    // Place building at selected position
+    // Used by SelectLocation() Function
     void PlaceBuilding()
     {
-        resourcesData.StoneAmount -= stoneCost;
-        resourcesData.WoodAmount -= woodCost;
-        resourcesData.MineralsAmount -= mineralsCost;
-        resourcesData.FoodAmount -= foodCost;
-        resourcesData.GodForceAmount -= godForceCost;
-
-        
+        resourcesDataController.UpdateResourceAmount("GodForce", -godForceCost);
+        resourcesDataController.UpdateResourceAmount("Food", -foodCost);
+        resourcesDataController.UpdateResourceAmount("Stone", -stoneCost);
+        resourcesDataController.UpdateResourceAmount("Wood", -woodCost);
+        resourcesDataController.UpdateResourceAmount("Minerals", -mineralsCost);
 
         Vector3Int position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
 

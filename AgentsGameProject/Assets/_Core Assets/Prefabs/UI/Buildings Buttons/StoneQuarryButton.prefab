@@ -117,35 +117,25 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
-      propertyPath: buildingType
-      value: 1
+      propertyPath: m_AnchoredPosition.y
+      value: -0.7475209
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 30.099998
+      value: 91
       objectReference: {fileID: 0}
     - target: {fileID: 4562007890407578254, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 72.9
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 79.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007889088087896, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_Name
-      value: StoneQuarry
+      value: 30.099998
       objectReference: {fileID: 0}
     - target: {fileID: 4562007889235675243, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
@@ -157,6 +147,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 46.9
       objectReference: {fileID: 0}
+    - target: {fileID: 4562007889088087896, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_Name
+      value: StoneQuarry
+      objectReference: {fileID: 0}
     - target: {fileID: 4562007888647462665, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -167,6 +162,43 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 95.8
       objectReference: {fileID: 0}
+    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: buildingType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: BuildingType
+      value: 
+      objectReference: {fileID: 11400000, guid: 86e247e9da91c9e4483d5e56fc15f7ea,
+        type: 2}
+    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 79.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007889188941182, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0d3aa16964fdce948b8dcbc5d01164e9,
+        type: 3}
     - target: {fileID: 4562007889088087898, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_text
@@ -187,36 +219,10 @@ PrefabInstance:
       propertyPath: m_textInfo.wordCount
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007889188941182, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 0d3aa16964fdce948b8dcbc5d01164e9,
-        type: 3}
-    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3674643034933402545, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -0.7475209
-      objectReference: {fileID: 0}
-    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 91
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53cc5f689d86d2d4bba123d613750e91, type: 3}

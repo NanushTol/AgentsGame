@@ -5,37 +5,27 @@ using UnityEngine;
 public class PowerPlant : MonoBehaviour
 {
     public int MaxWorkers = 6;
-
-    float BaseProduction;
-
+    
     GenericBuilding genericBuilding;
-    Environment environment;
-    ResourcesData resourcesData;
-    CostsUpkeepProductionData cupData;
-
+   
     void Awake()
     {
-        environment = GameObject.Find("Environment").GetComponent<Environment>();
-        resourcesData = GameObject.Find("GameManager").GetComponent<ResourcesData>();
-        cupData = GameObject.Find("GameManager").GetComponent<CostsUpkeepProductionData>();
-
         genericBuilding = GetComponent<GenericBuilding>();
 
-        genericBuilding.WorkEfficiency = cupData.PowerPlantProduction;
+        genericBuilding.WorkEfficiency = genericBuilding.buildingType.EnergyProduction;
 
         genericBuilding.MaxWorkers = MaxWorkers;
-
-        BaseProduction = cupData.PowerPlantBaseProduction;
     }
 
     void Update()
     {
-        resourcesData.EnergyProduction += genericBuilding.addedValue + BaseProduction;
-
+        // Checks if the building is working and if there is production to use
         if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
-            
+            // Update resource production
+            genericBuilding.resourcesDataController.UpdateResourceProduction("Energy", genericBuilding.addedValue);
 
+            // Reset pruduction
             genericBuilding.Production -= genericBuilding.addedValue;
         }
     }    

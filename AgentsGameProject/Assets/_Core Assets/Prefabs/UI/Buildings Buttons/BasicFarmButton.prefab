@@ -117,15 +117,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 31.80001
+      value: 92.40001
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.34752703
       objectReference: {fileID: 0}
     - target: {fileID: 4562007890407578254, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
@@ -137,22 +137,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.34752703
       objectReference: {fileID: 0}
+    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 31.80001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007890372516764, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4562007889235675243, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 48.3
       objectReference: {fileID: 0}
     - target: {fileID: 4562007889235675243, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 81.500015
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
@@ -167,17 +167,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: buildingType
+      value: 
+      objectReference: {fileID: 11400000, guid: 474cd48ba37357b47a7f2252912f6a1d,
+        type: 2}
+    - target: {fileID: 4562007888652731931, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: BuildingType
+      value: 
+      objectReference: {fileID: 11400000, guid: 474cd48ba37357b47a7f2252912f6a1d,
+        type: 2}
+    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 92.40001
+      value: 81.500015
       objectReference: {fileID: 0}
-    - target: {fileID: 8687830150978785841, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 4562007888839562688, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.34752703
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3674643034933402545, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -187,6 +204,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: FoodCircle
       objectReference: {fileID: 0}
+    - target: {fileID: 4562007889188941182, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 468794cc9d47d1140b9098c87c5a62db,
+        type: 3}
     - target: {fileID: 4562007889088087898, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_text
@@ -202,26 +225,10 @@ PrefabInstance:
       propertyPath: m_textInfo.spaceCount
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4562007889188941182, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 468794cc9d47d1140b9098c87c5a62db,
-        type: 3}
-    - target: {fileID: 5426161277601757702, guid: 53cc5f689d86d2d4bba123d613750e91,
+    - target: {fileID: 3674643034933402545, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7609444946279405570, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4562007890503023834, guid: 53cc5f689d86d2d4bba123d613750e91,
-        type: 3}
-      propertyPath: m_Name
-      value: FoodProduction
       objectReference: {fileID: 0}
     - target: {fileID: 4562007890391145814, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
@@ -237,6 +244,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.b
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4562007890503023834, guid: 53cc5f689d86d2d4bba123d613750e91,
+        type: 3}
+      propertyPath: m_Name
+      value: FoodProduction
       objectReference: {fileID: 0}
     - target: {fileID: 4562007890503023838, guid: 53cc5f689d86d2d4bba123d613750e91,
         type: 3}
