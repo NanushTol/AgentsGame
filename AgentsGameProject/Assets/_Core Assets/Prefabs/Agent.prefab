@@ -10,6 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 2038208597483455995}
   - component: {fileID: 3102577599314634660}
+  - component: {fileID: 5579524748166172094}
+  - component: {fileID: 2614220544512930515}
+  - component: {fileID: 3173038343997786716}
+  - component: {fileID: 6233587275214259460}
   - component: {fileID: 1647192999387235613}
   - component: {fileID: 2271895063104277318}
   - component: {fileID: 1611902184749935212}
@@ -53,9 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e388c55f99b7947928e5ef5e465489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AgentPrefab: {fileID: 300681778666496619}
   JustBorn: 0
-  JustBornWithAngel: 0
   searching: 0
   eating: 0
   sleeping: 0
@@ -63,23 +65,15 @@ MonoBehaviour:
   wantsToMate: 0
   foundMate: 0
   working: 0
+  InBuilding: 0
   distToPoint: 0
-  mostUrgentNeed: null
-  mostUrgentNeedIndex: 0
-  readyForWork: 0
-  hungry: 0
-  tierd: 0
-  horney: 0
-  currentAge: 0
-  food: 100
-  energy: 100
-  reproductiveMultiplier: 0
+  MostUrgentNeed: null
   MaxSearchTime: 7
   FoodSearchTime: 0
   RemapedFoodSearchTime: 0
   WorkSearchTime: 0
   RemapedWorkSearchTime: 0
-  MissionInLife: Builder
+  AgentType: Builder
   AgentColor: {r: 0.9607843, g: 0.2784314, b: 0.44705883, a: 1}
   MaxAge: 60
   ReproductiveUrge: 5
@@ -87,25 +81,33 @@ MonoBehaviour:
   EnergyConsumption: 5
   WorkingSpeed: 5
   Size: 5
-  ConsumptionScale: 0.2
-  MaxEnergy: 100
-  MaxFood: 100
-  MaxReproductiveMultiplier: 1
-  MinReproductiveUrgeMultiplier: 0
-  SpeedCost: 0.4
-  WorkFoodCost: 2
-  WorkEnergyCost: 1.6
-  AgentSpeed: 5
-  SearchRadius: 4
-  BiteSize: 3
-  SleepEfficiency: 2
-  FoodFullThreshold: 60
-  AwakeThreshold: 90
-  Mutaion: 0.15
-  GfPerBirth: 0.5
-  GeaneAvrage: 0
+  AgentsSharedParameters: {fileID: 11400000, guid: 2d1d8631f6b4ef64eb252e74e47f76a0,
+    type: 2}
+  BuildingEnterPosition: {x: 0, y: 0, z: 0}
+  ClosestFood: {fileID: 0}
+  CurrentWorkplace: {fileID: 0}
+  ClosestMate: {fileID: 0}
+  AgentMemory: {fileID: 0}
+  NeedsManager: {fileID: 0}
+  DecisionMaker: {fileID: 0}
+  DestinationTarget: {fileID: 0}
   DestinationTargetPrefab: {fileID: 5795783880048244167, guid: 1b72ad65139c1724d9017b7d5c1c44da,
     type: 3}
+  MostUrgentNeedByIndex: 0
+  StateMachine: {fileID: 0}
+  Traits: []
+--- !u!114 &5579524748166172094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300681778666496619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f008eed2184e2a34d84de1a7142b3c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   foodToHunger:
     serializedVersion: 2
     m_Curve:
@@ -128,98 +130,14 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.449823
-      value: 0.19989012
-      inSlope: -3.2427354
-      outSlope: -0.3451437
+      time: 0.35
+      value: 0.09
+      inSlope: -6.133333
+      outSlope: -0.12307694
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.050520223
-    - serializedVersion: 3
-      time: 1
-      value: 0.01
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  searchTimeToHunger:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.80064684
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1.3
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  energyToTiredness:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.035
-      value: 1
-      inSlope: 0
-      outSlope: -9.333332
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.05
-      value: 0.86
-      inSlope: -1.0022647
-      outSlope: 0
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0.63636386
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.40045166
-      value: 0.6
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.28007612
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.7
-      value: 0.051351316
-      inSlope: -1.8315866
-      outSlope: -0.13783772
-      tangentMode: 69
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0.01
@@ -274,30 +192,48 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  searchTimeToReadyness:
+  energyToTiredness:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
+      time: 0.035
+      value: 1
       inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      outSlope: -9.333332
+      tangentMode: 69
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.80064684
-      value: 0
+      time: 0.05
+      value: 0.86
+      inSlope: -1.0022647
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.63636386
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 0.6
       inSlope: 0
       outSlope: 0
       tangentMode: 0
       weightedMode: 0
+      inWeight: 0.28007612
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.7
+      value: 0.01
+      inSlope: -2.9500003
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 1.3
+      value: 0.01
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -358,7 +294,45 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  Traits: []
+  NeedsValues: []
+--- !u!114 &2614220544512930515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300681778666496619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34925b8d6bf945d4986b30550c3252c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SleepingPlaces: []
+  WorkplacesBeliefs: []
+--- !u!114 &3173038343997786716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300681778666496619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0335246a8317d544e9c1b771f3841938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6233587275214259460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300681778666496619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 337ae684693a60140b04cbe71e7cdc3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1647192999387235613
 MonoBehaviour:
   m_ObjectHideFlags: 0

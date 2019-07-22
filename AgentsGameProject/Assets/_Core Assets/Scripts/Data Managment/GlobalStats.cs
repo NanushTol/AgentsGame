@@ -72,13 +72,13 @@ public class GlobalStats : MonoBehaviour
 
             for (int i = 0; i < _agentsColliders.Length; i++)
             {
-                _agentsSpeeds[i] = _agentsColliders[i].transform.GetComponent<Agent>().AgentSpeed;
+                _agentsSpeeds[i] = _agentsColliders[i].transform.GetComponent<Agent>().AgentsSharedParameters.AgentSpeed;
                 speedSum = speedSum + _agentsSpeeds[i];
-                _agentsSR[i] = _agentsColliders[i].transform.GetComponent<Agent>().SearchRadius;
+                _agentsSR[i] = _agentsColliders[i].transform.GetComponent<Agent>().AgentsSharedParameters.SearchRadius;
                 searchRadiusSum = searchRadiusSum + _agentsSR[i];
-                _agentsWorkCosts[i] = _agentsColliders[i].transform.GetComponent<Agent>().WorkFoodCost;
+                _agentsWorkCosts[i] = _agentsColliders[i].transform.GetComponent<Agent>().AgentsSharedParameters.WorkFoodCost;
                 workFoodSum = workFoodSum + _agentsWorkCosts[i];
-                _agentsSpeedCosts[i] = _agentsColliders[i].transform.GetComponent<Agent>().SpeedCost;
+                _agentsSpeedCosts[i] = _agentsColliders[i].transform.GetComponent<Agent>().AgentsSharedParameters.SpeedCost;
                 speedCostSum = speedCostSum + _agentsSpeedCosts[i];
             }
 

@@ -44,17 +44,12 @@ public class SelectObject : MonoBehaviour
     {
         selectionIndicator = GameObject.Find("SelectionIndicator");
         
-        //gnobProperties = GameObject.Find("GnobProperties");
+        int workLayer = 1 << LayerMask.NameToLayer("Work");
+        int agentLayer = 1 << LayerMask.NameToLayer("Agent");
+        int foodLayer = 1 << LayerMask.NameToLayer("Food");
+        int resourceLayer = 1 << LayerMask.NameToLayer("Resource");
 
-
-        int work = 1 << LayerMask.NameToLayer("Work");
-        int agent = 1 << LayerMask.NameToLayer("Agent");
-        int godAngel = 1 << LayerMask.NameToLayer("GodAngel");
-        int food = 1 << LayerMask.NameToLayer("Food");
-        int resource = 1 << LayerMask.NameToLayer("Resource");
-        int ui = 1 << LayerMask.NameToLayer("UI");
-
-        mask = work | agent | godAngel | food | resource;
+        mask = workLayer | agentLayer | foodLayer | resourceLayer;
     }
 
 
@@ -127,14 +122,15 @@ public class SelectObject : MonoBehaviour
 
     void GetAgentProperties()
     {
-        AgentAge = SelectedObject.GetComponent<Agent>().currentAge;
-        AgentType = SelectedObject.GetComponent<Agent>().AgentType;
-        AgentMostUrgentNeed = SelectedObject.GetComponent<Agent>().mostUrgentNeed;
-        AgentInBuilding = SelectedObject.GetComponent<Agent>().InBuilding;
+        Agent agent = SelectedObject.GetComponent<Agent>();
+        AgentAge = agent.CurrentAge;
+        AgentType = agent.AgentType;
+        AgentMostUrgentNeed = agent.MostUrgentNeed;
+        AgentInBuilding = agent.InBuilding;
 
-        AgentProperties[0] = SelectedObject.GetComponent<Agent>().hungry;
-        AgentProperties[1] = SelectedObject.GetComponent<Agent>().horney;
-        AgentProperties[2] = SelectedObject.GetComponent<Agent>().energy / 100f;
+        AgentProperties[0] = agent.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Hungry];
+        AgentProperties[1] = agent.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Horny];
+        AgentProperties[2] = agent.Energy / 100f;
 
     }
 }

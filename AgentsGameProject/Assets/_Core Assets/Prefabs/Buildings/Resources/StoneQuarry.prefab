@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 9163329280159614903}
   - component: {fileID: 1990877763}
   - component: {fileID: 1990877766}
-  m_Layer: 9
+  m_Layer: 17
   m_Name: StoneQuarry
   m_TagString: Work
   m_Icon: {fileID: 0}
@@ -372,10 +372,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
   buildingType: {fileID: 11400000, guid: 86e247e9da91c9e4483d5e56fc15f7ea, type: 2}
-  LastPosition: {x: 0, y: 0, z: 0}
   WorkplaceColor: {r: 0.56078434, g: 0.56078434, b: 0.56078434, a: 1}
   WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
   NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
+  resourcesDataController: {fileID: 0}
+  LastPosition: {x: 0, y: 0, z: 0}
   WorkEfficiency: 1
   WorkersNeeded: 0
   MaxWorkers: 0
@@ -383,7 +384,6 @@ MonoBehaviour:
   addedValue: 0
   AgentsWorking: 0
   BuildingWorking: 0
-  BuildingScript: {fileID: 0}
 --- !u!114 &9163329280159614903
 MonoBehaviour:
   m_ObjectHideFlags: 0
