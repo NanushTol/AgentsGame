@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class WoodMill : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class WoodMill : MonoBehaviour
         if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction("Wood", genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(WOOD, genericBuilding.addedValue);
 
             // Reset pruduction
             genericBuilding.Production -= genericBuilding.addedValue;

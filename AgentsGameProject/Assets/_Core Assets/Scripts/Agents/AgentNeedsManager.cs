@@ -1,9 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class AgentNeedsManager : MonoBehaviour
 {
+    [Header("Needs Values")]
+    public float Hunger;
+    public float Tired;
+    public float Work;
+    public float Horny;
+
     [Header("Hunger Graphs")]
     public AnimationCurve foodToHunger;
 
@@ -18,26 +25,41 @@ public class AgentNeedsManager : MonoBehaviour
 
     [HideInInspector]
     public float[] NeedsValues;
-    
-    public enum Needs {NullNeed = 0, Hungry = 1, Tired = 2, Work = 3, Horny = 4}
+
+    public bool WorkNeedOverride;
+    public bool FoodNeedOverride;
 
     private void Awake()
     {
         NeedsValues = new float[5];
-        NeedsValues[(int)Needs.NullNeed] = 0f;
+        NeedsValues[NULLNEED] = 0f;
+    }
+
+    void LateUpdate()
+    {
+        Hunger = NeedsValues[HUNGRY];
+        Tired = NeedsValues[TIRED];
+        Work = NeedsValues[WORK];
+        Horny = NeedsValues[HORNY];
     }
 
     public int FindMostUrgentNeed(Agent agent)
     {
-        int index = (int)Needs.NullNeed;
+        int index = NULLNEED;
 
-        NeedsValues[(int)Needs.Hungry] = foodToHunger.Evaluate(AgentUtils.Remap(agent.Food, 0f, agent.AgentsSharedParameters.MaxFood, 0f, 1f));
 
-        NeedsValues[(int)Needs.Tired] = energyToTiredness.Evaluate(AgentUtils.Remap(agent.Energy, 0f, agent.AgentsSharedParameters.MaxEnergy, 0f, 1f));
+        // Remap Values
+        float rmpFood = AgentUtils.Remap(agent.Food, 0f, agent.AgentsSharedParameters.MaxFood, 0f, 1f);
+        float rmpEnergy = AgentUtils.Remap(agent.Energy, 0f, agent.AgentsSharedParameters.MaxEnergy, 0f, 1f);
+        float rmpAge = AgentUtils.Remap(agent.CurrentAge, 0f, agent.MaxAge, 0f, 1f);
 
-        NeedsValues[(int)Needs.Work] = energyToReadyness.Evaluate(AgentUtils.Remap(agent.Energy, 0f, agent.AgentsSharedParameters.MaxEnergy, 0f, 1f));
 
-        NeedsValues[(int)Needs.Horny] = agent.ReproductiveMultiplier * ageToHorney.Evaluate(AgentUtils.Remap(agent.CurrentAge, 0f, agent.MaxAge, 0f, 1f));
+        // Evaluate Need Curves
+        NeedsValues[HUNGRY] = foodToHunger.Evaluate(rmpFood) * OverrideNeed(FoodNeedOverride);
+        NeedsValues[TIRED] = energyToTiredness.Evaluate(rmpEnergy);
+        NeedsValues[WORK] = energyToReadyness.Evaluate(rmpEnergy) * OverrideNeed(WorkNeedOverride);
+        NeedsValues[HORNY] = agent.ReproductiveMultiplier * ageToHorney.Evaluate(rmpAge);
+
 
         //find Biggest Value
         float mostUrgent = 0f;
@@ -45,10 +67,19 @@ public class AgentNeedsManager : MonoBehaviour
         foreach (float need in NeedsValues)
         {
             if (need > mostUrgent)
+            {
+                mostUrgent = need;
                 index = i;
+            }
+               
             i++;
         }
 
         return index;
+    }
+
+    public float OverrideNeed(bool overrideNeed)
+    {
+        return overrideNeed ? 0 : 1;
     }
 }

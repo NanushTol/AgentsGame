@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static Constants;
 public class ResourcesDataController : MonoBehaviour
 {
-    public float Timer;
+    public float UpddateSeconds;
     float elapsedTime;
 
     public GameEvent updateUiEvent;
@@ -26,13 +26,13 @@ public class ResourcesDataController : MonoBehaviour
     private void Awake()
     {
         // Reset Values do defualts
-        ResourcesAmounts[StringToIndex("GodForce")].SetValue(DefualtGodForce);
-        ResourcesAmounts[StringToIndex("Energy")].SetValue(DefualtEnergy);
-        ResourcesAmounts[StringToIndex("Food")].SetValue(DefualtFood);
-        ResourcesAmounts[StringToIndex("Water")].SetValue(DefualtWater);
-        ResourcesAmounts[StringToIndex("Stone")].SetValue(DefualtStone);
-        ResourcesAmounts[StringToIndex("Wood")].SetValue(DefualtWood);
-        ResourcesAmounts[StringToIndex("Minerals")].SetValue(DefualtMinerals);
+        ResourcesAmounts[GODFORCE].SetValue(DefualtGodForce);
+        ResourcesAmounts[ENERGY].SetValue(DefualtEnergy);
+        ResourcesAmounts[FOOD].SetValue(DefualtFood);
+        ResourcesAmounts[WATER].SetValue(DefualtWater);
+        ResourcesAmounts[STONE].SetValue(DefualtStone);
+        ResourcesAmounts[WOOD].SetValue(DefualtWood);
+        ResourcesAmounts[MINERALS].SetValue(DefualtMinerals);
 
         foreach (FloatVariable prod in ResourcesProduction)
         {
@@ -47,7 +47,7 @@ public class ResourcesDataController : MonoBehaviour
     {
         elapsedTime += Time.deltaTime;
 
-        if(elapsedTime >= Timer)
+        if(elapsedTime >= UpddateSeconds)
         {
             UpdateResourcesValue();
 
@@ -71,7 +71,6 @@ public class ResourcesDataController : MonoBehaviour
         // update ui
         updateUiEvent.Raise();
 
-
         // reset production
         foreach(FloatVariable prod in ResourcesProduction)
         {
@@ -79,57 +78,24 @@ public class ResourcesDataController : MonoBehaviour
         }
     }
 
-    public void UpdateResourceAmount(string _resourceName, float _value)
+    public void UpdateResourceAmount(int index, float value)
     {
-        int _index = StringToIndex(_resourceName);
-        ResourcesAmounts[_index].ApplyChange(_value);
+        ResourcesAmounts[index].ApplyChange(value);
     }
 
-    public void UpdateResourceProduction(string _resourceName, float _value)
+    public void UpdateResourceProduction(int index, float value)
     {
-        int _index = StringToIndex(_resourceName);
-        ResourcesProduction[_index].ApplyChange(_value);
+        ResourcesProduction[index].ApplyChange(value);
     }
 
-    public float GetResourceAmount(string _resourceName)
+    public float GetResourceAmount(int index)
     {
-        float _value = 0;
-        int _index = StringToIndex(_resourceName);
-
-        _value = ResourcesAmounts[_index].Value;
-
-        return _value;
+        return ResourcesAmounts[index].Value;
     }
 
-    public float GetResourceProduction(string _resourceName)
+    public float GetResourceProduction(int index)
     {
-        float _value = 0;
-        int _index = StringToIndex(_resourceName);
-
-        _value = ResourcesProduction[_index].Value;
-
-        return _value;
+        return ResourcesProduction[index].Value;
     }
 
-    private int StringToIndex(string _string)
-    {
-        if (_string.Contains("GodForce"))
-            return 0;
-        else if (_string.Contains("Energy"))
-            return 1;
-        else if (_string.Contains("Research"))
-            return 2;
-        else if (_string.Contains("Food"))
-            return 3;
-        else if (_string.Contains("Water"))
-            return 4;
-        else if (_string.Contains("Stone"))
-            return 5;
-        else if (_string.Contains("Wood"))
-            return 6;
-        else if (_string.Contains("Minerals"))
-            return 7;
-
-        return 999;
-    }
 }

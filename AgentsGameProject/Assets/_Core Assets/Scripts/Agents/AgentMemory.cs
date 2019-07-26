@@ -10,13 +10,11 @@ public class AgentMemory : MonoBehaviour
 {
     public Dictionary<GenericBuilding , float> Workplaces = new Dictionary<GenericBuilding, float>();
 
-    public Dictionary<GameObject, float> PotentialMate = new Dictionary<GameObject, float>();
+    public Dictionary<Agent, float> PotentialMates = new Dictionary<Agent, float>();
 
-    public Dictionary<GameObject, float> EatingPlaces = new Dictionary<GameObject, float>();
+    public Dictionary<Food, float> FoodPlaces = new Dictionary<Food, float>();
 
-    public List<GameObject> SleepingPlaces = new List<GameObject>();
-
-
+    public List<SleepPlace> SleepingPlaces = new List<SleepPlace>();
 
     public List<GameObject> WorkplacesBeliefs = new List<GameObject>();
 
@@ -30,5 +28,20 @@ public class AgentMemory : MonoBehaviour
     public void AddItemToDictionary(GenericBuilding item, Dictionary<GenericBuilding, float> dic)
     {
         dic.Add(item, 0f);
+    }
+
+    public void AddItemToDictionary(Agent item, Dictionary<Agent, float> dic)
+    {
+        dic.Add(item, 0f);
+    }
+
+    public void AddItemToDictionary(Food item, Dictionary<Food, float> dic)
+    {
+        dic.Add(item, 0f);
+    }
+
+    public void AddItemToList(SleepPlace item, List<SleepPlace> list)
+    {
+        list.Add(item);
     }
 }

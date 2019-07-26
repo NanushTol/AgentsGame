@@ -16,68 +16,9 @@ public static class AgentUtils
     }
 
 
-    public static void SetColor(GameObject argGameObject, int childIndex, Color color)
+    public static void SetChildColor(GameObject gameObject, int childIndex, Color color)
     {
-        argGameObject.transform.GetChild(childIndex).GetComponent<SpriteRenderer>().material.color = color;
-    }
-
-
-    public static void InitializeTraits(Agent agent, float[] traits)
-    {
-        traits = new float[6];
-
-        traits[0] = agent.MaxAge;
-        traits[1] = agent.ReproductiveUrge;
-        traits[2] = agent.FoodConsumption;
-        traits[3] = agent.EnergyConsumption;
-        traits[4] = agent.WorkingSpeed;
-        traits[5] = agent.Size;
-    }
-
-
-    public static GameObject FindClosestMate(GameObject source, float searchRadius)
-    {
-        float closestObjectDistance = 1000f;
-        GameObject closestObject = null;
-
-        //get all object in a given radius
-        Collider2D[] objectColliders = Physics2D.OverlapCircleAll(source.transform.position, searchRadius, LayerMask.GetMask("Agent"));
-
-        // no others found
-        if (objectColliders.Length <= 0)
-        {
-            closestObject = null;
-        }
-
-        // found others
-        else if (objectColliders.Length > 0)
-        {
-            // Loop over the given object found
-            foreach (Collider2D obj in objectColliders)
-            {
-                if (obj.gameObject.name != source.name)// If it is not this object
-                {
-                    // find distance to object
-                    float distanceToObject = Vector3.Distance(obj.transform.position, source.transform.position);
-
-                    if (obj.GetComponent<Agent>().wantsToMate) // check if other wants to mate ****** Will break when "Agent" is re-writen to have a proper state machine ******
-                    {
-                        // Check if distance is smaller the the closest one yet
-                        if (distanceToObject < closestObjectDistance)
-                        {
-                            closestObject = obj.gameObject;
-                            closestObjectDistance = distanceToObject;
-                        }
-                    }
-                    else
-                    {
-                        closestObject = null;
-                    }
-                }
-            }
-        }
-
-        return closestObject;
+        gameObject.transform.GetChild(childIndex).GetComponent<SpriteRenderer>().material.color = color;
     }
 
 
@@ -108,7 +49,6 @@ public static class AgentUtils
 
         return closestObject;
     }
-
 
     public static GameObject FindClosestObject(GameObject source, float searchRadius, string layerMask, string tag)
     {

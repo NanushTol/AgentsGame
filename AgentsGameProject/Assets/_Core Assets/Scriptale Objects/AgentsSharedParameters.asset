@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AgentPrefab: {fileID: 300681778666496619, guid: 67b5f51618c6e224d8b85d8041f30d6f,
     type: 3}
-  ConsumptionScale: 0.1
+  ConsumptionScale: 1
   MaxEnergy: 100
   MaxFood: 100
   MaxReproductiveMultiplier: 1
   MinReproductiveUrgeMultiplier: 0
+  ReproductiveRecoveryTime: 15
   SpeedCost: 0.3
   WorkFoodCost: 1.8
   WorkEnergyCost: 1.2
@@ -26,8 +27,9 @@ MonoBehaviour:
   SearchRadius: 20
   BiteSize: 2
   SleepEfficiency: 2
-  FoodFullThreshold: 60
+  FoodFullThreshold: 70
   AwakeThreshold: 70
   MutaionPercentage: 0.15
-  GfPerBirth: 0
+  GfPerBirth: 5
+  GfPerSecond: 0.05
   GeaneAvrage: 0

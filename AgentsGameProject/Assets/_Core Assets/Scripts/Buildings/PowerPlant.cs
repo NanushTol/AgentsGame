@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class PowerPlant : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class PowerPlant : MonoBehaviour
         if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction("Energy", genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(ENERGY, genericBuilding.addedValue);
 
             // Reset pruduction
             genericBuilding.Production -= genericBuilding.addedValue;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class AgentStateMovingToWork : IAgentState
 {
@@ -20,13 +21,6 @@ public class AgentStateMovingToWork : IAgentState
         get { return Color.green; }
     }
 
-
-    private const int NULLNEED = 0;
-    private const int HUNGRY = 1;
-    private const int TIRED = 2;
-    private const int WORK = 3;
-    private const int HORNY = 4;
-
     int _dicIndex;
 
 
@@ -38,12 +32,15 @@ public class AgentStateMovingToWork : IAgentState
 
         Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(_dicIndex).Key;
 
-        Owner.MoveTo(Owner.CurrentWorkplace.gameObject);
+        StatesUtils.MoveTo(Owner, Owner.CurrentWorkplace.gameObject);
+
+        Owner.ActiveState = Agent.StatesEnum.MovingToWork;
+        Owner.State = StateName;
     }
 
     public void ExecuteState()
     {
-        if (Owner.MostUrgentNeedByIndex == WORK)
+        if (StatesUtils.ValidateState(Owner, WORK))
         {
             if (!Owner.CurrentWorkplace.WorkersNeeded)
             {
@@ -53,12 +50,15 @@ public class AgentStateMovingToWork : IAgentState
 
                     Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(_dicIndex).Key;
 
-                    Owner.MoveTo(Owner.CurrentWorkplace.gameObject);
+                    StatesUtils.MoveTo(Owner, Owner.CurrentWorkplace.gameObject);
                 }
                 else
                 {
-                    // Stop Looking For Work
-                    // set most urgent need TO next most urgent need
+                    // Set Work Need to Zero 
+                    // Cuases the agent to find the next most urgent need
+                    Owner.NeedsManager.WorkNeedOverride = true;
+
+                    Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
                 }
             } 
         }
@@ -69,25 +69,22 @@ public class AgentStateMovingToWork : IAgentState
 
     public void Exit()
     {
-
+        
     }
 
     public void OnTriggerStay(Collider2D collider)
     {
-        EnterBuilding();
-        Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Working]);
+        if(collider.gameObject == Owner.CurrentWorkplace.gameObject)
+        {
+            StatesUtils.EnterBuilding(Owner, WORK);
+            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Working]);
+        }
     }
 
     #endregion
 
     #region // Extention Functions
 
-    void EnterBuilding()
-    {
-        Owner.BuildingEnterPosition = Owner.transform.position;
-        Owner.CurrentWorkplace.AgentsWorking += 1;
-        Owner.SetBuildingState(true);
-    }
 
     #endregion
 }

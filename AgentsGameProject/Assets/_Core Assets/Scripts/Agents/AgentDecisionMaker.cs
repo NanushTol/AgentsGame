@@ -12,33 +12,53 @@ public class AgentDecisionMaker : MonoBehaviour
         agentMemory = GetComponent<AgentMemory>();
     }
 
-    public Dictionary<GameObject, float> SortDictionaryByValues(Dictionary<GameObject, float> dictionary)
+
+    public void ScoreItemsInDictionary(Dictionary<GenericBuilding, float> dictionary)
     {
-        foreach (KeyValuePair<GameObject, float> dicEntry in dictionary)
+        foreach (KeyValuePair<GenericBuilding, float> dicEntry in dictionary.ToList())
         {
             dictionary[dicEntry.Key] = TempBeliefDistance(dicEntry.Key, this.gameObject);
         }
-
-        // Sort WorkPlaces By Scores
-        var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
-
-        return (Dictionary<GameObject, float>)sortedDict;
     }
+    public void ScoreItemsInDictionary(Dictionary<Agent, float> dictionary)
+    {
+        foreach (KeyValuePair<Agent, float> dicEntry in dictionary.ToList())
+        {
+            dictionary[dicEntry.Key] = TempBeliefDistance(dicEntry.Key, this.gameObject);
+        }
+    }
+    public void ScoreItemsInDictionary(Dictionary<Food, float> dictionary)
+    {
+        foreach (KeyValuePair<Food, float> dicEntry in dictionary.ToList())
+        {
+            dictionary[dicEntry.Key] = TempBeliefDistance(dicEntry.Key, this.gameObject);
+        }
+    }
+
+
+
     public Dictionary<GenericBuilding, float> SortDictionaryByValues(Dictionary<GenericBuilding, float> dictionary)
     {
-        foreach (KeyValuePair<GenericBuilding, float> dicEntry in dictionary)
-        {
-            dictionary[dicEntry.Key] = TempBeliefDistance(dicEntry.Key, this.gameObject);
-        }
-
-        // Sort WorkPlaces By Scores
+        var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
+        
+        return sortedDict.ToDictionary(x => x.Key, x => x.Value);
+    }
+    public Dictionary<Agent, float> SortDictionaryByValues(Dictionary<Agent, float> dictionary)
+    {
         var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
 
-        return (Dictionary<GenericBuilding, float>)sortedDict;
+        return sortedDict.ToDictionary(x => x.Key, x => x.Value);
+    }
+    public Dictionary<Food, float> SortDictionaryByValues(Dictionary<Food, float> dictionary)
+    {
+        var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
+
+        return sortedDict.ToDictionary(x => x.Key, x => x.Value);
     }
 
 
-    float TempBeliefDistance(GameObject workplace, GameObject source)
+
+    float TempBeliefDistance(GenericBuilding workplace, GameObject source)
     {
         float score = 0;
 
@@ -46,11 +66,19 @@ public class AgentDecisionMaker : MonoBehaviour
 
         return score;
     }
-    float TempBeliefDistance(GenericBuilding workplace, GameObject source)
+    float TempBeliefDistance(Agent agent, GameObject source)
     {
         float score = 0;
 
-        score = Mathf.Abs(Vector3.Distance(source.transform.position, workplace.transform.position));
+        score = Mathf.Abs(Vector3.Distance(source.transform.position, agent.transform.position));
+
+        return score;
+    }
+    float TempBeliefDistance(Food food, GameObject source)
+    {
+        float score = 0;
+
+        score = Mathf.Abs(Vector3.Distance(source.transform.position, food.transform.position));
 
         return score;
     }

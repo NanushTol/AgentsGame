@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class StoneQuarry : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class StoneQuarry : MonoBehaviour
         if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction("Stone", genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(STONE, genericBuilding.addedValue);
             
             // Reset pruduction
             genericBuilding.Production -= genericBuilding.addedValue;

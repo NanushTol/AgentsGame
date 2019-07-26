@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using UnityEngine.Tilemaps;
+using static Constants;
 
 /// <summary>
 /// The Basic Building Class
@@ -168,14 +169,14 @@ public class GenericBuilding : MonoBehaviour
     void CheckUpkeep()
     {
         //check Upkeep to see if building can work
-        if (resourcesDataController.GetResourceAmount("GodForce") >= buildingType.GodForceUpkeep &&
-            resourcesDataController.GetResourceAmount("Energy") >= buildingType.EnergyUpkeep &&
-            resourcesDataController.GetResourceAmount("Research") >= buildingType.ResearchUpkeep &&
-            resourcesDataController.GetResourceAmount("Food") >= buildingType.FoodUpkeep &&
-            resourcesDataController.GetResourceAmount("Water") >= buildingType.WaterUpkeep &&
-            resourcesDataController.GetResourceAmount("Stone") >= buildingType.StoneUpkeep &&
-            resourcesDataController.GetResourceAmount("Wood") >= buildingType.WoodUpkeep &&
-            resourcesDataController.GetResourceAmount("Minerals") >= buildingType.MineralUpkeep)
+        if (resourcesDataController.GetResourceAmount(GODFORCE) >= buildingType.GodForceUpkeep &&
+            resourcesDataController.GetResourceAmount(ENERGY) >= buildingType.EnergyUpkeep &&
+            resourcesDataController.GetResourceAmount(RESEARCH) >= buildingType.ResearchUpkeep &&
+            resourcesDataController.GetResourceAmount(FOOD) >= buildingType.FoodUpkeep &&
+            resourcesDataController.GetResourceAmount(WATER) >= buildingType.WaterUpkeep &&
+            resourcesDataController.GetResourceAmount(STONE) >= buildingType.StoneUpkeep &&
+            resourcesDataController.GetResourceAmount(WOOD) >= buildingType.WoodUpkeep &&
+            resourcesDataController.GetResourceAmount(MINERALS) >= buildingType.MineralUpkeep)
         {
             UpdateUpkeep();
 
@@ -195,13 +196,13 @@ public class GenericBuilding : MonoBehaviour
     void UpdateUpkeep()
     {
         // subtract upkeep from resources
-        resourcesDataController.UpdateResourceProduction("GodForce", (-buildingType.GodForceUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Energy", (-buildingType.EnergyUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Research", (-buildingType.ResearchUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Food", (-buildingType.FoodUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Water", (-buildingType.WaterUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Stone", (-buildingType.StoneUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Wood", (-buildingType.WoodUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction("Minerals", (-buildingType.MineralUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(GODFORCE, (-buildingType.GodForceUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(ENERGY, (-buildingType.EnergyUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(RESEARCH, (-buildingType.ResearchUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(FOOD, (-buildingType.FoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(WATER, (-buildingType.WaterUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(STONE, (-buildingType.StoneUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(WOOD, (-buildingType.WoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(MINERALS, (-buildingType.MineralUpkeep * Time.deltaTime));
     }
 }

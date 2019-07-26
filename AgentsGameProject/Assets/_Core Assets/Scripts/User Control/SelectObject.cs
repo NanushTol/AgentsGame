@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.EventSystems;
+using static Constants;
 
 public class SelectObject : MonoBehaviour
 {
     
     public GameObject DdAgentType;
-    public GameObject gnobProperties;
+    public GameObject agentPropertiesUi;
 
     [HideInInspector]
     GameObject selectionIndicator;
@@ -67,7 +68,7 @@ public class SelectObject : MonoBehaviour
 
                 if (hit.transform.gameObject.CompareTag("Agent"))
                 {
-                    gnobProperties.SetActive(true);
+                    agentPropertiesUi.SetActive(true);
                     agentIsSelected = true;
                     SelectedAgent = SelectedObject;
                     DdAgentType.GetComponent<GnobTypeDropdown>().UpdateType();
@@ -75,7 +76,7 @@ public class SelectObject : MonoBehaviour
                 }
                 else
                 {
-                    gnobProperties.SetActive(false);
+                    agentPropertiesUi.SetActive(false);
                     agentIsSelected = false;
                 }
             }
@@ -85,7 +86,7 @@ public class SelectObject : MonoBehaviour
             {
                 SelectedObject = null;
                 PlaceIndicator(new Vector3(0f,-100f,0f));
-                gnobProperties.SetActive(false);
+                agentPropertiesUi.SetActive(false);
                 agentIsSelected = false;
             }
         }
@@ -128,8 +129,8 @@ public class SelectObject : MonoBehaviour
         AgentMostUrgentNeed = agent.MostUrgentNeed;
         AgentInBuilding = agent.InBuilding;
 
-        AgentProperties[0] = agent.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Hungry];
-        AgentProperties[1] = agent.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Horny];
+        AgentProperties[0] = agent.NeedsManager.NeedsValues[HUNGRY];
+        AgentProperties[1] = agent.NeedsManager.NeedsValues[HORNY];
         AgentProperties[2] = agent.Energy / 100f;
 
     }

@@ -10,6 +10,7 @@ public class AgentsSharedParameters : ScriptableObject
     public float MaxFood = 100;
     public float MaxReproductiveMultiplier = 1f;
     public float MinReproductiveUrgeMultiplier = 0f;
+    public float ReproductiveRecoveryTime = 15f;
     public float SpeedCost = 0.3f;
     public float WorkFoodCost = 1.8f;
     public float WorkEnergyCost = 1.2f;
@@ -21,5 +22,6 @@ public class AgentsSharedParameters : ScriptableObject
     public float AwakeThreshold = 70f;
     public float MutaionPercentage = 0.15f;
     public float GfPerBirth;
+    public float GfPerSecond = 0.05f;
     public float GeaneAvrage;
 }

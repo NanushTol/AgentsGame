@@ -26,20 +26,24 @@ public class AgentStateSearchingWorkplace : IAgentState
 
     public void Enter()
     {
-        
+        Owner.State = StateName;
+        Owner.ActiveState = Agent.StatesEnum.SearchingWork;
     }
 
     public void ExecuteState()
     {
         AddNewWorkplacesToMemory();
-        Owner.DecisionMaker.SortDictionaryByValues(Owner.AgentMemory.Workplaces);
+
+        Owner.DecisionMaker.ScoreItemsInDictionary(Owner.AgentMemory.Workplaces);
+
+        Owner.AgentMemory.Workplaces = Owner.DecisionMaker.SortDictionaryByValues(Owner.AgentMemory.Workplaces);
 
         Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToWork]);
     }
 
     public void Exit()
     {
-
+        
     }
 
     public void OnTriggerStay(Collider2D collider)
@@ -57,10 +61,10 @@ public class AgentStateSearchingWorkplace : IAgentState
 
         foreach (Collider2D collider in colliders)
         {
-            if (Owner.AgentMemory.Workplaces.ContainsKey(collider.GetComponent<GenericBuilding>()) == false)
-            {
-                Owner.AgentMemory.AddItemToDictionary(collider.GetComponent<GenericBuilding>(), Owner.AgentMemory.Workplaces);
-            }
+                if (Owner.AgentMemory.Workplaces.ContainsKey(collider.GetComponent<GenericBuilding>()) == false)
+                {
+                    Owner.AgentMemory.AddItemToDictionary(collider.GetComponent<GenericBuilding>(), Owner.AgentMemory.Workplaces);
+                }
         }
     }
 

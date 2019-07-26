@@ -57,22 +57,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e388c55f99b7947928e5ef5e465489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  State: 
   JustBorn: 0
-  searching: 0
-  eating: 0
-  sleeping: 0
   hasArraived: 0
-  wantsToMate: 0
-  foundMate: 0
-  working: 0
   InBuilding: 0
-  distToPoint: 0
   MostUrgentNeed: null
-  MaxSearchTime: 7
-  FoodSearchTime: 0
-  RemapedFoodSearchTime: 0
-  WorkSearchTime: 0
-  RemapedWorkSearchTime: 0
+  CurrentAge: 0
+  Food: 100
+  Energy: 100
+  ReproductiveMultiplier: 0
+  ReproductiveClock: 0
   AgentType: Builder
   AgentColor: {r: 0.9607843, g: 0.2784314, b: 0.44705883, a: 1}
   MaxAge: 60
@@ -81,21 +75,25 @@ MonoBehaviour:
   EnergyConsumption: 5
   WorkingSpeed: 5
   Size: 5
+  Traits: []
   AgentsSharedParameters: {fileID: 11400000, guid: 2d1d8631f6b4ef64eb252e74e47f76a0,
     type: 2}
+  ResourcesDataController: {fileID: 0}
+  MostUrgentNeedByIndex: 0
   BuildingEnterPosition: {x: 0, y: 0, z: 0}
-  ClosestFood: {fileID: 0}
+  ChosenFoodPlace: {fileID: 0}
   CurrentWorkplace: {fileID: 0}
-  ClosestMate: {fileID: 0}
+  CurrentSleepPlace: {fileID: 0}
+  ChosenMate: {fileID: 0}
   AgentMemory: {fileID: 0}
   NeedsManager: {fileID: 0}
   DecisionMaker: {fileID: 0}
+  aiDestinationSetter: {fileID: 0}
   DestinationTarget: {fileID: 0}
   DestinationTargetPrefab: {fileID: 5795783880048244167, guid: 1b72ad65139c1724d9017b7d5c1c44da,
     type: 3}
-  MostUrgentNeedByIndex: 0
   StateMachine: {fileID: 0}
-  Traits: []
+  ActiveState: 0
 --- !u!114 &5579524748166172094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,6 +106,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f008eed2184e2a34d84de1a7142b3c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Hunger: 0
+  Tired: 0
+  Work: 0
+  Horny: 0
   foodToHunger:
     serializedVersion: 2
     m_Curve:
@@ -130,10 +132,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.35
-      value: 0.09
-      inSlope: -6.133333
-      outSlope: -0.12307694
+      time: 0.39949092
+      value: 0.010886103
+      inSlope: -5.008318
+      outSlope: -0.0014755867
       tangentMode: 69
       weightedMode: 0
       inWeight: 0.33333334
@@ -214,7 +216,7 @@ MonoBehaviour:
       inWeight: 0.63636386
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5
+      time: 0.39880452
       value: 0.6
       inSlope: 0
       outSlope: 0
@@ -223,9 +225,9 @@ MonoBehaviour:
       inWeight: 0.28007612
       outWeight: 0
     - serializedVersion: 3
-      time: 0.7
+      time: 0.59880453
       value: 0.01
-      inSlope: -2.9500003
+      inSlope: -2.9499998
       outSlope: 0
       tangentMode: 69
       weightedMode: 0
@@ -295,6 +297,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   NeedsValues: []
+  WorkNeedOverride: 0
+  FoodNeedOverride: 0
 --- !u!114 &2614220544512930515
 MonoBehaviour:
   m_ObjectHideFlags: 0

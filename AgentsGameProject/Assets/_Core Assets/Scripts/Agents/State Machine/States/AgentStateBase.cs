@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class AgentStateBase : IAgentState
 {
@@ -20,46 +21,45 @@ public class AgentStateBase : IAgentState
     }
 
 
-    private const int NULLNEED = 0;
-    private const int HUNGRY = 1;
-    private const int TIRED = 2;
-    private const int WORK = 3;
-    private const int HORNY = 4;
-
-
     #region // State Functions
 
     public void Enter()
     {
-
+        Owner.State = StateName;
+        Owner.ActiveState = Agent.StatesEnum.BaseState;
     }
 
     public void ExecuteState()
     {
         switch (Owner.MostUrgentNeedByIndex)
         {
+            case HUNGRY:
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
+                break;
+
+            case TIRED:
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingSleep]);
+                break;
+
             case WORK:
                 Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingWork]);
                 break;
 
+            case HORNY:
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
+                break;
         }
     }
 
     public void Exit()
     {
-
+        
     }
 
     public void OnTriggerStay(Collider2D collider)
     {
 
     }
-
-    #endregion
-
-    #region // Extention Functions
-
-    
 
     #endregion
 }

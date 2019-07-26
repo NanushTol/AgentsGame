@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using static Constants;
 
 /// <summary>
 /// "CreateBuilding" used by building buttons
@@ -65,9 +66,7 @@ public class CreateBuilding : MonoBehaviour
         // Check costs against avilable resources
         // if True instatiate a Building 
         //and enter "Creating Building" Mode
-        if (stoneCost <= resourcesDataController.GetResourceAmount("Stone") && woodCost <= resourcesDataController.GetResourceAmount("Wood")
-            && mineralsCost <= resourcesDataController.GetResourceAmount("Minerals") && godForceCost <= resourcesDataController.GetResourceAmount("GodForce")
-            && foodCost <= resourcesDataController.GetResourceAmount("Food"))
+        if (CheckCosts())
         {
             lastTimeScale = Time.timeScale;
             newBuilding = Instantiate(buildingPrefab, new Vector3(0f, 0f, -5f), rotation);
@@ -179,11 +178,11 @@ public class CreateBuilding : MonoBehaviour
     // Used by SelectLocation() Function
     void PlaceBuilding()
     {
-        resourcesDataController.UpdateResourceAmount("GodForce", -godForceCost);
-        resourcesDataController.UpdateResourceAmount("Food", -foodCost);
-        resourcesDataController.UpdateResourceAmount("Stone", -stoneCost);
-        resourcesDataController.UpdateResourceAmount("Wood", -woodCost);
-        resourcesDataController.UpdateResourceAmount("Minerals", -mineralsCost);
+        resourcesDataController.UpdateResourceAmount(GODFORCE, -godForceCost);
+        resourcesDataController.UpdateResourceAmount(FOOD, -foodCost);
+        resourcesDataController.UpdateResourceAmount(STONE, -stoneCost);
+        resourcesDataController.UpdateResourceAmount(WOOD, -woodCost);
+        resourcesDataController.UpdateResourceAmount(MINERALS, -mineralsCost);
 
         Vector3Int position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
 
@@ -195,5 +194,17 @@ public class CreateBuilding : MonoBehaviour
         newBuilding.GetComponent<GenericBuilding>().UpdateNode(position, false);
         Time.timeScale = lastTimeScale;
         creatingBuilding = false;
+    }
+
+    bool CheckCosts()
+    {
+        if (stoneCost <= resourcesDataController.GetResourceAmount(STONE) && woodCost <= resourcesDataController.GetResourceAmount(WOOD)
+            && mineralsCost <= resourcesDataController.GetResourceAmount(MINERALS) && godForceCost <= resourcesDataController.GetResourceAmount(GODFORCE)
+            && foodCost <= resourcesDataController.GetResourceAmount(FOOD))
+        {
+            return true;
+        }
+        else
+            return false;
     }
 }

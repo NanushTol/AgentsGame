@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
-public class AgentReproduction
+public static class AgentReproduction
 {
     public static void Reproduce(Agent argSelf, Agent mate)
     {
@@ -24,14 +25,13 @@ public class AgentReproduction
 
 
 
-
     private static Vector3 FindVacantLocation(Agent argSelf)
     {
         Vector3 location = new Vector3(0f,0f,0f);
 
         for (int j = 0; j < 30; j++)
         {
-            location = argSelf.transform.position + AgentUtils.RandomLocation(argSelf.AgentsSharedParameters.SearchRadius);
+            location = argSelf.transform.position + AgentUtils.RandomLocation(5f);
 
             location.z = 0.0f;
 
@@ -62,32 +62,32 @@ public class AgentReproduction
         baby.GetComponent<Agent>().AgentType = argSelf.AgentType; 
 
 
-        // Decide which perent's trait to take by chance
-        float randomHeritage = UnityEngine.Random.Range(0, 1); //get chance
-
         //Loop Traits & mutate
         for (int i = 0; i < babyTraits.Length; i++)
         {
+            float randomChance = UnityEngine.Random.Range(0, 1);
+
             // baby get self trait
-            if (randomHeritage <= 0.50)
+            if (randomChance <= 0.50)
             {
-                babyTraits[i] = MutateTrait(mutationPrecentage, argSelf.Traits[i]);
+                babyTraits[i] = MutateTrait(argSelf.Traits[i], mutationPrecentage);
             }
 
             // baby get mate trait
-            else if (randomHeritage > 0.50)
+            else if (randomChance > 0.50)
             {
-                babyTraits[i] = MutateTrait(mutationPrecentage, mate.Traits[i]);
+                babyTraits[i] = MutateTrait(mate.Traits[i], mutationPrecentage);
             }
 
             if (i > 0) // dont clamp max life
             {
-                babyTraits[i] = Mathf.Clamp(babyTraits[i], 1f, 10f); // limit trait value: from 1 to 10
+                // limit trait value: from 1 to 10
+                babyTraits[i] = Mathf.Clamp(babyTraits[i], 1f, 10f); 
             }
         }
     }
 
-    private static float MutateTrait(float mutationPrecentage, float trait)
+    private static float MutateTrait(float trait, float mutationPrecentage)
     {
         return trait * UnityEngine.Random.Range(-mutationPrecentage, mutationPrecentage) + trait;
     }
@@ -115,14 +115,12 @@ public class AgentReproduction
 
     private static void ResetReproductiveParmeters(Agent argSelf, Agent mate)
     {
-        mate.wantsToMate = false;
-        mate.foundMate = false;
-        mate.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Horny] = 0f;
+        mate.NeedsManager.NeedsValues[HORNY] = 0f;
         mate.ReproductiveMultiplier = 0.0f;
+        mate.ReproductiveClock = 0f;
 
-        argSelf.wantsToMate = false;
-        argSelf.foundMate = false;
-        argSelf.NeedsManager.NeedsValues[(int)AgentNeedsManager.Needs.Horny] = 0f;
+        argSelf.NeedsManager.NeedsValues[HORNY] = 0f;
         argSelf.ReproductiveMultiplier = 0.0f;
+        argSelf.ReproductiveClock = 0f;
     }
 }

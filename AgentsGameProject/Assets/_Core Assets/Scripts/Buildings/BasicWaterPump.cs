@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public class BasicWaterPump : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class BasicWaterPump : MonoBehaviour
         if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction("Water", genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(WATER, genericBuilding.addedValue);
 
             // Reset pruduction
             genericBuilding.Production -= genericBuilding.addedValue;
