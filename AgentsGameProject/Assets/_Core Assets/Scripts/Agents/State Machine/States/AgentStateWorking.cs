@@ -31,7 +31,7 @@ public class AgentStateWorking : IAgentState
 
     public void ExecuteState()
     {
-        if (StatesUtils.ValidateState(Owner, WORK))
+        if (StatesUtils.ValidateState(Owner, WORK) && Owner.CurrentWorkplace.BuildingActive)
             Work(Owner.CurrentWorkplace);
         else
             Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
@@ -55,7 +55,7 @@ public class AgentStateWorking : IAgentState
     void Work(GenericBuilding currentWorkplace)
     {
         //create Production
-        float workPlaceEfficiency = currentWorkplace.WorkEfficiency;
+        float workPlaceEfficiency = currentWorkplace.ProductionRate;
         currentWorkplace.Production += workPlaceEfficiency * Owner.WorkingSpeed * Time.deltaTime;
 
         //reduce Energy & Food

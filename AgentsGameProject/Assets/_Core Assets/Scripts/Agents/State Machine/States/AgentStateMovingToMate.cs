@@ -34,17 +34,20 @@ public class AgentStateMovingToMate : IAgentState
 
     public void ExecuteState()
     {
-        if (StatesUtils.ValidateState(Owner, HORNY))
+        if (StatesUtils.ValidateState(Owner, HORNY) && Owner.ChosenMate != null)
         {
             if (Owner.ChosenMate.GetComponent<Agent>().ActiveState == Agent.StatesEnum.MovingToMate)
             {
-                StatesUtils.MoveTo(Owner, Owner.ChosenMate);
+                    StatesUtils.MoveTo(Owner, Owner.ChosenMate);
             }
             else
             {
                 Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
             }
         }
+
+        else if(StatesUtils.ValidateState(Owner, HORNY) && Owner.ChosenMate == null)
+            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
 
         else
             Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);

@@ -18,6 +18,7 @@ public class Resource : MonoBehaviour
     public Vector3Int LastPosition;
 
     public float Amount;
+
     TextMeshProUGUI amountUiElement;
 
     public Color WoodResourceColor;
@@ -78,7 +79,7 @@ public class Resource : MonoBehaviour
 
     void Update()
     {
-        amountUiElement.text = Amount.ToString();
+        amountUiElement.text = Amount.ToString("0");
     }
 
     public void UpdateNode(Vector3Int _position, bool _walkable)

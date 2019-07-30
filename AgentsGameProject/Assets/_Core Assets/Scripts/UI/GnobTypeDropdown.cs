@@ -11,7 +11,7 @@ public class GnobTypeDropdown : MonoBehaviour
 
     void Awake()
     {
-        selectObjectScript = GameObject.Find("GameManager").GetComponent<SelectObject>();
+        selectObjectScript = GameObject.Find("UserControls").GetComponent<SelectObject>();
     }
 
     public void UpdateType()

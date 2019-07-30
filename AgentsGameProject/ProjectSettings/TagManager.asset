@@ -15,6 +15,7 @@ TagManager:
   - Stone
   - Mineral
   - LandOil
+  - SleepingPlace
   layers:
   - Default
   - TransparentFX

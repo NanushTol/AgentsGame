@@ -30,10 +30,6 @@ public class AgentStateMovingToFood : IAgentState
     {
         _dicIndex = 0;
 
-        Owner.ChosenFoodPlace = Owner.AgentMemory.FoodPlaces.ElementAt(_dicIndex).Key;
-
-        StatesUtils.MoveTo(Owner, Owner.ChosenFoodPlace.gameObject);
-
         Owner.ActiveState = Agent.StatesEnum.MovingToFood;
         Owner.State = StateName;
     }
@@ -42,12 +38,14 @@ public class AgentStateMovingToFood : IAgentState
     {
         if (StatesUtils.ValidateState(Owner, HUNGRY))
         {
-            if (!Owner.ChosenFoodPlace.FeedingVacancy)
-            {
-                if (_dicIndex < Owner.AgentMemory.FoodPlaces.Count)
-                {
-                    _dicIndex++;
+            StatesUtils.MoveTo(Owner, Owner.ChosenFoodPlace.gameObject);
 
+            if (Owner.ChosenFoodPlace.FeedingVacancy == false || Owner.ChosenFoodPlace.FoodValue < 2f)
+            {
+                
+
+                if (Owner.AgentMemory.FoodPlaces.Count - 1 > _dicIndex)
+                {
                     Owner.ChosenFoodPlace = Owner.AgentMemory.FoodPlaces.ElementAt(_dicIndex).Key;
 
                     StatesUtils.MoveTo(Owner, Owner.ChosenFoodPlace.gameObject);
@@ -60,6 +58,8 @@ public class AgentStateMovingToFood : IAgentState
 
                     Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
                 }
+
+                _dicIndex++;
             } 
         }
 
@@ -76,8 +76,13 @@ public class AgentStateMovingToFood : IAgentState
     {
         if(collider.gameObject == Owner.ChosenFoodPlace.gameObject)
         {
-            StatesUtils.EnterBuilding(Owner, HUNGRY);
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Eating]);
+            if(Owner.ChosenFoodPlace.FeedingVacancy)
+            {
+                StatesUtils.EnterBuilding(Owner, HUNGRY);
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Eating]);
+            }
+            else
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
         }
     }
 

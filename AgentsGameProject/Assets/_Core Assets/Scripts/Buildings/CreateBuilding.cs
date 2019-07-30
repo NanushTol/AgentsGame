@@ -35,10 +35,13 @@ public class CreateBuilding : MonoBehaviour
 
     bool creatingBuilding;
 
+    GameStates gameStates;
+
     void Awake()
     {
         mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
         resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
+        gameStates = GameObject.Find("GameManager").GetComponent<GameStates>();
     }
 
     void Update()
@@ -68,9 +71,11 @@ public class CreateBuilding : MonoBehaviour
         //and enter "Creating Building" Mode
         if (CheckCosts())
         {
-            lastTimeScale = Time.timeScale;
+            if(Time.timeScale != 0f) lastTimeScale = Time.timeScale;
+
             newBuilding = Instantiate(buildingPrefab, new Vector3(0f, 0f, -5f), rotation);
             creatingBuilding = true;
+            gameStates.BuildingGameState = true;
         }
     }
 
@@ -110,14 +115,13 @@ public class CreateBuilding : MonoBehaviour
     //get user input and check if selected location is valid for that building type
     void SelectLocation()
     {
-
         // If left mouse Click
         if (Input.GetMouseButtonDown(0))
         {
             // Check if relevent resource is available at selected location
             // or if location is valid for the relavent type of building
             // If True place building at location
-            if (BuildingType.name == "WoodMill" || BuildingType.name == "StoneQuarry" || BuildingType.name == "PowerPlant")
+            if (BuildingType.name == "WoodMill" || BuildingType.name == "StoneQuarry" || BuildingType.name == "PowerPlant" || BuildingType.name == "MineralsQuarry")
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Resource"));
@@ -129,6 +133,8 @@ public class CreateBuilding : MonoBehaviour
                         hit.collider.enabled = false;
                         hit.transform.GetChild(1).gameObject.SetActive(false);
                         hit.transform.GetChild(2).gameObject.SetActive(false);
+
+                        newBuilding.GetComponent<GenericBuilding>().Resource = hit.transform.gameObject.GetComponent<Resource>();
 
                         PlaceBuilding();
                     }
@@ -159,6 +165,7 @@ public class CreateBuilding : MonoBehaviour
                                 Camera.main.transform.forward, 15f, LayerMask.GetMask("Ground"));
                     if (hit)
                     {
+                        newBuilding.GetComponent<GenericBuilding>().Resource = null;
                         PlaceBuilding();
                     }
                 }
@@ -171,6 +178,7 @@ public class CreateBuilding : MonoBehaviour
             Destroy(newBuilding);
             Time.timeScale = lastTimeScale;
             creatingBuilding = false;
+            gameStates.BuildingGameState = false;
         }
     }
     
@@ -194,6 +202,7 @@ public class CreateBuilding : MonoBehaviour
         newBuilding.GetComponent<GenericBuilding>().UpdateNode(position, false);
         Time.timeScale = lastTimeScale;
         creatingBuilding = false;
+        gameStates.BuildingGameState = false;
     }
 
     bool CheckCosts()

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AgentStateSearchingWorkplace : IAgentState
 {
@@ -38,7 +39,25 @@ public class AgentStateSearchingWorkplace : IAgentState
 
         Owner.AgentMemory.Workplaces = Owner.DecisionMaker.SortDictionaryByValues(Owner.AgentMemory.Workplaces);
 
-        Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToWork]);
+
+        Owner.CurrentWorkplace = null;
+
+        for (int i = 0; i < Owner.AgentMemory.Workplaces.Count; i++)
+        {
+            //if first entry Workplace - needs workers & building is working asign CurrentWorkplace
+            if (Owner.AgentMemory.Workplaces.ElementAt(i).Key.WorkersNeeded && Owner.AgentMemory.Workplaces.ElementAt(i).Key.BuildingActive)
+            {
+                Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(i).Key;
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToWork]);
+            }
+        }
+
+        if(Owner.CurrentWorkplace == null)
+        {
+            Owner.NeedsManager.WorkNeedOverride = true;
+            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+        }
+           
     }
 
     public void Exit()

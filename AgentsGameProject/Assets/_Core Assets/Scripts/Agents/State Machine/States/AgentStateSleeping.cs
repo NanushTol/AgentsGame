@@ -31,7 +31,7 @@ public class AgentStateSleeping : IAgentState
 
     public void ExecuteState()
     {
-        if (Owner.Food < Owner.AgentsSharedParameters.AwakeThreshold)
+        if (Owner.Energy < Owner.AgentsSharedParameters.AwakeThreshold)
             Sleep();
         else
             Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);

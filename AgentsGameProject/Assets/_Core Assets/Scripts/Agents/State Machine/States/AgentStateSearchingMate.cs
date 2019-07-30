@@ -63,6 +63,7 @@ public class AgentStateSearchingMate : IAgentState
         }
 
         if (_sumTimer) _elapsedTimeSum += Time.deltaTime;
+
         if (_elapsedTimeSum >= _timerSum)
         {
             // Sum Potential Mates Scores of Owner With Owner Scores
@@ -77,7 +78,7 @@ public class AgentStateSearchingMate : IAgentState
         }
             
 
-        if (_checkMatches)
+        if (_checkMatches && Owner.AgentMemory.PotentialMates.Count >= 1)
         {
             // Check If there is a match
             GameObject chosenMate = CheckMatch();
@@ -86,6 +87,7 @@ public class AgentStateSearchingMate : IAgentState
                 Owner.ChosenMate = chosenMate;
                 // Switch State to Move To Mate
                 Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToMate]);
+                _checkMatches = false;
             }
         }
     }
@@ -126,12 +128,20 @@ public class AgentStateSearchingMate : IAgentState
 
     public void SumMatesScores()
     {
-        foreach (KeyValuePair<Agent, float> dicEntry in Owner.AgentMemory.PotentialMates.ToList())
+        foreach (KeyValuePair<Agent, float> otherAgent in Owner.AgentMemory.PotentialMates.ToList())
         {
             float sum;
-            sum = Owner.AgentMemory.PotentialMates[dicEntry.Key] + dicEntry.Key.AgentMemory.PotentialMates[Owner];
 
-            Owner.AgentMemory.PotentialMates[dicEntry.Key] = sum;
+            if (otherAgent.Key)
+            {
+                if(otherAgent.Key.AgentMemory.PotentialMates.ContainsKey(Owner))
+                {
+                    sum = Owner.AgentMemory.PotentialMates[otherAgent.Key] + otherAgent.Key.AgentMemory.PotentialMates[Owner];
+
+                    Owner.AgentMemory.PotentialMates[otherAgent.Key] = sum; 
+                }
+            }
+            else Owner.AgentMemory.PotentialMates[otherAgent.Key] = 0f;
         }
     }
 

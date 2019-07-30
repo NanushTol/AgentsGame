@@ -4,11 +4,17 @@ using UnityEngine;
 using static Constants;
 public class ResourcesDataController : MonoBehaviour
 {
-    public float UpddateSeconds;
+    public float UpddateSeconds = 1f;
     float elapsedTime;
+
 
     public GameEvent updateUiEvent;
 
+    [Header("Game Date")]
+    public FloatVariable Population;
+    public FloatVariable YearsPlayed;
+
+    [Header("Resources Date")]
     public List<FloatVariable> ResourcesProduction = new List<FloatVariable>();
     public List<FloatVariable> ResourcesAmounts = new List<FloatVariable>();
 
@@ -39,12 +45,17 @@ public class ResourcesDataController : MonoBehaviour
             prod.SetValue(0);
         }
 
+        YearsPlayed.SetValue(0);
+        Population.SetValue(0);
+
         UpdateResourcesValue();
     }
 
 
     void Update()
     {
+        YearsPlayed.ApplyChange(Time.deltaTime);
+
         elapsedTime += Time.deltaTime;
 
         if(elapsedTime >= UpddateSeconds)
@@ -65,6 +76,7 @@ public class ResourcesDataController : MonoBehaviour
         {
             amount.ApplyChange(ResourcesProduction[i]);
 
+            if (ResourcesAmounts[i].Value < 0) ResourcesAmounts[i].SetValue(0f);
             i++;
         }
 

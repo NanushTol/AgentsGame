@@ -31,9 +31,12 @@ public class AgentStateEating : IAgentState
 
     public void ExecuteState()
     {
-        if (Owner.Food < Owner.AgentsSharedParameters.FoodFullThreshold 
-            && Owner.ChosenFoodPlace.FoodValue > 2f)
+        if (Owner.Food < Owner.AgentsSharedParameters.FoodFullThreshold && Owner.ChosenFoodPlace.FoodValue > 2f)
             Eat(Owner.ChosenFoodPlace);
+
+        else if(Owner.ChosenFoodPlace.FoodValue < 2f)
+            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
+
         else
             Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
@@ -59,7 +62,7 @@ public class AgentStateEating : IAgentState
         float bite = Owner.AgentsSharedParameters.BiteSize * Time.deltaTime;
 
         food.FoodValue -= bite;
-        Owner.ResourcesDataController.UpdateResourceProduction(FOOD, -bite);
+        Owner.ResourcesDataControllerRef.UpdateResourceProduction(FOOD, -bite);
 
         Owner.Food += bite;
     }

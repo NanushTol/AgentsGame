@@ -13,7 +13,7 @@ public class BasicWaterPump : MonoBehaviour
     {
         genericBuilding = GetComponent<GenericBuilding>();
 
-        genericBuilding.WorkEfficiency = genericBuilding.buildingType.WaterProduction;
+        genericBuilding.ProductionRate = genericBuilding.BuildingType.WaterProduction;
 
         genericBuilding.MaxWorkers = MaxWorkers;
     }
@@ -22,7 +22,7 @@ public class BasicWaterPump : MonoBehaviour
     void Update()
     {
         // Checks if the building is working and if there is production to use
-        if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
+        if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
             genericBuilding.resourcesDataController.UpdateResourceProduction(WATER, genericBuilding.addedValue);

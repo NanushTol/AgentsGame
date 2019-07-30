@@ -5,11 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class ResetButton : MonoBehaviour
 {
-    void Awake()
-    {
-        Time.timeScale = 1f;
-    }
-
     public void resetButton()
     {
         Time.timeScale = 1f;

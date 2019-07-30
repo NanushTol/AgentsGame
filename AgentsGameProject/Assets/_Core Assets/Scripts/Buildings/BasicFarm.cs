@@ -20,7 +20,7 @@ public class BasicFarm : MonoBehaviour
 
         food = GetComponent<Food>();
 
-        genericBuilding.WorkEfficiency = genericBuilding.buildingType.FoodProduction;
+        genericBuilding.ProductionRate = genericBuilding.BuildingType.FoodProduction;
 
         genericBuilding.MaxWorkers = MaxWorkers;
     }
@@ -28,7 +28,7 @@ public class BasicFarm : MonoBehaviour
     void Update()
     {
         // Checks if the building is working and if there is production to use
-        if (genericBuilding.Production > 0 && genericBuilding.BuildingWorking)
+        if (genericBuilding.Production > 0 && genericBuilding.BuildingActive)
         {
             if(food.FoodValue < food.MaxFood)
             {

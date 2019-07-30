@@ -21,7 +21,7 @@ public class AgentStateMovingToWork : IAgentState
         get { return Color.green; }
     }
 
-    int _dicIndex;
+    int _dicIndex = 0;
 
 
     #region // State Functions
@@ -29,10 +29,6 @@ public class AgentStateMovingToWork : IAgentState
     public void Enter()
     {
         _dicIndex = 0;
-
-        Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(_dicIndex).Key;
-
-        StatesUtils.MoveTo(Owner, Owner.CurrentWorkplace.gameObject);
 
         Owner.ActiveState = Agent.StatesEnum.MovingToWork;
         Owner.State = StateName;
@@ -42,12 +38,14 @@ public class AgentStateMovingToWork : IAgentState
     {
         if (StatesUtils.ValidateState(Owner, WORK))
         {
-            if (!Owner.CurrentWorkplace.WorkersNeeded)
-            {
-                if (_dicIndex < Owner.AgentMemory.Workplaces.Count)
-                {
-                    _dicIndex++;
+            StatesUtils.MoveTo(Owner, Owner.CurrentWorkplace.gameObject);
 
+            if (Owner.CurrentWorkplace.WorkersNeeded == false || Owner.CurrentWorkplace.BuildingActive == false)
+            {
+                _dicIndex ++;
+
+                if (Owner.AgentMemory.Workplaces.Count -1 > _dicIndex)
+                {
                     Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(_dicIndex).Key;
 
                     StatesUtils.MoveTo(Owner, Owner.CurrentWorkplace.gameObject);
@@ -74,7 +72,7 @@ public class AgentStateMovingToWork : IAgentState
 
     public void OnTriggerStay(Collider2D collider)
     {
-        if(collider.gameObject == Owner.CurrentWorkplace.gameObject)
+        if(collider.gameObject == Owner.CurrentWorkplace.gameObject && Owner.CurrentWorkplace.WorkersNeeded)
         {
             StatesUtils.EnterBuilding(Owner, WORK);
             Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Working]);

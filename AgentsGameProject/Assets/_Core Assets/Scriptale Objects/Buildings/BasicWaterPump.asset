@@ -35,7 +35,7 @@ MonoBehaviour:
   EnergyProduction: 0
   ResearchProduction: 0
   FoodProduction: 0
-  WaterProduction: 0.2
+  WaterProduction: 0.5
   StoneProduction: 0
   WoodProduction: 0
   MineralProduction: 0

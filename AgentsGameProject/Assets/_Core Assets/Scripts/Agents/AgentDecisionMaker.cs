@@ -39,7 +39,7 @@ public class AgentDecisionMaker : MonoBehaviour
 
     public Dictionary<GenericBuilding, float> SortDictionaryByValues(Dictionary<GenericBuilding, float> dictionary)
     {
-        var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
+        var sortedDict = from entry in dictionary orderby entry.Value descending select entry;
         
         return sortedDict.ToDictionary(x => x.Key, x => x.Value);
     }
@@ -51,7 +51,7 @@ public class AgentDecisionMaker : MonoBehaviour
     }
     public Dictionary<Food, float> SortDictionaryByValues(Dictionary<Food, float> dictionary)
     {
-        var sortedDict = from entry in dictionary orderby entry.Value ascending select entry;
+        var sortedDict = from entry in dictionary orderby entry.Value descending select entry;
 
         return sortedDict.ToDictionary(x => x.Key, x => x.Value);
     }

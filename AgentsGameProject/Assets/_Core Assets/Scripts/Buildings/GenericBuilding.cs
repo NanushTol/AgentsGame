@@ -16,7 +16,7 @@ public class GenericBuilding : MonoBehaviour
     [HideInInspector]
     public Grid grid;
     
-    public BuildingType buildingType;
+    public BuildingType BuildingType;
  
     public Color WorkplaceColor;
 
@@ -32,10 +32,10 @@ public class GenericBuilding : MonoBehaviour
     MapCreator mapCreator; 
 
     [HideInInspector]
-    public float WorkEfficiency = 1f;
+    public float ProductionRate;
 
     //variables accessed by agents
-    [HideInInspector]
+    //[HideInInspector]
     public bool WorkersNeeded;
     [HideInInspector]
     public int MaxWorkers;
@@ -43,13 +43,22 @@ public class GenericBuilding : MonoBehaviour
     public float Production = 0.0f;
     [HideInInspector]
     public float addedValue;
-    [HideInInspector]
+    //[HideInInspector]
     public int AgentsWorking;
 
     float[] upkeep = new float[6];
     [HideInInspector]
-    public bool BuildingWorking;
+    public bool UpkeepValid;
     [HideInInspector]
+    public bool BuildingActive = true;
+    [HideInInspector]
+    public bool UserOverrideBuildingActive = true;
+
+    [HideInInspector]
+    public Resource Resource;
+    [HideInInspector]
+    public float ResourceAmount;
+
 
 
     void Awake()
@@ -62,10 +71,14 @@ public class GenericBuilding : MonoBehaviour
         resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
 
         transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
-    }
+
+        UserOverrideBuildingActive = true;
+
+        
+}
 
 
-    private void Start()
+    void Start()
     {
         // Get Grid Cell Position
         Vector3Int position = grid.WorldToCell(transform.position);
@@ -94,26 +107,20 @@ public class GenericBuilding : MonoBehaviour
 
     void Update()
     {
+        if (Resource != null) ResourceAmount = Resource.Amount;
+
         CheckUpkeep();
 
         // If the building is working
-        if (BuildingWorking)
+        if (UpkeepValid && BuildingActive)
         {
             // check if workers are needed
-            if (AgentsWorking <= MaxWorkers)
+            if (AgentsWorking < MaxWorkers)
             {
-
                 WorkersNeeded = true;
-
-                if (AgentsWorking == MaxWorkers)
-                {
-                    WorkersNeeded = false;
-                }
-
             }
-            if (AgentsWorking > MaxWorkers)
+            else if (AgentsWorking >= MaxWorkers)
             {
-                AgentsWorking = MaxWorkers;
                 WorkersNeeded = false;
             }
 
@@ -124,14 +131,18 @@ public class GenericBuilding : MonoBehaviour
             if (Production > 0)
             {
                 addedValue = Production;
+
+                if (Resource != null) Resource.Amount -= Production;
             }
 
         }
 
         //update that workers are not needed if the building dosent work
-        else if (BuildingWorking == false)
+        else
         {
             WorkersNeeded = false;
+            UpdateVacancyBar(AgentsWorking);
+            transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
     }
 
@@ -149,7 +160,7 @@ public class GenericBuilding : MonoBehaviour
         });
     }
 
-    void UpdateVacancyBar(int _agentsWorking)
+    void UpdateVacancyBar(int agentsWorking)
     {
         Transform vacancyBar = transform.GetChild(0);
 
@@ -158,7 +169,7 @@ public class GenericBuilding : MonoBehaviour
             vacancyBar.transform.GetChild(j).gameObject.GetComponent<SpriteRenderer>().color = NotWorkingColor;
         }
 
-        for (int i = 0; i < _agentsWorking; i++)
+        for (int i = 0; i < agentsWorking; i++)
         {
             vacancyBar.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = WorkingColor;
         }
@@ -168,26 +179,43 @@ public class GenericBuilding : MonoBehaviour
     //Checks to see if there are enought resources to run the building
     void CheckUpkeep()
     {
+        if (BuildingType.name == "BasicFarm")
+        {
+            Food food = GetComponent<Food>();
+
+            if (food.FoodValue >= food.MaxFood)
+            {
+                UpkeepValid = false;
+                BuildingActive = false;
+                return;
+            }
+        }
+
         //check Upkeep to see if building can work
-        if (resourcesDataController.GetResourceAmount(GODFORCE) >= buildingType.GodForceUpkeep &&
-            resourcesDataController.GetResourceAmount(ENERGY) >= buildingType.EnergyUpkeep &&
-            resourcesDataController.GetResourceAmount(RESEARCH) >= buildingType.ResearchUpkeep &&
-            resourcesDataController.GetResourceAmount(FOOD) >= buildingType.FoodUpkeep &&
-            resourcesDataController.GetResourceAmount(WATER) >= buildingType.WaterUpkeep &&
-            resourcesDataController.GetResourceAmount(STONE) >= buildingType.StoneUpkeep &&
-            resourcesDataController.GetResourceAmount(WOOD) >= buildingType.WoodUpkeep &&
-            resourcesDataController.GetResourceAmount(MINERALS) >= buildingType.MineralUpkeep)
+        if (resourcesDataController.GetResourceAmount(GODFORCE) >= BuildingType.GodForceUpkeep &&
+            resourcesDataController.GetResourceAmount(ENERGY) >= BuildingType.EnergyUpkeep &&
+            resourcesDataController.GetResourceAmount(RESEARCH) >= BuildingType.ResearchUpkeep &&
+            resourcesDataController.GetResourceAmount(FOOD) >= BuildingType.FoodUpkeep &&
+            resourcesDataController.GetResourceAmount(WATER) >= BuildingType.WaterUpkeep &&
+            resourcesDataController.GetResourceAmount(STONE) >= BuildingType.StoneUpkeep &&
+            resourcesDataController.GetResourceAmount(WOOD) >= BuildingType.WoodUpkeep &&
+            resourcesDataController.GetResourceAmount(MINERALS) >= BuildingType.MineralUpkeep)
         {
             UpdateUpkeep();
 
-            BuildingWorking = true;
+            UpkeepValid = true;
+
+            if(UserOverrideBuildingActive) BuildingActive = true;
+            else if(UserOverrideBuildingActive == false) BuildingActive = false;
+
             transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = WorkplaceColor;
         }
 
         //update Building Color & state
         else
         {
-            BuildingWorking = false;
+            UpkeepValid = false;
+            BuildingActive = false;
             transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
     }
@@ -196,13 +224,13 @@ public class GenericBuilding : MonoBehaviour
     void UpdateUpkeep()
     {
         // subtract upkeep from resources
-        resourcesDataController.UpdateResourceProduction(GODFORCE, (-buildingType.GodForceUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(ENERGY, (-buildingType.EnergyUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(RESEARCH, (-buildingType.ResearchUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(FOOD, (-buildingType.FoodUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(WATER, (-buildingType.WaterUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(STONE, (-buildingType.StoneUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(WOOD, (-buildingType.WoodUpkeep * Time.deltaTime));
-        resourcesDataController.UpdateResourceProduction(MINERALS, (-buildingType.MineralUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(GODFORCE, (-BuildingType.GodForceUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(ENERGY, (-BuildingType.EnergyUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(RESEARCH, (-BuildingType.ResearchUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(FOOD, (-BuildingType.FoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(WATER, (-BuildingType.WaterUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(STONE, (-BuildingType.StoneUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(WOOD, (-BuildingType.WoodUpkeep * Time.deltaTime));
+        resourcesDataController.UpdateResourceProduction(MINERALS, (-BuildingType.MineralUpkeep * Time.deltaTime));
     }
 }

@@ -1,21 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SleepPlace : MonoBehaviour
 {
 
     public int SleepingAgents;
 
-    // Start is called before the first frame update
-    void Start()
+    TextMeshProUGUI amountUiElement;
+
+    void Awake()
     {
-        
+        amountUiElement = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
+        amountUiElement.text = SleepingAgents.ToString();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        amountUiElement.text = SleepingAgents.ToString();
     }
 }

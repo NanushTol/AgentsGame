@@ -11,10 +11,8 @@ public class Food : MonoBehaviour
     public Color FeedingColor;
     public Color NotFeedingColor = new Color(0.65f, 0.65f, 0.65f, 1f);
 
-    [HideInInspector]
     public int FeedingAgents = 0;
 
-    [HideInInspector]
     public bool FeedingVacancy = true;
 
     public float FoodValue = 0.0f;

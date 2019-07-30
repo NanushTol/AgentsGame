@@ -52,11 +52,15 @@ public class Agent : MonoBehaviour
 
     #region // General Variables
     public AgentsSharedParameters AgentsSharedParameters;
+    public IntVariable AgentsBorn;
 
     float timer = 0f;
 
+    GameObject _agentsParent;
+    GameObject _agentTargetsParent;
+
     [HideInInspector]
-    public ResourcesDataController ResourcesDataController;
+    public ResourcesDataController ResourcesDataControllerRef;
 
     [HideInInspector]
     public int MostUrgentNeedByIndex;
@@ -70,6 +74,7 @@ public class Agent : MonoBehaviour
     [HideInInspector]
     public GenericBuilding CurrentWorkplace = null;
 
+    [HideInInspector]
     public SleepPlace CurrentSleepPlace = null;
 
     [HideInInspector]
@@ -124,6 +129,13 @@ public class Agent : MonoBehaviour
         InitializePathfinder();
 
         InitializeStateMachine();
+    }
+
+    void Start()
+    {
+
+        ResourcesDataControllerRef.Population.ApplyChange(1); // add 1 to population
+        DestinationTarget.name = gameObject.name + (" Target");
     }
 
     void Update()
@@ -187,10 +199,9 @@ public class Agent : MonoBehaviour
 
     void InitializePathfinder()
     {
-        GameObject targetParent = GameObject.Find("AgentsTargets");
         aiDestinationSetter = GetComponent<AIDestinationSetter>();
-        DestinationTarget = Instantiate(DestinationTargetPrefab, targetParent.transform);
-        DestinationTarget.name = gameObject.name + ("Target");
+        DestinationTarget = Instantiate(DestinationTargetPrefab, _agentTargetsParent.transform);
+        
         AstarAiPath = gameObject.GetComponent(typeof(AIPath)) as AIPath;
         AstarAiPath.maxSpeed = AgentsSharedParameters.AgentSpeed;
     }
@@ -218,7 +229,9 @@ public class Agent : MonoBehaviour
 
     void SetReferences()
     {
-        ResourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
+        ResourcesDataControllerRef = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
+        _agentsParent = GameObject.Find("Agents");
+        _agentTargetsParent = GameObject.Find("AgentsTargets");
 
         AgentMemory = GetComponent<AgentMemory>();
 
@@ -240,7 +253,7 @@ public class Agent : MonoBehaviour
     void CreateGodForce()
     {
         // update GodForce Production
-        ResourcesDataController.UpdateResourceProduction(GODFORCE, AgentsSharedParameters.GfPerSecond * Time.deltaTime);
+        ResourcesDataControllerRef.UpdateResourceProduction(GODFORCE, AgentsSharedParameters.GfPerSecond * Time.deltaTime);
     }
 
     void DeathCheck()
@@ -264,15 +277,20 @@ public class Agent : MonoBehaviour
 
     void KillAgent()
     {
-        if (InBuilding) CurrentWorkplace.AgentsWorking -= 1;
+        if (InBuilding && ActiveState == StatesEnum.Working) CurrentWorkplace.AgentsWorking -= 1;
+        if (InBuilding && ActiveState == StatesEnum.Sleeping) CurrentSleepPlace.SleepingAgents -= 1;
+        if (InBuilding && ActiveState == StatesEnum.Eating) ChosenFoodPlace.FeedingAgents -= 1;
+        ResourcesDataControllerRef.Population.ApplyChange(-1);
         Destroy(gameObject);
     }
 
     public GameObject InstantiateBaby(Vector3 birthLocation)
     {
         GameObject baby = Instantiate(AgentsSharedParameters.AgentPrefab, birthLocation, Quaternion.identity);
+        baby.transform.parent = _agentsParent.transform;
+        AgentsBorn.ApplyChange(1);
 
-        baby.name = "Agent (clone) " + UnityEngine.Random.Range(1000, 1999);
+        baby.name = "Agent " + AgentsBorn.Value;
 
         baby.GetComponent<Agent>().JustBorn = true;
 

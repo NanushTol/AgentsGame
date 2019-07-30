@@ -938,7 +938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 0}
-  buildingType: {fileID: 11400000, guid: 474cd48ba37357b47a7f2252912f6a1d, type: 2}
+  BuildingType: {fileID: 11400000, guid: 474cd48ba37357b47a7f2252912f6a1d, type: 2}
   WorkplaceColor: {r: 1, g: 0.8117647, b: 0, a: 1}
   WorkingColor: {r: 0.52, g: 0.96, b: 0.27, a: 1}
   NotWorkingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
@@ -950,7 +950,11 @@ MonoBehaviour:
   Production: 0
   addedValue: 0
   AgentsWorking: 0
-  BuildingWorking: 0
+  UpkeepValid: 0
+  BuildingActive: 0
+  UserOverrideBuildingActive: 1
+  Resource: {fileID: 0}
+  ResourceAmount: 0
 --- !u!114 &7651491888005423516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981,7 +985,8 @@ MonoBehaviour:
   MaxFeeders: 6
   FeedingColor: {r: 1, g: 0.8117648, b: 0, a: 1}
   NotFeedingColor: {r: 0.65, g: 0.65, b: 0.65, a: 1}
-  AgentsFeeding: 0
+  FeedingAgents: 0
+  FeedingVacancy: 1
   FoodValue: 0
 --- !u!58 &1990877763
 CircleCollider2D:

@@ -13,7 +13,7 @@ public class PowerPlant : MonoBehaviour
     {
         genericBuilding = GetComponent<GenericBuilding>();
 
-        genericBuilding.WorkEfficiency = genericBuilding.buildingType.EnergyProduction;
+        genericBuilding.ProductionRate = genericBuilding.BuildingType.EnergyProduction;
 
         genericBuilding.MaxWorkers = MaxWorkers;
     }
@@ -21,7 +21,7 @@ public class PowerPlant : MonoBehaviour
     void Update()
     {
         // Checks if the building is working and if there is production to use
-        if (genericBuilding.BuildingWorking && genericBuilding.Production > 0)
+        if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
             genericBuilding.resourcesDataController.UpdateResourceProduction(ENERGY, genericBuilding.addedValue);

@@ -1,18 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public class LevelReset : MonoBehaviour
 {
-    public GlobalStats globalStats;
-    // Update is called once per frame
+    ResourcesDataController ResourcesDataControllerRef;
+    public GameObject GameOverPanel;
+    public IntVariable AgentsBorn;
+
+    void Awake()
+    {
+        ResourcesDataControllerRef = GetComponent<ResourcesDataController>();
+        AgentsBorn.SetValue(2);
+    }
+
     void Update()
     {
-       if(globalStats.GetComponent<GlobalStats>().Population <= 0)
+       if (ResourcesDataControllerRef.Population.Value <= 0)
         {
-            Time.timeScale = 1f;
-            SceneManager.LoadScene("level", 0);
+            GameOverPanel.SetActive(true);
         }
     }
 }

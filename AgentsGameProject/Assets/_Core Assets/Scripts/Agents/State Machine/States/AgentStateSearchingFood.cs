@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class AgentStateSearchingFood : IAgentState
 {
@@ -38,7 +39,25 @@ public class AgentStateSearchingFood : IAgentState
 
         Owner.AgentMemory.FoodPlaces = Owner.DecisionMaker.SortDictionaryByValues(Owner.AgentMemory.FoodPlaces);
 
-        Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToFood]);
+
+        Owner.ChosenFoodPlace = null;
+
+        for (int i = 0; i < Owner.AgentMemory.FoodPlaces.Count; i++)
+        {
+            //if entry Workplace - needs workers & building is working asign CurrentWorkplace
+            if (Owner.AgentMemory.FoodPlaces.ElementAt(i).Key.FoodValue > 0f && Owner.AgentMemory.FoodPlaces.ElementAt(i).Key.FeedingVacancy)
+            {
+                Owner.ChosenFoodPlace = Owner.AgentMemory.FoodPlaces.ElementAt(i).Key;
+                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToFood]);
+            }
+        }
+        
+        if(Owner.ChosenFoodPlace == null)
+        {
+            Owner.NeedsManager.FoodNeedOverride = true;
+            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+        }
+            
     }
 
     public void Exit()

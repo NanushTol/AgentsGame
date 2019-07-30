@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using static Constants;
 
 public class DisplaySelectedAgentProperty : MonoBehaviour
 {
@@ -33,42 +34,42 @@ public class DisplaySelectedAgentProperty : MonoBehaviour
         switch (propertyToDisplay)
         {
             case PropertyToDisplay.Hunger:
-                index = 0;
+                index = HUNGRY;
                 break;
 
             case PropertyToDisplay.Horny:
-                index = 1;
+                index = HORNY;
                 break;
 
             case PropertyToDisplay.Energy:
-                index = 2;
+                index = WORK;
                 break;
 
             case PropertyToDisplay.HungerBar:
-                index = 0;
+                index = HUNGRY;
                 break;
 
             case PropertyToDisplay.HornyBar:
-                index = 1;
+                index = HORNY;
                 break;
 
             case PropertyToDisplay.EnergBar:
-                index = 2;
+                index = WORK;
                 break;
         }
 
     }
     void Update()
     {
-        if(propertyToDisplay == PropertyToDisplay.Age)
-        {
-            this.gameObject.GetComponent<TextMeshProUGUI>().text = Mathf.Abs(selectObjectScript.AgentAge).ToString("0");
-        }
-        else if (propertyToDisplay == PropertyToDisplay.Doing)
-        {
-            this.gameObject.GetComponent<TextMeshProUGUI>().text = selectObjectScript.AgentMostUrgentNeed;
-        }
-        else if(propertyToDisplay == PropertyToDisplay.HungerBar || propertyToDisplay == PropertyToDisplay.HornyBar || propertyToDisplay == PropertyToDisplay.EnergBar)
+        //if(propertyToDisplay == PropertyToDisplay.Age)
+        //{
+        //    this.gameObject.GetComponent<TextMeshProUGUI>().text = Mathf.Abs(selectObjectScript.AgentAge).ToString("0");
+        //}
+        //else if (propertyToDisplay == PropertyToDisplay.Doing)
+        //{
+        //    this.gameObject.GetComponent<TextMeshProUGUI>().text = selectObjectScript.StateName;
+        //}
+        if(propertyToDisplay == PropertyToDisplay.HungerBar || propertyToDisplay == PropertyToDisplay.HornyBar || propertyToDisplay == PropertyToDisplay.EnergBar)
         {
             float mapedBar = Remap(selectObjectScript.AgentProperties[index], 0f, 1f, 0f, 120f);
 

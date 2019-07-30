@@ -53,6 +53,7 @@ public class AgentNeedsManager : MonoBehaviour
         float rmpEnergy = AgentUtils.Remap(agent.Energy, 0f, agent.AgentsSharedParameters.MaxEnergy, 0f, 1f);
         float rmpAge = AgentUtils.Remap(agent.CurrentAge, 0f, agent.MaxAge, 0f, 1f);
 
+        //FoodNeedOverride = ValidateOverride(foodToHunger, rmpFood);
 
         // Evaluate Need Curves
         NeedsValues[HUNGRY] = foodToHunger.Evaluate(rmpFood) * OverrideNeed(FoodNeedOverride);
@@ -81,5 +82,13 @@ public class AgentNeedsManager : MonoBehaviour
     public float OverrideNeed(bool overrideNeed)
     {
         return overrideNeed ? 0 : 1;
+    }
+
+    public bool ValidateOverride(AnimationCurve needGraph, float rampedValue)
+    {
+        float needVal = needGraph.Evaluate(rampedValue);
+
+        if (needVal >= 0.9f) return false;
+        else return true;
     }
 }

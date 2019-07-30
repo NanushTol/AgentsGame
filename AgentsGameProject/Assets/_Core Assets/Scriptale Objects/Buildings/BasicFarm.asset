@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuildingPrefab: {fileID: 5336263684939104929, guid: dfa8eaa5e95bb514c9985494749132ab,
     type: 3}
+  ResourceTag: 
   GodForceUpkeep: 0
   EnergyUpkeep: 0.1
   ResearchUpkeep: 0
@@ -33,7 +34,7 @@ MonoBehaviour:
   GodForceProduction: 0
   EnergyProduction: 0
   ResearchProduction: 0
-  FoodProduction: 1
+  FoodProduction: 3
   WaterProduction: 0
   StoneProduction: 0
   WoodProduction: 0
