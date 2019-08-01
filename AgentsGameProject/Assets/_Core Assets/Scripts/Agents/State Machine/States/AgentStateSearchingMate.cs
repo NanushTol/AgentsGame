@@ -86,7 +86,7 @@ public class AgentStateSearchingMate : IAgentState
             {
                 Owner.ChosenMate = chosenMate;
                 // Switch State to Move To Mate
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToMate]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.MovingToMate]);
                 _checkMatches = false;
             }
         }

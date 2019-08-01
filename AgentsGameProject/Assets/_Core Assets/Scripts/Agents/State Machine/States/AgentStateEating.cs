@@ -35,10 +35,10 @@ public class AgentStateEating : IAgentState
             Eat(Owner.ChosenFoodPlace);
 
         else if(Owner.ChosenFoodPlace.FoodValue < 2f)
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
 
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()

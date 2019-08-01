@@ -34,7 +34,7 @@ public class AgentStateSleeping : IAgentState
         if (Owner.Energy < Owner.AgentsSharedParameters.AwakeThreshold)
             Sleep();
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()
@@ -57,6 +57,7 @@ public class AgentStateSleeping : IAgentState
     void Sleep()
     {
         Owner.Energy += (Owner.AgentsSharedParameters.SleepEfficiency * Time.deltaTime);
+        Owner.Food -= (Owner.FoodConsumption / 4 * Time.deltaTime * Owner.AgentsSharedParameters.ConsumptionScale);
     }
 
     #endregion

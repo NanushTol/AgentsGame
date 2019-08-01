@@ -25,10 +25,10 @@ public class BasicWaterPump : MonoBehaviour
         if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction(WATER, genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(WATER, genericBuilding.AddedValue);
 
             // Reset pruduction
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }
 }

@@ -22,10 +22,10 @@ public class MineralsQuarry : MonoBehaviour
         if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction(MINERALS, genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(MINERALS, genericBuilding.AddedValue);
             
             // Reset pruduction
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }    
 }

@@ -16,7 +16,7 @@ public class GnobTypeDropdown : MonoBehaviour
 
     public void UpdateType()
     {
-        AgentType = selectObjectScript.SelectedAgent.GetComponent<Agent>().AgentType;
+        AgentType = selectObjectScript.Agent.AgentType;
 
         switch (AgentType)
         {
@@ -80,6 +80,6 @@ public class GnobTypeDropdown : MonoBehaviour
                 break;
         }
 
-        selectObjectScript.SelectedAgent.GetComponent<Agent>().AgentType = AgentType;
+        selectObjectScript.Agent.AgentType = AgentType;
     }
 }

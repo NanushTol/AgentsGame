@@ -32,14 +32,14 @@ public class BasicFarm : MonoBehaviour
         {
             if(food.FoodValue < food.MaxFood)
             {
-                food.FoodValue += genericBuilding.addedValue;
+                food.FoodValue += genericBuilding.AddedValue;
 
                 // Update food resource production
-                genericBuilding.resourcesDataController.UpdateResourceProduction(FOOD, genericBuilding.addedValue);
+                genericBuilding.resourcesDataController.UpdateResourceProduction(FOOD, genericBuilding.AddedValue);
             }
             
             // Reset production
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }
 

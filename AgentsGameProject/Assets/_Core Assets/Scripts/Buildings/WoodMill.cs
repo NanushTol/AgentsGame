@@ -24,10 +24,10 @@ public class WoodMill : MonoBehaviour
         if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction(WOOD, genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(WOOD, genericBuilding.AddedValue);
 
             // Reset pruduction
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }
 }

@@ -39,7 +39,7 @@ public class AgentStateMovingToSleep : IAgentState
             StatesUtils.MoveTo(Owner, Owner.CurrentSleepPlace.gameObject);
         }
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()
@@ -53,7 +53,7 @@ public class AgentStateMovingToSleep : IAgentState
         if(collider.gameObject == Owner.CurrentSleepPlace.gameObject)
         {
             StatesUtils.EnterBuilding(Owner, TIRED);
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Sleeping]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.Sleeping]);
         }
     }
 

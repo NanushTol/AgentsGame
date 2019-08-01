@@ -34,19 +34,19 @@ public class AgentStateBase : IAgentState
         switch (Owner.MostUrgentNeedByIndex)
         {
             case HUNGRY:
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
                 break;
 
             case TIRED:
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingSleep]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingSleep]);
                 break;
 
             case WORK:
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingWork]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingWork]);
                 break;
 
             case HORNY:
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
                 break;
         }
     }

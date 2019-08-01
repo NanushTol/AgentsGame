@@ -118,9 +118,12 @@ public static class AgentReproduction
         mate.NeedsManager.NeedsValues[HORNY] = 0f;
         mate.ReproductiveMultiplier = 0.0f;
         mate.ReproductiveClock = 0f;
+        mate.Food -= 10f;
 
         argSelf.NeedsManager.NeedsValues[HORNY] = 0f;
         argSelf.ReproductiveMultiplier = 0.0f;
         argSelf.ReproductiveClock = 0f;
+        argSelf.Food -= 10f;
+
     }
 }

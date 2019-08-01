@@ -56,13 +56,13 @@ public class AgentStateMovingToWork : IAgentState
                     // Cuases the agent to find the next most urgent need
                     Owner.NeedsManager.WorkNeedOverride = true;
 
-                    Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+                    Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
                 }
             } 
         }
 
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()
@@ -75,7 +75,7 @@ public class AgentStateMovingToWork : IAgentState
         if(collider.gameObject == Owner.CurrentWorkplace.gameObject && Owner.CurrentWorkplace.WorkersNeeded)
         {
             StatesUtils.EnterBuilding(Owner, WORK);
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Working]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.Working]);
         }
     }
 

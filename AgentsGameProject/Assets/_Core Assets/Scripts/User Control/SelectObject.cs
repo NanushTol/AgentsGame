@@ -10,10 +10,12 @@ public class SelectObject : MonoBehaviour
     public GameEvent UpdatePropertiesUi;
     public float DisplayUpdateTime;
     float _elapsedTime;
+
+    public GameObject SelectedControlPanelUi;
     
     [Header("Agent UI Panels")]
     public GameObject DdAgentType;
-    public GameObject agentPropertiesUi;
+    public GameObject SelectedAgentUi;
 
     #region // Agents Properties
     [Header("Agent Variables")]
@@ -29,8 +31,7 @@ public class SelectObject : MonoBehaviour
 
     [HideInInspector]
     public float[] AgentProperties = new float[11];
-    [HideInInspector]
-    public GameObject SelectedAgent;
+    
     [HideInInspector]
     public bool AgentInBuilding;
 
@@ -41,13 +42,14 @@ public class SelectObject : MonoBehaviour
 
     #region // Buildings Properties
     [Header("Building UI Panel")]
-    public GameObject WorkPropertiesUi;
+    public GameObject SelectedBuildingUi;
+    public GameObject SelectedResourceUi;
+
 
     [Header("Building Variables")]
 
     public StringVariable BuildingType;
     public StringVariable ResourceType;
-    public FloatVariable ResourceAmount;
     public ColorVariable ResourceColor;
     public BoolVariable BuildingActive;
 
@@ -66,131 +68,66 @@ public class SelectObject : MonoBehaviour
 
     #endregion
 
-    bool _agentIsSelected = false;
-    bool _workIsSelected = false;
+    [HideInInspector]
+    public Agent Agent;
+    [HideInInspector]
+    public GenericBuilding Building;
+    [HideInInspector]
+    public Resource Resource;
 
-    Agent _agent;
-    GenericBuilding _building;
 
-    GameStates gameStates;
+    LevelManager LevelManagerRef;
 
     [HideInInspector]
     GameObject selectionIndicator;
     [HideInInspector]
     public GameObject SelectedObject;
+    [HideInInspector]
+    public int SelectedObjectType;
 
-    int mask;
+    public int Mask;
 
     // Start is called before the first frame update
     void Awake()
     {
         selectionIndicator = GameObject.Find("SelectionIndicator");
-        gameStates = GameObject.Find("GameManager").GetComponent<GameStates>();
-        
+        LevelManagerRef = GameObject.Find("GameManager").GetComponent<LevelManager>();
+
         int BuildingsLayer = 1 << LayerMask.NameToLayer("Building");
         int agentLayer = 1 << LayerMask.NameToLayer("Agent");
         int SleepPlacesLayer = 1 << LayerMask.NameToLayer("SleepPlace");
         int resourceLayer = 1 << LayerMask.NameToLayer("Resource");
 
-        mask = BuildingsLayer | agentLayer | SleepPlacesLayer | resourceLayer;
+        Mask = BuildingsLayer | agentLayer | SleepPlacesLayer | resourceLayer;
     }
 
 
-    // Update is called once per frame
-    void Update()
+    public void SelectedUpdate()
     {
-        if (gameStates.BuildingGameState == false)
+        _elapsedTime += Time.deltaTime;
+
+        if (_elapsedTime >= DisplayUpdateTime)
         {
-            _elapsedTime += Time.deltaTime;
-
-            if (_elapsedTime >= DisplayUpdateTime)
-            {
-                UpdatePropertiesUi.Raise();
-            }
-
-            if (Input.GetMouseButtonDown(0) && !IsMouseOverUi())
-            {
-                RaycastHit2D hit = CastRay();
-
-                GetSelectedObjectType(hit);
-            }
-
-            if (SelectedObject)
-            {
-                if (_agentIsSelected)
-                {
-                    GetAgentProperties();
-
-                    if (!AgentInBuilding)
-                    {
-                        PlaceIndicator(SelectedObject.transform.position);
-                    }
-                    else if (AgentInBuilding)
-                    {
-                        PlaceIndicator(new Vector3(0f, -100f, 0f));
-                    }
-                }
-
-                else if (_workIsSelected)
-                {
-                    GetBuildingProperties();
-                    PlaceIndicator(SelectedObject.transform.position);
-                }
-
-                else PlaceIndicator(SelectedObject.transform.position);
-            } 
+            UpdatePropertiesUi.Raise();
         }
     }
 
-    void PlaceIndicator(Vector3 _position)
+    public void GetSelection()
+    {
+        if (Input.GetMouseButtonDown(0) && !GameUtils.IsMouseOverUi())
+        {
+            RaycastHit2D hit = GameUtils.CastRayFromMouse(Mask);
+
+            GetSelectedObjectType(hit);
+        }
+    }
+
+    public void PlaceIndicator(Vector3 _position)
     {
         selectionIndicator.transform.position = _position;
     }
 
-    private bool IsMouseOverUi()
-    {
-        return EventSystem.current.IsPointerOverGameObject();
-    }
-
-    void GetAgentProperties()
-    {
-        AgentInBuilding = _agent.InBuilding;
-
-        AgentAge.SetValue(_agent.CurrentAge);
-        AgentType.SetValue(_agent.AgentType);
-        StateName.SetValue(_agent.State);
-        AgentHunger.SetValue(_agent.NeedsManager.NeedsValues[HUNGRY]);
-        AgentHorny.SetValue(_agent.NeedsManager.NeedsValues[HORNY]);
-        AgentEnergy.SetValue(_agent.Energy / 100f);
-    }
-
-    void GetBuildingProperties()
-    {
-        BuildingType.SetValue(_building.BuildingType.name);
-        BuildingActive.SetValue(_building.UserOverrideBuildingActive);
-        BuildingProduction.SetValue(_building.addedValue);
-        WorkingAgents.SetValue(_building.AgentsWorking);
-        EnergyUpkeep.SetValue(_building.BuildingType.EnergyUpkeep);
-        WaterUpkeep.SetValue(_building.BuildingType.WaterUpkeep);
-        StoneUpkeep.SetValue(_building.BuildingType.StoneUpkeep);
-        WoodUpkeep.SetValue(_building.BuildingType.WoodUpkeep);
-        MineralsUpkeep.SetValue(_building.BuildingType.MineralUpkeep);
-
-        if (_building.Resource != null)
-        {
-            ResourceType.SetValue(_building.Resource.typeOfResource.ToString());
-            RemainingResource.SetValue(_building.ResourceAmount);
-            ResourceColor.SetColor(_building.Resource.transform.GetChild(2).GetComponent<SpriteRenderer>().color);
-        }
-    }
-
-    RaycastHit2D CastRay()
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        return Physics2D.Raycast(mousePos, Camera.main.transform.forward, 15f, mask);
-    }
-
-    void GetSelectedObjectType(RaycastHit2D hit)
+    public void GetSelectedObjectType(RaycastHit2D hit)
     {
         // if Raycast hit somthing
         if (hit)
@@ -202,34 +139,38 @@ public class SelectObject : MonoBehaviour
             switch (tag)
             {
                 case "Agent":
-                    agentPropertiesUi.SetActive(true);
-                    WorkPropertiesUi.SetActive(false);
-                    _agentIsSelected = true;
-                    _workIsSelected = false;
-                    SelectedAgent = SelectedObject;
-                    _agent = SelectedObject.GetComponent<Agent>();
-                    DdAgentType.GetComponent<GnobTypeDropdown>().UpdateType();
-                    GetAgentProperties();
+                    SelectedObjectType = SELECTED_AGENT;
+                    Agent = SelectedObject.GetComponent<Agent>();
+                    SelectedAgentUi.SetActive(true);
+                    SelectedControlPanelUi.SetActive(true);
+                    LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
 
                 case "Work":
-                    WorkPropertiesUi.SetActive(true);
-                    agentPropertiesUi.SetActive(false);
-                    _agentIsSelected = false;
-                    _workIsSelected = true;
-                    _building = SelectedObject.GetComponent<GenericBuilding>();
-                    GetBuildingProperties();
+                    SelectedObjectType = SELECTED_BUILDING;
+                    Building = SelectedObject.GetComponent<GenericBuilding>();
+                    SelectedBuildingUi.SetActive(true);
+                    SelectedControlPanelUi.SetActive(true);
+                    LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
 
-                //case "SleepingPlace":
-                //    agentPropertiesUi.SetActive(false);
-                //    _agentIsSelected = false;
-                //    break;
+                case "Food":
+                    SelectedObjectType = SELECTED_FOOD;
+                    Building = SelectedObject.GetComponent<GenericBuilding>();
+                    SelectedBuildingUi.SetActive(true);
+                    SelectedControlPanelUi.SetActive(true);
+                    LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
+                    break;
 
-                //case "Food":
-                //    agentPropertiesUi.SetActive(false);
-                //    _agentIsSelected = false;
-                //    break;
+                case "Energy":
+                case "Stone":
+                case "Wood":
+                case "Mineral":
+                    SelectedObjectType = SELECTED_RESOURCE;
+                    Resource = SelectedObject.GetComponent<Resource>();
+                    SelectedResourceUi.SetActive(true);
+                    LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
+                    break;
             }
 
         }
@@ -237,13 +178,82 @@ public class SelectObject : MonoBehaviour
         // No Hit
         else
         {
-            SelectedObject = null;
-            PlaceIndicator(new Vector3(0f, -100f, 0f));
-            agentPropertiesUi.SetActive(false);
-            WorkPropertiesUi.SetActive(false);
-            _workIsSelected = false;
-            _agentIsSelected = false;
+            LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.BaseState]);
         }
+    }
+
+    public void GetSelectedObjectProperties()
+    {
+        switch (SelectedObjectType)
+        {
+            case SELECTED_AGENT:
+                GetAgentProperties();
+                break;
+
+            case SELECTED_BUILDING:
+                GetBuildingProperties();
+                break;
+
+            case SELECTED_FOOD:
+                GetFoodBuildingProperties();
+                break;
+
+            case SELECTED_RESOURCE:
+                GetResourceProperties();
+                break;
+        }
+    }
+
+    public void GetAgentProperties()
+    {
+        AgentAge.SetValue(Agent.CurrentAge);
+        AgentType.SetValue(Agent.AgentType);
+        StateName.SetValue(Agent.State);
+        AgentHunger.SetValue(Agent.NeedsManager.NeedsValues[HUNGRY]);
+        AgentHorny.SetValue(Agent.NeedsManager.NeedsValues[HORNY]);
+        AgentEnergy.SetValue(Agent.Energy / 100f);
+    }
+
+    public void GetBuildingProperties()
+    {
+        BuildingType.SetValue(Building.BuildingType.name);
+        BuildingActive.SetValue(Building.UserOverrideBuildingActive);
+        BuildingProduction.SetValue(1 / Time.deltaTime * Building.AddedValue);
+        WorkingAgents.SetValue(Building.AgentsWorking);
+        EnergyUpkeep.SetValue(Building.BuildingType.EnergyUpkeep);
+        WaterUpkeep.SetValue(Building.BuildingType.WaterUpkeep);
+        StoneUpkeep.SetValue(Building.BuildingType.StoneUpkeep);
+        WoodUpkeep.SetValue(Building.BuildingType.WoodUpkeep);
+        MineralsUpkeep.SetValue(Building.BuildingType.MineralUpkeep);
+
+        if (Building.Resource != null)
+        {
+            ResourceType.SetValue(Building.Resource.typeOfResource.ToString());
+            RemainingResource.SetValue(Building.ResourceAmount);
+            ResourceColor.SetColor(Building.Resource.transform.GetChild(2).GetComponent<SpriteRenderer>().color);
+        }
+    }
+
+    public void GetResourceProperties()
+    {
+        BuildingType.SetValue(Resource.typeOfResource.ToString());
+        RemainingResource.SetValue(Resource.Amount);
+    }
+
+    public void GetFoodBuildingProperties()
+    {
+        BuildingType.SetValue(Building.BuildingType.name);
+        BuildingActive.SetValue(Building.UserOverrideBuildingActive);
+        BuildingProduction.SetValue(1 / Time.deltaTime * Building.AddedValue);
+        WorkingAgents.SetValue(Building.AgentsWorking);
+        EnergyUpkeep.SetValue(Building.BuildingType.EnergyUpkeep);
+        WaterUpkeep.SetValue(Building.BuildingType.WaterUpkeep);
+        StoneUpkeep.SetValue(Building.BuildingType.StoneUpkeep);
+        WoodUpkeep.SetValue(Building.BuildingType.WoodUpkeep);
+        MineralsUpkeep.SetValue(Building.BuildingType.MineralUpkeep);
+
+        RemainingResource.SetValue(Building.gameObject.GetComponent<Food>().FoodValue);
+        ResourceType.SetValue("Food:");
     }
 }
 

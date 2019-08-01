@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    public float MaxFood = 200;
+    public float MaxFood = 500;
 
     public int MaxFeeders = 6;
 

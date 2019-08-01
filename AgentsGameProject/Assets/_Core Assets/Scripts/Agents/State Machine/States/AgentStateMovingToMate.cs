@@ -42,15 +42,15 @@ public class AgentStateMovingToMate : IAgentState
             }
             else
             {
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
             }
         }
 
         else if(StatesUtils.ValidateState(Owner, HORNY) && Owner.ChosenMate == null)
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingMate]);
 
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()
@@ -63,7 +63,7 @@ public class AgentStateMovingToMate : IAgentState
     {
         if(collider.gameObject == Owner.ChosenMate)
         {
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Mating]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.Mating]);
         }
     }
 

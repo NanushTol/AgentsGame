@@ -48,14 +48,14 @@ public class AgentStateSearchingWorkplace : IAgentState
             if (Owner.AgentMemory.Workplaces.ElementAt(i).Key.WorkersNeeded && Owner.AgentMemory.Workplaces.ElementAt(i).Key.BuildingActive)
             {
                 Owner.CurrentWorkplace = Owner.AgentMemory.Workplaces.ElementAt(i).Key;
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToWork]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.MovingToWork]);
             }
         }
 
         if(Owner.CurrentWorkplace == null)
         {
             Owner.NeedsManager.WorkNeedOverride = true;
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
         }
            
     }

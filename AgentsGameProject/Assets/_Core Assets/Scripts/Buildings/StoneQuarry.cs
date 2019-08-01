@@ -24,10 +24,10 @@ public class StoneQuarry : MonoBehaviour
         if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction(STONE, genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(STONE, genericBuilding.AddedValue);
             
             // Reset pruduction
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }    
 }

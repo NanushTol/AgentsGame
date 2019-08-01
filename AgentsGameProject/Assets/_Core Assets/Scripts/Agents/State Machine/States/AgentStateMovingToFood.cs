@@ -56,7 +56,7 @@ public class AgentStateMovingToFood : IAgentState
                     // Cuases the agent to find the next most urgent need
                     Owner.NeedsManager.FoodNeedOverride = true;
 
-                    Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+                    Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
                 }
 
                 _dicIndex++;
@@ -64,7 +64,7 @@ public class AgentStateMovingToFood : IAgentState
         }
 
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()
@@ -79,10 +79,10 @@ public class AgentStateMovingToFood : IAgentState
             if(Owner.ChosenFoodPlace.FeedingVacancy)
             {
                 StatesUtils.EnterBuilding(Owner, HUNGRY);
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.Eating]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.Eating]);
             }
             else
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.SearchingFood]);
         }
     }
 

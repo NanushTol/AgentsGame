@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -36,12 +37,15 @@ public class CreateBuilding : MonoBehaviour
     bool creatingBuilding;
 
     GameStates gameStates;
+    LevelManager LevelManagerRef;
 
     void Awake()
     {
         mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
         resourcesDataController = GameObject.Find("GameManager").GetComponent<ResourcesDataController>();
         gameStates = GameObject.Find("GameManager").GetComponent<GameStates>();
+
+        LevelManagerRef = GameObject.Find("GameManager").GetComponent<LevelManager>();
     }
 
     void Update()
@@ -74,12 +78,13 @@ public class CreateBuilding : MonoBehaviour
             if(Time.timeScale != 0f) lastTimeScale = Time.timeScale;
 
             newBuilding = Instantiate(buildingPrefab, new Vector3(0f, 0f, -5f), rotation);
-            creatingBuilding = true;
-            gameStates.BuildingGameState = true;
+            
+            LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.CreatingBuilding]);
+            LevelManagerRef.CreateBuildingRef = this;
         }
     }
 
-    void DisplayBuildingAtMousePosition()
+    public void DisplayBuildingAtMousePosition()
     {
         Time.timeScale = 0f;
 
@@ -89,7 +94,7 @@ public class CreateBuilding : MonoBehaviour
 
         v3 = Camera.main.ScreenToWorldPoint(v3);
 
-        v3 = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(v3);
+        v3 = newBuilding.GetComponent<GenericBuilding>().GridRef.WorldToCell(v3);
 
         v3.x += 0.5f;
         v3.y += 0.5f;
@@ -97,23 +102,8 @@ public class CreateBuilding : MonoBehaviour
         newBuilding.transform.position = v3;
     }
 
-    void GetBuildingPrefabAndCosts()
-    {
-        // Get building type & Costs
-
-        buildingPrefab = BuildingType.BuildingPrefab;
-
-        godForceCost = BuildingType.GodForceCost;
-        foodCost = BuildingType.FoodCost;
-        woodCost = BuildingType.WoodCost;
-        stoneCost = BuildingType.StoneCost;
-        mineralsCost = BuildingType.MineralCost;
-
-        resourceTag = BuildingType.ResourceTag;
-    }
-
     //get user input and check if selected location is valid for that building type
-    void SelectLocation()
+    public void SelectLocation()
     {
         // If left mouse Click
         if (Input.GetMouseButtonDown(0))
@@ -151,7 +141,7 @@ public class CreateBuilding : MonoBehaviour
             }
             else if (BuildingType.name == "BasicWaterPump")
             {
-                Vector3Int v3position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
+                Vector3Int v3position = newBuilding.GetComponent<GenericBuilding>().GridRef.WorldToCell(newBuilding.transform.position);
 
                 Vector2 position;
 
@@ -177,9 +167,27 @@ public class CreateBuilding : MonoBehaviour
         {
             Destroy(newBuilding);
             Time.timeScale = lastTimeScale;
-            creatingBuilding = false;
-            gameStates.BuildingGameState = false;
+
+            LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.BaseState]);
+            LevelManagerRef.CreateBuildingRef = null;
         }
+    }
+
+
+
+    void GetBuildingPrefabAndCosts()
+    {
+        // Get building type & Costs
+
+        buildingPrefab = BuildingType.BuildingPrefab;
+
+        godForceCost = BuildingType.GodForceCost;
+        foodCost = BuildingType.FoodCost;
+        woodCost = BuildingType.WoodCost;
+        stoneCost = BuildingType.StoneCost;
+        mineralsCost = BuildingType.MineralCost;
+
+        resourceTag = BuildingType.ResourceTag;
     }
     
     // Place building at selected position
@@ -192,7 +200,7 @@ public class CreateBuilding : MonoBehaviour
         resourcesDataController.UpdateResourceAmount(WOOD, -woodCost);
         resourcesDataController.UpdateResourceAmount(MINERALS, -mineralsCost);
 
-        Vector3Int position = newBuilding.GetComponent<GenericBuilding>().grid.WorldToCell(newBuilding.transform.position);
+        Vector3Int position = newBuilding.GetComponent<GenericBuilding>().GridRef.WorldToCell(newBuilding.transform.position);
 
         position.x += mapCreator.MapWidth / 2;
         position.y += mapCreator.MapHeight / 2;
@@ -201,8 +209,9 @@ public class CreateBuilding : MonoBehaviour
 
         newBuilding.GetComponent<GenericBuilding>().UpdateNode(position, false);
         Time.timeScale = lastTimeScale;
-        creatingBuilding = false;
-        gameStates.BuildingGameState = false;
+
+        LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.BaseState]);
+        LevelManagerRef.CreateBuildingRef = null;
     }
 
     bool CheckCosts()

@@ -14,7 +14,7 @@ using static Constants;
 public class GenericBuilding : MonoBehaviour
 {
     [HideInInspector]
-    public Grid grid;
+    public Grid GridRef;
     
     public BuildingType BuildingType;
  
@@ -42,11 +42,10 @@ public class GenericBuilding : MonoBehaviour
     [HideInInspector]
     public float Production = 0.0f;
     [HideInInspector]
-    public float addedValue;
+    public float AddedValue;
     //[HideInInspector]
     public int AgentsWorking;
 
-    float[] upkeep = new float[6];
     [HideInInspector]
     public bool UpkeepValid;
     [HideInInspector]
@@ -64,7 +63,7 @@ public class GenericBuilding : MonoBehaviour
     void Awake()
     {
         
-        grid = GameObject.Find("Grid").GetComponent<Grid>();
+        GridRef = GameObject.Find("Grid").GetComponent<Grid>();
 
         mapCreator = GameObject.Find("MapCreator").GetComponent<MapCreator>();
         
@@ -81,7 +80,7 @@ public class GenericBuilding : MonoBehaviour
     void Start()
     {
         // Get Grid Cell Position
-        Vector3Int position = grid.WorldToCell(transform.position);
+        Vector3Int position = GridRef.WorldToCell(transform.position);
 
         position.x += mapCreator.MapWidth / 2;
         position.y += mapCreator.MapHeight / 2;
@@ -130,10 +129,11 @@ public class GenericBuilding : MonoBehaviour
 
             if (Production > 0)
             {
-                addedValue = Production;
+                AddedValue = Production;
 
                 if (Resource != null) Resource.Amount -= Production;
             }
+            else AddedValue = 0f;
 
         }
 

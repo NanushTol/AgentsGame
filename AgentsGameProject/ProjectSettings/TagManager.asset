@@ -16,6 +16,7 @@ TagManager:
   - Mineral
   - LandOil
   - SleepingPlace
+  - Energy
   layers:
   - Default
   - TransparentFX

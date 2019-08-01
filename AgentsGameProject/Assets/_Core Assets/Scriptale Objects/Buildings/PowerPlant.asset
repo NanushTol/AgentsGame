@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuildingPrefab: {fileID: 5336263684939104929, guid: 15fc84da43bbb054c9ca31873320f5a0,
     type: 3}
-  ResourceTag: LandOil
+  ResourceTag: Energy
   GodForceUpkeep: 0
   EnergyUpkeep: 0
   ResearchUpkeep: 0

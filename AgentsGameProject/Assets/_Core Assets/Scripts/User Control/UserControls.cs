@@ -5,27 +5,11 @@ public class UserControls : MonoBehaviour
     public GameObject MainMenu;
     public GameObject TimeNote;
 
-    GameStates gameStates;
     float lastTimeScale;
    
-    void Awake()
+    public void LevelMainMenu(KeyCode keyCode)
     {
-        gameStates = GameObject.Find("GameManager").GetComponent<GameStates>();
-    }
-
-    void Update()
-    {
-        TimeContorl(KeyCode.Space);
-
-        MainGameMenu(KeyCode.Escape);
-    }
-
-    void MainGameMenu(KeyCode keyCode)
-    {
-        if (Input.GetKeyDown(keyCode)
-            && MainMenu.activeInHierarchy == false
-            && gameStates.BuildingGameState == false
-            && gameStates.CreatingLandGameState == false)
+        if (Input.GetKeyDown(keyCode) && MainMenu.activeInHierarchy == false)
         {
             lastTimeScale = Time.timeScale;
             MainMenu.SetActive(true);
@@ -39,7 +23,7 @@ public class UserControls : MonoBehaviour
         }
     }
 
-    void TimeContorl(KeyCode keyCode)
+    public void TimeContorl(KeyCode keyCode)
     {
         if (Input.GetKeyDown(keyCode))
         {

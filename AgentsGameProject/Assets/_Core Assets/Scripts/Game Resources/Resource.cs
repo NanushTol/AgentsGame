@@ -9,7 +9,7 @@ using TMPro;
 
 public class Resource : MonoBehaviour
 {
-    public Grid grid;
+    public Grid Grid;
 
     public enum TypeOfResource {Stone, Wood, Mineral, LandOil, WaterOil, Thermal, Wind, Solar }
     public TypeOfResource typeOfResource;
@@ -31,7 +31,7 @@ public class Resource : MonoBehaviour
     void Awake()
     {
         //environment = GameObject.Find("Environment").GetComponent<Environment>();
-        grid = GameObject.Find("Grid").GetComponent<Grid>();
+        Grid = GameObject.Find("Grid").GetComponent<Grid>();
 
         amountUiElement = transform.GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>();
         amountUiElement.text = Amount.ToString();
@@ -54,7 +54,7 @@ public class Resource : MonoBehaviour
     }
     private void Start()
     {
-        Vector3Int position = grid.WorldToCell(transform.position);
+        Vector3Int position = Grid.WorldToCell(transform.position);
 
         position.x += 18;
         position.y += 17;

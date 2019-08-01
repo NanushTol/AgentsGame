@@ -48,14 +48,14 @@ public class AgentStateSearchingFood : IAgentState
             if (Owner.AgentMemory.FoodPlaces.ElementAt(i).Key.FoodValue > 0f && Owner.AgentMemory.FoodPlaces.ElementAt(i).Key.FeedingVacancy)
             {
                 Owner.ChosenFoodPlace = Owner.AgentMemory.FoodPlaces.ElementAt(i).Key;
-                Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToFood]);
+                Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.MovingToFood]);
             }
         }
         
         if(Owner.ChosenFoodPlace == null)
         {
             Owner.NeedsManager.FoodNeedOverride = true;
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
         }
             
     }

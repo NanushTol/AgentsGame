@@ -14,4 +14,14 @@
     public const int STONE = 5;
     public const int WOOD = 6;
     public const int MINERALS = 7;
+
+    public const int SELECTED_BUILDING = 0;
+    public const int SELECTED_FOOD = 1;
+    public const int SELECTED_SLEEP = 2;
+    public const int SELECTED_RESOURCE = 3;
+    public const int SELECTED_AGENT = 4;
+
+
+
+
 }

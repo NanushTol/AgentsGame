@@ -102,7 +102,7 @@ public class Agent : MonoBehaviour
 
     #region // State Machine
     [HideInInspector]
-    public AgentStateMachine StateMachine;
+    public AgentStateMachine StateMachineRef;
 
     
     public enum StatesEnum { BaseState, SearchingWork, MovingToWork, Working,
@@ -144,9 +144,9 @@ public class Agent : MonoBehaviour
 
         MostUrgentNeedByIndex = NeedsManager.FindMostUrgentNeed(this);
 
-        StateMachine.Execute();
+        StateMachineRef.Execute();
         // Set Horn Color To State Color
-        AgentUtils.SetChildColor(gameObject, 0, StateMachine.currentState.StateColor);
+        AgentUtils.SetChildColor(gameObject, 0, StateMachineRef.currentState.StateColor);
     }
 
     void LateUpdate()
@@ -162,7 +162,7 @@ public class Agent : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collider)
     {
-        StateMachine.currentState.OnTriggerStay(collider);
+        StateMachineRef.currentState.OnTriggerStay(collider);
     }
 
     void InitializeTraits()
@@ -194,7 +194,7 @@ public class Agent : MonoBehaviour
         States.Add(StatesEnum.MovingToSleep, new AgentStateMovingToSleep(this));
         States.Add(StatesEnum.Sleeping, new AgentStateSleeping(this));
 
-        StateMachine.ChangeState(States[StatesEnum.BaseState]);
+        StateMachineRef.ChangeState(States[StatesEnum.BaseState]);
     }
 
     void InitializePathfinder()
@@ -237,7 +237,7 @@ public class Agent : MonoBehaviour
 
         NeedsManager = GetComponent<AgentNeedsManager>();
 
-        StateMachine = GetComponent<AgentStateMachine>();
+        StateMachineRef = GetComponent<AgentStateMachine>();
 
         DecisionMaker = GetComponent<AgentDecisionMaker>();
     }

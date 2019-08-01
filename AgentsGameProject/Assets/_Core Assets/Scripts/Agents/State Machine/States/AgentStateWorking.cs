@@ -34,7 +34,7 @@ public class AgentStateWorking : IAgentState
         if (StatesUtils.ValidateState(Owner, WORK) && Owner.CurrentWorkplace.BuildingActive)
             Work(Owner.CurrentWorkplace);
         else
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()

@@ -37,7 +37,7 @@ public class AgentStateSearchingSleepingPlace : IAgentState
         Owner.CurrentSleepPlace = FindClosestSleepPlace();
 
         if(Owner.CurrentSleepPlace)
-            Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.MovingToSleep]);
+            Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.MovingToSleep]);
     }
 
     public void Exit()

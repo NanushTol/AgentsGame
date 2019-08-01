@@ -38,7 +38,7 @@ public class AgentStateMating : IAgentState
             AgentReproduction.Reproduce(Owner, mate);
         }
 
-        Owner.StateMachine.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
+        Owner.StateMachineRef.ChangeState(Owner.States[Agent.StatesEnum.BaseState]);
     }
 
     public void Exit()

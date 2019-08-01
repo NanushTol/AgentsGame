@@ -77,7 +77,7 @@ public class DragObjects : MonoBehaviour
                         }
                         if (transformToDrag.gameObject.tag == "Work")
                         {
-                            v3 = transformToDrag.GetComponent<GenericBuilding>().grid.WorldToCell(v3);
+                            v3 = transformToDrag.GetComponent<GenericBuilding>().GridRef.WorldToCell(v3);
 
                             v3.x += 0.5f;
                             v3.y += 0.5f;
@@ -103,7 +103,7 @@ public class DragObjects : MonoBehaviour
                 dragging = false;
                 if (transformToDrag.gameObject.tag == "Work")
                 {
-                    Vector3Int position = transformToDrag.GetComponent<GenericBuilding>().grid.WorldToCell(transformToDrag.position);
+                    Vector3Int position = transformToDrag.GetComponent<GenericBuilding>().GridRef.WorldToCell(transformToDrag.position);
 
                     position.x += mapCreator.MapWidth / 2;
                     position.y += (mapCreator.MapHeight / 2) - 1;

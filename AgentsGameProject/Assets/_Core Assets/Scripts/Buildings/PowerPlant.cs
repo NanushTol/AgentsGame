@@ -24,10 +24,10 @@ public class PowerPlant : MonoBehaviour
         if (genericBuilding.BuildingActive && genericBuilding.Production > 0)
         {
             // Update resource production
-            genericBuilding.resourcesDataController.UpdateResourceProduction(ENERGY, genericBuilding.addedValue);
+            genericBuilding.resourcesDataController.UpdateResourceProduction(ENERGY, genericBuilding.AddedValue);
 
             // Reset pruduction
-            genericBuilding.Production -= genericBuilding.addedValue;
+            genericBuilding.Production -= genericBuilding.AddedValue;
         }
     }    
 }

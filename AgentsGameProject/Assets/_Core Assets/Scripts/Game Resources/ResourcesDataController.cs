@@ -4,7 +4,7 @@ using UnityEngine;
 using static Constants;
 public class ResourcesDataController : MonoBehaviour
 {
-    public float UpddateSeconds = 1f;
+    public float UpdateSeconds = 1f;
     float elapsedTime;
 
 
@@ -52,23 +52,24 @@ public class ResourcesDataController : MonoBehaviour
     }
 
 
-    void Update()
+
+    public void ConstantUpdate()
     {
         YearsPlayed.ApplyChange(Time.deltaTime);
 
         elapsedTime += Time.deltaTime;
 
-        if(elapsedTime >= UpddateSeconds)
+        if (elapsedTime >= UpdateSeconds)
         {
             UpdateResourcesValue();
 
             elapsedTime = 0;
         }
     }
-
    
 
-    void UpdateResourcesValue()
+
+    public void UpdateResourcesValue()
     {
         // add production to amount
         int i = 0;
@@ -83,8 +84,9 @@ public class ResourcesDataController : MonoBehaviour
         // update ui
         updateUiEvent.Raise();
 
+
         // reset production
-        foreach(FloatVariable prod in ResourcesProduction)
+        foreach (FloatVariable prod in ResourcesProduction)
         {
             prod.SetValue(0);
         }
