@@ -46,7 +46,7 @@ public class MoveObject : MonoBehaviour
 
     public void EnterMoveState()
     {
-        LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.MoveResource]);
+        LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.MoveObject]);
     }
 
     public void GetSelectedData()
@@ -73,6 +73,7 @@ public class MoveObject : MonoBehaviour
             switch (_selectedType)
             {
                 case SELECTED_BUILDING:
+
                     Vector3Int position = GridRef.WorldToCell(ObjectToMove.transform.position);
 
                     position.x += MapCreatorRef.MapWidth / 2;
@@ -82,7 +83,7 @@ public class MoveObject : MonoBehaviour
                     break;
             }
 
-            LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.StateMachineRef.PreviousState);
+            LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
             ResourcesDataControllerRef.UpdateResourceAmount(GODFORCE, -GfCostIndicatorValue.Value);
         }
     }

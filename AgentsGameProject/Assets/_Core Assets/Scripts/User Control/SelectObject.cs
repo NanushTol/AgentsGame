@@ -124,7 +124,16 @@ public class SelectObject : MonoBehaviour
 
     public void PlaceIndicator(Vector3 _position)
     {
-        selectionIndicator.transform.position = _position;
+        if(SelectedObjectType != SELECTED_AGENT)
+            selectionIndicator.transform.position = _position;
+
+        else if(SelectedObjectType == SELECTED_AGENT)
+        {
+            if(Agent.InBuilding)
+                selectionIndicator.transform.position = new Vector3(0f, -1000f, 0f);
+            else if(!Agent.InBuilding)
+                selectionIndicator.transform.position = _position;
+        }
     }
 
     public void GetSelectedObjectType(RaycastHit2D hit)
@@ -141,24 +150,18 @@ public class SelectObject : MonoBehaviour
                 case "Agent":
                     SelectedObjectType = SELECTED_AGENT;
                     Agent = SelectedObject.GetComponent<Agent>();
-                    SelectedAgentUi.SetActive(true);
-                    SelectedControlPanelUi.SetActive(true);
                     LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
 
                 case "Work":
                     SelectedObjectType = SELECTED_BUILDING;
                     Building = SelectedObject.GetComponent<GenericBuilding>();
-                    SelectedBuildingUi.SetActive(true);
-                    SelectedControlPanelUi.SetActive(true);
                     LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
 
                 case "Food":
                     SelectedObjectType = SELECTED_FOOD;
                     Building = SelectedObject.GetComponent<GenericBuilding>();
-                    SelectedBuildingUi.SetActive(true);
-                    SelectedControlPanelUi.SetActive(true);
                     LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
 
@@ -168,7 +171,6 @@ public class SelectObject : MonoBehaviour
                 case "Mineral":
                     SelectedObjectType = SELECTED_RESOURCE;
                     Resource = SelectedObject.GetComponent<Resource>();
-                    SelectedResourceUi.SetActive(true);
                     LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.ObjectSelected]);
                     break;
             }
@@ -181,6 +183,36 @@ public class SelectObject : MonoBehaviour
             LevelManagerRef.StateMachineRef.ChangeState(LevelManagerRef.States[LevelManager.StatesEnum.BaseState]);
         }
     }
+
+    public void ActivateUi()
+    {
+        switch (SelectedObjectType)
+        {
+            case SELECTED_AGENT:
+                SelectedAgentUi.SetActive(true);
+                SelectedBuildingUi.SetActive(false);
+                SelectedResourceUi.SetActive(false);
+                SelectedControlPanelUi.SetActive(false);
+                break;
+
+            case SELECTED_BUILDING:
+            case SELECTED_FOOD:
+                SelectedBuildingUi.SetActive(true);
+                SelectedAgentUi.SetActive(false);
+                SelectedResourceUi.SetActive(false);
+                SelectedControlPanelUi.SetActive(true);
+                break;
+
+            case SELECTED_RESOURCE:
+                SelectedResourceUi.SetActive(true);
+                SelectedAgentUi.SetActive(false);
+                SelectedBuildingUi.SetActive(false);
+                SelectedControlPanelUi.SetActive(false);
+                break;
+        }
+    }
+
+
 
     public void GetSelectedObjectProperties()
     {

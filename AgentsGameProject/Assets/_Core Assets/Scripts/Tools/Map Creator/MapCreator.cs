@@ -22,6 +22,10 @@ public class MapCreator : MonoBehaviour
     public TileBase LandTile;
     public TileBase WaterTile;
 
+    public Medium AirMedium;
+    public TileBase MediumTile;
+
+
     Vector2Int mapCenter;
     Vector2Int landOffset;
 
@@ -31,6 +35,7 @@ public class MapCreator : MonoBehaviour
     {
         LandTileMap.ClearAllTiles();
         WaterTileMap.ClearAllTiles();
+
 
         mapCenter = new Vector2Int(MapWidth / 2, MapHeight / 2);
 
@@ -43,6 +48,11 @@ public class MapCreator : MonoBehaviour
                 WaterTileMap.SetTile(position, WaterTile);
             }
         }
+
+
+        CreateAirMedium();
+        CreateAirGraphics();
+
 
         // Create Land
         
@@ -57,5 +67,30 @@ public class MapCreator : MonoBehaviour
                 WaterTileMap.SetTile(position, null);
             }
         }
+    }
+
+    void CreateAirMedium()
+    {
+        AirMedium.InitializeMedium();
+    }
+
+    void CreateAirGraphics()
+    {
+        AirMedium.InitializeGraphics();
+
+        Color c = new Color(1f, 1f, 1f, 0.0f);
+
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < AirMedium.Cells.Length; j++)
+            {
+                AirMedium.TileMaps[i].SetTile(AirMedium.Cells[j].GridPosition, MediumTile);
+
+                AirMedium.TileMaps[i].SetTileFlags(AirMedium.Cells[j].GridPosition, TileFlags.None);
+
+                AirMedium.TileMaps[i].SetColor(AirMedium.Cells[j].GridPosition, c);
+            }
+        }
+
     }
 }

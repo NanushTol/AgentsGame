@@ -111,7 +111,10 @@ public class CreateBuilding : MonoBehaviour
             // Check if relevent resource is available at selected location
             // or if location is valid for the relavent type of building
             // If True place building at location
-            if (BuildingType.name == "WoodMill" || BuildingType.name == "StoneQuarry" || BuildingType.name == "PowerPlant" || BuildingType.name == "MineralsQuarry")
+            if (BuildingType.name == "WoodMill" 
+                || BuildingType.name == "StoneQuarry" 
+                || BuildingType.name == "PowerPlant" 
+                || BuildingType.name == "MineralsQuarry")
             {
                 RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition),
                                Camera.main.transform.forward, 15f, LayerMask.GetMask("Resource"));

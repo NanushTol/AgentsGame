@@ -15,7 +15,7 @@ public class GameStateMoveResource : IState
 
     public void Enter()
     {
-        _owner.ActiveState = LevelManager.StatesEnum.MoveResource;
+        //_owner.ActiveState = LevelManager.StatesEnum.MoveResource;
 
         _owner.SelectObjectRef.SelectedResourceUi.SetActive(true);
         _owner.SelectObjectRef.SelectedControlPanelUi.SetActive(true);

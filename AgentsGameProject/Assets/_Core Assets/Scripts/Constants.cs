@@ -21,7 +21,17 @@
     public const int SELECTED_RESOURCE = 3;
     public const int SELECTED_AGENT = 4;
 
+    public enum ElementTypes {Water, Co2, Oxygen, Nutrients }
+    public const int ELEMENT_WATER = 0;
+    public const int ELEMENT_CO2 = 1;
+    public const int ELEMENT_OXYGEN = 2;
+    public const int ELEMENT_NUTRI = 3;
 
+    public enum MaterialTypes { Metal, Stone, Wood, Flesh, Oil, Gas}
+
+    public enum ForceTypes { Fire, Wind, Heat }
+
+    public enum MediumTypes { Soil, Air, Water}
 
 
 }

@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
 
     public enum StatesEnum
     {
-        BaseState, CreatingBuilding, CreatingLand, ObjectSelected, MoveResource
+        BaseState, CreatingBuilding, CreatingLand, ObjectSelected, MoveObject
     }
 
     //[HideInInspector]
@@ -48,7 +48,7 @@ public class LevelManager : MonoBehaviour
         States.Add(StatesEnum.CreatingBuilding, new GameStateCreateBuilding(this));
         States.Add(StatesEnum.CreatingLand, new GameStateCreateLand(this));
         States.Add(StatesEnum.ObjectSelected, new GameStateObjectSelected(this));
-        States.Add(StatesEnum.MoveResource, new GameStateMoveResource(this));
+        States.Add(StatesEnum.MoveObject, new GameStateMoveObject(this));
 
 
         StateMachineRef.ChangeState(States[StatesEnum.BaseState]);

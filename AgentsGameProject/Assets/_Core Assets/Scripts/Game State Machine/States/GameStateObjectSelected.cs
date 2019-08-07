@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameStateObjectSelected : IState
 {
-    LevelManager _owner;
+    public LevelManager _owner;
 
     public GameStateObjectSelected(LevelManager owner) { this._owner = owner; }
 
@@ -16,7 +16,7 @@ public class GameStateObjectSelected : IState
     public void Enter()
     {
         _owner.ActiveState = LevelManager.StatesEnum.ObjectSelected;
-
+        _owner.SelectObjectRef.ActivateUi();
         _owner.SelectObjectRef.GetSelectedObjectProperties();
     }
 
@@ -39,7 +39,9 @@ public class GameStateObjectSelected : IState
 
     public void Exit()
     {
+        _owner.SelectObjectRef.SelectedAgentUi.SetActive(false);
         _owner.SelectObjectRef.SelectedBuildingUi.SetActive(false);
+        _owner.SelectObjectRef.SelectedResourceUi.SetActive(false);
         _owner.SelectObjectRef.SelectedControlPanelUi.SetActive(false);
 
         _owner.SelectObjectRef.PlaceIndicator(new Vector3(0f, -1000f, 0f));
