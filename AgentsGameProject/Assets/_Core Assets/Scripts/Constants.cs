@@ -27,11 +27,11 @@
     public const int ELEMENT_OXYGEN = 2;
     public const int ELEMENT_NUTRI = 3;
 
-    public enum MaterialTypes { Metal, Stone, Wood, Flesh, Oil, Gas}
+    public enum MaterialTypes { Metal, Stone, Wood, Flesh, Oil, Gas, Feul}
 
     public enum ForceTypes { Fire, Wind, Heat }
 
     public enum MediumTypes { Soil, Air, Water}
 
-
+    
 }

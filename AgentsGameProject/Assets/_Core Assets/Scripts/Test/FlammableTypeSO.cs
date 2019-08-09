@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu][System.Serializable]
+[CreateAssetMenu(menuName = "Adjactives Types/Flammable Type")][System.Serializable]
 public class FlammableTypeSO : ScriptableObject
 {
     //public float[] IO = new float[5];

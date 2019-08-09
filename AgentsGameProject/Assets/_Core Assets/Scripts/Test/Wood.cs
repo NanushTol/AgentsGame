@@ -10,6 +10,8 @@ public class Wood : GameMaterial
     Flammable _flammable;
     FlammableTypeSO _flammableType;
 
+    
+
     void Awake()
     {
         Initialize(MaterialTypes.Wood);

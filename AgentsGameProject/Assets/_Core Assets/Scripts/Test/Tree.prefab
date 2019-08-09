@@ -96,6 +96,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 10
   wood: {fileID: 0}
+  producer: {fileID: 0}
+  ProducerType: {fileID: 11400000, guid: 1546872a5ca3fa041bd0a4f7b6f1f56a, type: 2}
 --- !u!58 &5229178336875286575
 CircleCollider2D:
   m_ObjectHideFlags: 0

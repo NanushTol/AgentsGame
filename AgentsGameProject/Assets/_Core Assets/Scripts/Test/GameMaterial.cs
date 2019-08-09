@@ -9,6 +9,8 @@ public class GameMaterial : MonoBehaviour
     public MaterialTypes MaterialType;
     //[HideInInspector]
     public float Amount;
+    //[HideInInspector]
+    public bool Wet = false;
 
     public void Initialize(MaterialTypes material)
     {

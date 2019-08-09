@@ -49,8 +49,7 @@ public class MapCreator : MonoBehaviour
             }
         }
 
-
-        CreateAirMedium();
+        AirMedium.InitializeMedium();
         CreateAirGraphics();
 
 
@@ -69,16 +68,13 @@ public class MapCreator : MonoBehaviour
         }
     }
 
-    void CreateAirMedium()
-    {
-        AirMedium.InitializeMedium();
-    }
+    
 
     void CreateAirGraphics()
     {
         AirMedium.InitializeGraphics();
 
-        Color c = new Color(1f, 1f, 1f, 0.0f);
+        Color c = new Color(1f, 1f, 1f, 1f);
 
         for (int i = 0; i < 5; i++)
         {
