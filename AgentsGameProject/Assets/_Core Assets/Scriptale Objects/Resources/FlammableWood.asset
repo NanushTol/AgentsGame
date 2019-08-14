@@ -16,10 +16,10 @@ MonoBehaviour:
   - Name: Water
     ValuePerTick: 0.1
   - Name: Co2
-    ValuePerTick: 0.1
+    ValuePerTick: 0.3
   - Name: Oxigen
     ValuePerTick: 0.1
   - Name: Nutrients
     ValuePerTick: 0.1
   - Name: Heat
-    ValuePerTick: 0.1
+    ValuePerTick: 1

@@ -37,6 +37,20 @@ public class Medium : MonoBehaviour
             TileMaps[i] = transform.GetChild(i).GetComponent<Tilemap>();
             TileMaps[i].ClearAllTiles();
         }
+
+        Color c = new Color(1f, 1f, 1f, 1f);
+
+        for (int i = 0; i < 5; i++)
+        {
+            for (int j = 0; j < Cells.Length; j++)
+            {
+                TileMaps[i].SetTile(Cells[j].GridPosition, _mapCreator.MediumTile);
+
+                TileMaps[i].SetTileFlags(Cells[j].GridPosition, TileFlags.None);
+
+                TileMaps[i].SetColor(Cells[j].GridPosition, c);
+            }
+        }
     }
 
     public void InitializeMedium()
@@ -45,7 +59,7 @@ public class Medium : MonoBehaviour
 
         MapSize = new Vector2Int(_mapCreator.MapWidth, _mapCreator.MapHeight);
 
-        Cells = new MediumCell[MapSize.x * MapSize.y];
+        Cells = new MediumCell[MapSize.x * MapSize.y + 1];
 
         int i = 0;
         for (int y = 0; y < MapSize.y; y++)
@@ -56,6 +70,25 @@ public class Medium : MonoBehaviour
                 i++;
             }
         }
+
+        //Cells[461].Content[4] = 21;
+        //Cells[462].Content[4] = 22;
+
+        //Cells[465].Content[1] = 2f;
+        //Cells[465].Content[4] = 30f;
+
+
+        //Cells[436].Content[4] = 25;
+
+        //Cells[405].Content[4] = 30;
+        //Cells[406].Content[4] = 25;
+        //Cells[377].Content[4] = 20;
+
+        //Cells[305].Content[4] = 30;
+
+
+        //Dummy Cell
+        Cells[MapSize.x * MapSize.y] = new MediumCell(MapSize.x * MapSize.y, new Vector3Int(-(MapSize.x / 2)-5,-(MapSize.y / 2)-5, 0));
 
         Wind.Initialize();
     }
@@ -72,7 +105,8 @@ public class Medium : MonoBehaviour
 
     void Awake()
     {
-        InitializeMedium();    
+        InitializeMedium();
+        InitializeGraphics();
     }
 
     void Update()
@@ -80,6 +114,7 @@ public class Medium : MonoBehaviour
         _elapsedTime += Time.deltaTime;
         if (_elapsedTime >= GraphicUpdateTime)
         {
+            Wind.CalculateWind();
             UpdateGraphics();
             _elapsedTime = 0f;
         }
@@ -90,15 +125,19 @@ public class Medium : MonoBehaviour
     {
         for (int i = 0; i < TileMaps.Length; i++)
         {
-            for (int j = 0; j < Cells.Length; j++)
+            if (TileMaps[i].gameObject.activeInHierarchy)
             {
-                float value = 0f; ;
-                if (i < 4)
-                    value = Utils.Remap(Cells[j].Content[i], 0f, 2f, 0f, 1f);
-                else if (i == 4)
-                    value = Utils.Remap(Cells[j].Content[i], 0f, 50f, 0f, 1f); //Heat Map
+                for (int j = 0; j < Cells.Length; j++)
+                {
+                    float value = 0f;
 
-                TileMaps[i].SetColor(Cells[j].GridPosition, MapsColor[i].Evaluate(value));
+                    if (i < 4)
+                        value = Utils.Remap(Cells[j].Content[i], 0f, 10f, 0f, 1f);
+                    else if (i == 4)
+                        value = Utils.Remap(Cells[j].Content[i], 0f, 50f, 0f, 1f); //Heat Map
+
+                    TileMaps[i].SetColor(Cells[j].GridPosition, MapsColor[i].Evaluate(value));
+                }
             }
         }
     }

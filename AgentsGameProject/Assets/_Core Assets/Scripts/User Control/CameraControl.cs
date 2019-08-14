@@ -14,11 +14,26 @@ public class CameraControl : MonoBehaviour
     public float MinZoom;
     public float MaxZoom;
 
+    public MapCreator MapCreator;
+
+    private float _minX;
+    private float _maxX;
+    private float _minY;
+    private float _maxY;
+
+    private float _mapX;
+    private float _mapY;
+
+    float _vertExtent;
+    float _horzExtent;
 
     // Start is called before the first frame update
     void Start()
     {
         cameraSize = GetComponent<Camera>().orthographicSize;
+
+        _mapX = MapCreator.MapWidth;
+        _mapY = MapCreator.MapHeight;
     }
 
     // Update is called once per frame
@@ -39,5 +54,32 @@ public class CameraControl : MonoBehaviour
             cameraPos += transform.up * mouseY * PanSensitivity * (-1) * cameraSize;
             transform.position = cameraPos;
         }
+
+        CalculatePositionLimits();
+    }
+
+    private void LateUpdate()
+    {
+        LimitCameraPositionToMap();
+    }
+
+
+    void LimitCameraPositionToMap()
+    {
+        Vector3 v3 = transform.position;
+        v3.x = Mathf.Clamp(v3.x, _minX, _maxX);
+        v3.y = Mathf.Clamp(v3.y, _minY, _maxY);
+        transform.position = v3;
+    }
+
+    void CalculatePositionLimits()
+    {
+        _vertExtent = Camera.main.orthographicSize;
+        _horzExtent = _vertExtent * Screen.width / Screen.height;
+
+        _minX = _horzExtent - _mapX / 2;
+        _maxX = _mapX / 2 - _horzExtent;
+        _minY = _vertExtent - _mapY / 2;
+        _maxY = _mapY / 2 - _vertExtent;
     }
 }

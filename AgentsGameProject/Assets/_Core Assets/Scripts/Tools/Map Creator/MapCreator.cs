@@ -74,19 +74,7 @@ public class MapCreator : MonoBehaviour
     {
         AirMedium.InitializeGraphics();
 
-        Color c = new Color(1f, 1f, 1f, 1f);
-
-        for (int i = 0; i < 5; i++)
-        {
-            for (int j = 0; j < AirMedium.Cells.Length; j++)
-            {
-                AirMedium.TileMaps[i].SetTile(AirMedium.Cells[j].GridPosition, MediumTile);
-
-                AirMedium.TileMaps[i].SetTileFlags(AirMedium.Cells[j].GridPosition, TileFlags.None);
-
-                AirMedium.TileMaps[i].SetColor(AirMedium.Cells[j].GridPosition, c);
-            }
-        }
+        
 
     }
 }

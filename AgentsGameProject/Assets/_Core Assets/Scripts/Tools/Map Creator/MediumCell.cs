@@ -10,7 +10,7 @@ public class MediumCell
         GridPosition = gridPosition;
     }
 
-    public float[] Content = new float[] { 0f, 0f, 1f, 0f, 22f, 0f }; // {Water, Co2, Oxy, Nutrients, Heat }
+    public float[] Content = new float[] { 0f, 0f, 4f, 0f, 20f }; // {Water, Co2, Oxy, Nutrients, Heat }
 
     public int CellId;
 
