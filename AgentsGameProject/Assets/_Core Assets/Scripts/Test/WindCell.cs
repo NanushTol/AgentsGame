@@ -11,6 +11,7 @@ public class WindCell
     }
 
     public Vector2 MotionVector;
+    public Vector2 RecivedMotionVector;
 
     public int CellId;
 

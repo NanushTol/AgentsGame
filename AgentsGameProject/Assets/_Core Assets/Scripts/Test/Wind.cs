@@ -13,7 +13,7 @@ public class Wind : MonoBehaviour
 
     public float ContentTransferRatio = 0.02f;
     public float HeatTransferRatio = 2f;
-
+    public float Drag = 2f;
 
     public Tilemap WindTileMap;
     public TileBase WindTile;
@@ -221,7 +221,10 @@ public class Wind : MonoBehaviour
     {
         float differenceAvrage = _totalDifference / 4;
 
-        _windCells[cellId].MotionVector = new Vector2(_directionPrecentage[1] * differenceAvrage, _directionPrecentage[0] * differenceAvrage);
+        Vector2 newV2 = new Vector2(_directionPrecentage[1] * differenceAvrage, _directionPrecentage[0] * differenceAvrage);
+
+        _windCells[cellId].MotionVector = newV2 + _windCells[cellId].RecivedMotionVector;
+        _windCells[cellId].RecivedMotionVector = new Vector2(0f, 0f);
     }
 
     void DrawDebugLine(int cellId)
@@ -302,28 +305,6 @@ public class Wind : MonoBehaviour
                 TransferContent(cellId, 3, Math.Abs(_windCells[cellId].MotionVector.x));
             }
         }
-
-        //if (_windCells[cellId].MotionVector.x > 0) // Right Movement
-        //{
-        //    // Take Left cell
-        //    TransferContent(cellId, 3, _windCells[cellId].MotionVector.x);
-        //}
-        //else if (_windCells[cellId].MotionVector.x < 0) // left Movement
-        //{
-        //    // Take Right cell
-        //    TransferContent(cellId, 1, _windCells[cellId].MotionVector.x);
-        //}
-
-        //if (_windCells[cellId].MotionVector.y > 0) // Up Movement
-        //{
-        //    // Take Bottom cell
-        //    TransferContent(cellId, 2, _windCells[cellId].MotionVector.y);
-        //}
-        //else if (_windCells[cellId].MotionVector.y < 0) // Down Movement
-        //{
-        //    // Take Top cell
-        //    TransferContent(cellId, 0, _windCells[cellId].MotionVector.y);
-        //}
     }
 
 
@@ -350,6 +331,52 @@ public class Wind : MonoBehaviour
                     _tempCells[_adjacentId[dir]].Content[c] -= _horzTransfer;
                 }
             }
+        }
+    }
+
+    void TransferWind(int cellId)
+    {
+        
+        float ratio;
+        Vector2 ratioV;
+
+        Vector2 recivedV = _windCells[cellId].MotionVector - _windCells[cellId].MotionVector * Drag;
+
+        //if (Math.Abs(_windCells[cellId].MotionVector.x) > Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.y != 0f)
+        //{
+        //    ratio = Math.Abs(_windCells[cellId].MotionVector.y / _windCells[cellId].MotionVector.x);
+        //    ratioV = new Vector2((0.5f * ratio) + (1f - ratio), (0.5f * ratio));
+        //}
+        //else if (Math.Abs(_windCells[cellId].MotionVector.x) < Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.x != 0f)
+        //{
+        //    ratio = Math.Abs(_windCells[cellId].MotionVector.x / _windCells[cellId].MotionVector.y);
+        //    ratioV = new Vector2((0.5f * ratio), (0.5f * ratio) + (1f - ratio));
+        //}
+        //else ratioV = new Vector2(0.5f, 0.5f);
+
+        ratioV = new Vector2(0.5f, 0.5f);
+
+        if (_windCells[cellId].MotionVector.x > 0) // Right Movement
+        {
+            _windCells[_adjacentId[1]].RecivedMotionVector +=  recivedV * ratioV;
+        }
+        else if (_windCells[cellId].MotionVector.x < 0) // left Movement
+        {
+            _windCells[_adjacentId[3]].RecivedMotionVector +=  recivedV * ratioV;
+        }
+
+        if (_windCells[cellId].MotionVector.y > 0) // Up Movement
+        {
+            _windCells[_adjacentId[0]].RecivedMotionVector +=  recivedV * ratioV;
+        }
+        else if (_windCells[cellId].MotionVector.y < 0) // Down Movement
+        {
+            _windCells[_adjacentId[2]].RecivedMotionVector +=  recivedV * ratioV;
+        }
+
+        if (cellId == 465)
+        {
+
         }
     }
 
@@ -407,6 +434,8 @@ public class Wind : MonoBehaviour
             }
 
             MoveCellsContent(i);
+
+            TransferWind(i);
         }
 
         ApplyCellsChanges();

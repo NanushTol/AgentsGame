@@ -22,4 +22,4 @@ MonoBehaviour:
   - Name: Nutrients
     ValuePerTick: 0.1
   - Name: Heat
-    ValuePerTick: 1
+    ValuePerTick: 2

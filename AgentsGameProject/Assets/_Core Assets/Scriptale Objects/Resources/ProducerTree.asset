@@ -23,7 +23,7 @@ MonoBehaviour:
   ProduceElements: 1
   Water: 0
   Co2: 0
-  Oxygen: 0.05
+  Oxygen: 0.2
   Nutrients: 0
   Elements:
   - 0
