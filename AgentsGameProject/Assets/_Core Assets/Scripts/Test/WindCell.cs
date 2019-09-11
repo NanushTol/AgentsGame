@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WindCell
+namespace WeatherSystem
 {
-    public WindCell(int id, Vector3Int gridPosition)
+    public class WindCell
     {
-        CellId = id;
-        GridPosition = gridPosition;
+        public WindCell(int id, Vector3Int gridPosition)
+        {
+            CellId = id;
+            GridPosition = gridPosition;
+        }
+
+        public Vector2 MotionVector;
+        public Vector2 RecivedMotionVector;
+
+        public int CellId;
+
+        public Vector3Int GridPosition;
     }
-
-    public Vector2 MotionVector;
-    public Vector2 RecivedMotionVector;
-
-    public int CellId;
-
-    public Vector3Int GridPosition;
 }
+

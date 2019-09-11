@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
 using Pathfinding;
+using WeatherSystem;
 
 [ExecuteInEditMode]
 public class MapCreator : MonoBehaviour

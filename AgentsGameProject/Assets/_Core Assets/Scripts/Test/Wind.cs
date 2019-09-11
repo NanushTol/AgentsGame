@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Unity.Collections;
 using System.Linq;
 using System;
+using WeatherSystem;
+using Unity.Jobs;
 
 public class Wind : MonoBehaviour
 {
@@ -22,6 +25,10 @@ public class Wind : MonoBehaviour
 
     Medium _airMedium;
 
+    MediumCell[] _mediumCells;
+    MediumCell[] _tempCells;
+    WindCell[] _windCells;
+
     Vector2Int _mapSize;
 
     int[] _adjacentId = new int[4]; // Top, Right, Buttom, Left
@@ -29,22 +36,16 @@ public class Wind : MonoBehaviour
     float[] _directionPrecentage = new float[2];
     float[] _directionAmplitude = new float[2];
     float _totalDifference;
-    float _directionAvrage;
     float _horzTransfer;
     float _vertTransfer;
 
     float _maxVector;
     float _tempMaxVector;
 
-
-
-    WindCell[] _windCells;
-
-    MediumCell[] _tempCells;
-
-    int _counter;
-
     int _dummyId;
+
+    JobHandle jobHandle;
+    CalculateWindJob CalcWindJob;
 
     public void Initialize()
     {
@@ -52,6 +53,7 @@ public class Wind : MonoBehaviour
         _mapSize = new Vector2Int(_airMedium.MapSize.x, _airMedium.MapSize.y);
         WindTileMap.ClearAllTiles();
 
+        InitializeMediumCells();
         InitializeWindCells();
         InitializeTempCells();
         InitializeGraphics();
@@ -59,7 +61,194 @@ public class Wind : MonoBehaviour
         _dummyId = _mapSize.x * _mapSize.y;
     }
 
+    public void CalculateWind()
+    {
+        // clear temp cells list
+        ResetCells(0);
+        ResetCells(1);
+
+        _tempMaxVector = 0f;
+
+        for (int i = 0; i < _mediumCells.Length - 1; i++)
+        {
+            // Get cell's neighbors
+            GetAdjacentCellsIds(i);
+
+            // Calculate heat differences
+            CalculateHeatDifference(i);
+
+            // Calculate Direction & Amplitude
+            CalculateDirectionAmplitude(i);
+
+            // Calculate Direction Precentages
+            CalculateDirectionPrecentage(i);
+
+            CalculateMotionVector(i);
+
+            if (DebugWind)
+            {
+                DrawDebugLine(i);
+
+                CalculateMaxVector(i);
+            }
+
+            MoveCellsContent(i);
+
+            TransferWind(i);
+        }
+
+        ApplyCellsChanges();
+
+        _maxVector = _tempMaxVector;
+
+        if (DebugWind)
+        {
+            CalculateTotalHeat();
+        }
+    }
+
+    public void CalculateWindJobFunc()
+    {
+        NativeArray<MediumCellsStruct> mediumCellsReff = new NativeArray<MediumCellsStruct>(_mediumCells.Length, Allocator.TempJob);
+        NativeArray<MediumCellsStruct> tempCellsReturn = new NativeArray<MediumCellsStruct>(_mediumCells.Length, Allocator.TempJob);
+        NativeArray<WindCellsStruct> windCellsReturn = new NativeArray<WindCellsStruct>(_windCells.Length, Allocator.TempJob);
+        NativeArray<float> tempMaxVectorReturn = new NativeArray<float>(1, Allocator.TempJob);
+        NativeArray<float> maxVector = new NativeArray<float>(1, Allocator.TempJob);
+
+        // clear temp cells list
+        ResetCells(0);
+        ResetCells(1);
+
+        _tempMaxVector = 0f;
+
+        // Set up the job data
+        InitializeJob(mediumCellsReff, tempCellsReturn, windCellsReturn, maxVector, tempMaxVectorReturn);
+
+        // Schedule the job
+        jobHandle = CalcWindJob.Schedule(mediumCellsReff.Length, 1);
+
+        // Wait for the job to complete
+        jobHandle.Complete();
+
+        // Getting results
+        GetJobResults(tempCellsReturn, windCellsReturn, tempMaxVectorReturn);
+
+        ApplyCellsChanges();
+
+        _maxVector = _tempMaxVector;
+
+        if (DebugWind)
+        {
+            CalculateTotalHeat();
+        }
+
+        // Free the memory allocated by the result array
+        mediumCellsReff.Dispose();
+        tempCellsReturn.Dispose();
+        windCellsReturn.Dispose();
+        maxVector.Dispose();
+        tempMaxVectorReturn.Dispose();
+    }
+
+    private void GetJobResults(NativeArray<MediumCellsStruct> tempCellsReturn, NativeArray<WindCellsStruct> windCellsReturn, NativeArray<float> tempMaxVectorReturn)
+    {
+        for (int i = 0; i < _mediumCells.Length; i++)
+        {
+            _tempCells[i].Content[0] = tempCellsReturn[i].Content0;
+            _tempCells[i].Content[1] = tempCellsReturn[i].Content1;
+            _tempCells[i].Content[2] = tempCellsReturn[i].Content2;
+            _tempCells[i].Content[3] = tempCellsReturn[i].Content3;
+            _tempCells[i].Content[4] = tempCellsReturn[i].Content4;
+
+
+            _windCells[i].MotionVector.x = windCellsReturn[i].MotionVectorX;
+            _windCells[i].MotionVector.y = windCellsReturn[i].MotionVectorY;
+            _windCells[i].RecivedMotionVector.x = windCellsReturn[i].RecivedMotionVectorX;
+            _windCells[i].RecivedMotionVector.y = windCellsReturn[i].RecivedMotionVectorY;
+        }
+        _tempMaxVector = tempMaxVectorReturn[0];
+    }
+
+    private void InitializeJob(NativeArray<MediumCellsStruct> mediumCellsReff, NativeArray<MediumCellsStruct> tempCellsReturn, 
+        NativeArray<WindCellsStruct> windCellsReturn, NativeArray<float> maxVector, NativeArray<float> tempMaxVectorReturn)
+    {
+        for (int i = 0; i < _mediumCells.Length; i++)
+        {
+            mediumCellsReff[i] = new MediumCellsStruct
+            {
+                Content0 = _mediumCells[i].Content[0],
+                Content1 = _mediumCells[i].Content[1],
+                Content2 = _mediumCells[i].Content[2],
+                Content3 = _mediumCells[i].Content[3],
+                Content4 = _mediumCells[i].Content[4]
+            };
+            tempCellsReturn[i] = new MediumCellsStruct
+            {
+                Content0 = _mediumCells[i].Content[0],
+                Content1 = _mediumCells[i].Content[1],
+                Content2 = _mediumCells[i].Content[2],
+                Content3 = _mediumCells[i].Content[3],
+                Content4 = _mediumCells[i].Content[4]
+            };
+
+            windCellsReturn[i] = new WindCellsStruct
+            {
+                MotionVectorX = _windCells[i].MotionVector.x,
+                MotionVectorY = _windCells[i].MotionVector.y,
+                RecivedMotionVectorX = _windCells[i].RecivedMotionVector.x,
+                RecivedMotionVectorY = _windCells[i].RecivedMotionVector.y
+            };
+        }
+        maxVector[0] = _maxVector;
+        tempMaxVectorReturn[0] = _tempMaxVector;
+
+
+        CalcWindJob = new CalculateWindJob();
+
+        CalcWindJob.MediumCellsReff = mediumCellsReff;
+        CalcWindJob.TempCellsReturn = tempCellsReturn;
+        CalcWindJob.WindCellsReturn = windCellsReturn;
+
+        CalcWindJob.MediumCells = _mediumCells;
+
+        CalcWindJob.TempCells = _tempCells;
+        CalcWindJob.WindCells = _windCells;
+
+        CalcWindJob.DebugWind = DebugWind;
+        CalcWindJob.ContentTransferRatio = ContentTransferRatio;
+        CalcWindJob.HeatTransferRatio = HeatTransferRatio;
+        CalcWindJob.Drag = Drag;
+
+        CalcWindJob.MapSize = _mapSize;
+
+        CalcWindJob.AdjacentId = _adjacentId;
+        CalcWindJob.HeatDifference = _heatDifference;
+        CalcWindJob.DirectionPrecentage = _directionPrecentage;
+        CalcWindJob.DirectionAmplitude = _directionAmplitude;
+        CalcWindJob.TotalDifference = _totalDifference;
+        CalcWindJob.HorzTransfer = _horzTransfer;
+        CalcWindJob.VertTransfer = _vertTransfer;
+
+        CalcWindJob.MaxVector = maxVector;
+        CalcWindJob.TempMaxVectorReturn = tempMaxVectorReturn;
+
+        CalcWindJob.DummyId = _dummyId;
+    }
+
+
+
+
     #region Initialization Functions
+    void InitializeMediumCells()
+    {
+        // Initiate Temp MediumCells
+        _mediumCells = new MediumCell[_airMedium.Cells.Length];
+        for (int i = 0; i < _airMedium.Cells.Length; i++)
+        {
+            _mediumCells[i] = new MediumCell(i, _airMedium.Cells[i].GridPosition);
+        }
+        ClealCells(1);
+    }
     void InitializeWindCells()
     {
         // Initialize WindCells acording to MediumCells
@@ -78,7 +267,7 @@ public class Wind : MonoBehaviour
         {
             _tempCells[i] = new MediumCell(i, _airMedium.Cells[i].GridPosition);
         }
-        ClearTempCells();
+        ClealCells(0);
     }
     void InitializeGraphics()
     {
@@ -105,33 +294,66 @@ public class Wind : MonoBehaviour
             }
         }
     }
-    void ClearTempCells()
+    /// <summary>
+    /// int type: 0 = _tempCells | 1 = _mediumCells
+    /// </summary>
+    void ClealCells(int type)
     {
-        for (int i = 0; i < _tempCells.Length; i++)
+        if (type == 0)
         {
-            for (int c = 0; c < 5; c++)
+            for (int i = 0; i < _tempCells.Length; i++)
             {
-                _tempCells[i].Content[c] = 0f;
+                for (int c = 0; c < 5; c++)
+                {
+                    _tempCells[i].Content[c] = 0f;
+                }
             }
         }
-    }
-    void ResetTempCells()
-    {
-        for (int i = 0; i < _airMedium.Cells.Length; i++)
+        else if (type == 1)
         {
-            for (int j = 0; j < 5; j++)
+            for (int i = 0; i < _mediumCells.Length; i++)
             {
-                _tempCells[i].Content[j] = _airMedium.Cells[i].Content[j];
+                for (int c = 0; c < 5; c++)
+                {
+                    _mediumCells[i].Content[c] = 0f;
+                }
+            }
+        }
+        
+    }
+    /// <summary>
+    /// int type: 0 = _tempCells | 1 = _mediumCells
+    /// </summary>
+    void ResetCells(int type)
+    {
+        if (type == 0)
+        {
+            for (int i = 0; i < _airMedium.Cells.Length; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    _tempCells[i].Content[j] = _airMedium.Cells[i].Content[j];
+                }
+            }
+        }
+        else if (type == 1)
+        {
+            for (int i = 0; i < _airMedium.Cells.Length; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    _mediumCells[i].Content[j] = _airMedium.Cells[i].Content[j];
+                }
             }
         }
     }
     #endregion
 
-
+    #region Job Functions
 
     public void GetAdjacentCellsIds(int cellId)
     {
-        MediumCell cell = _airMedium.Cells[cellId];
+        MediumCell cell = _mediumCells[cellId];
 
         GetSideTiles(cell);
         GetTopBotCells(cell);
@@ -184,7 +406,7 @@ public class Wind : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            _heatDifference[i] = _airMedium.Cells[cellId].Content[4] - _airMedium.Cells[_adjacentId[i]].Content[4];
+            _heatDifference[i] = _mediumCells[cellId].Content[4] - _mediumCells[_adjacentId[i]].Content[4];
 
             _totalDifference += Math.Abs(_heatDifference[i]);
         }
@@ -203,6 +425,15 @@ public class Wind : MonoBehaviour
         else if (_adjacentId[0] == _dummyId && _directionAmplitude[0] < 0) // if Top adjacent cell is dummy
         {
             _directionAmplitude[0] = 0;
+        }
+
+        if (cellId == 585)
+        {
+
+        }
+        if (cellId == 615)
+        {
+
         }
     }
 
@@ -225,6 +456,8 @@ public class Wind : MonoBehaviour
 
         _windCells[cellId].MotionVector = newV2 + _windCells[cellId].RecivedMotionVector;
         _windCells[cellId].RecivedMotionVector = new Vector2(0f, 0f);
+
+        
     }
 
     void DrawDebugLine(int cellId)
@@ -247,13 +480,12 @@ public class Wind : MonoBehaviour
 
     void CalculateMaxVector(int cellId)
     {
-        for (int i = 0; i < _airMedium.Cells.Length - 1; i++)
+        for (int i = 0; i < _mediumCells.Length - 1; i++)
         {
             if (_windCells[cellId].MotionVector.x > _tempMaxVector) _tempMaxVector = _windCells[cellId].MotionVector.x;
             if (_windCells[cellId].MotionVector.y > _tempMaxVector) _tempMaxVector = _windCells[cellId].MotionVector.y;
         }
     }
-
 
     void MoveCellsContent(int cellId) 
     {
@@ -307,10 +539,9 @@ public class Wind : MonoBehaviour
         }
     }
 
-
     void TransferContent(int cellId, int dir, float motionAxisValue)
     {
-        MediumCell adjacentCell = _airMedium.Cells[_adjacentId[dir]];
+        MediumCell adjacentCell = _mediumCells[_adjacentId[dir]];
 
         for (int c = 0; c < 5; c++)
         {
@@ -338,40 +569,39 @@ public class Wind : MonoBehaviour
     {
         
         float ratio;
-        Vector2 ratioV;
+        Vector2 cellTransferRatio;
 
         Vector2 recivedV = _windCells[cellId].MotionVector - _windCells[cellId].MotionVector * Drag;
 
-        //if (Math.Abs(_windCells[cellId].MotionVector.x) > Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.y != 0f)
-        //{
-        //    ratio = Math.Abs(_windCells[cellId].MotionVector.y / _windCells[cellId].MotionVector.x);
-        //    ratioV = new Vector2((0.5f * ratio) + (1f - ratio), (0.5f * ratio));
-        //}
-        //else if (Math.Abs(_windCells[cellId].MotionVector.x) < Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.x != 0f)
-        //{
-        //    ratio = Math.Abs(_windCells[cellId].MotionVector.x / _windCells[cellId].MotionVector.y);
-        //    ratioV = new Vector2((0.5f * ratio), (0.5f * ratio) + (1f - ratio));
-        //}
-        //else ratioV = new Vector2(0.5f, 0.5f);
+        if (Math.Abs(_windCells[cellId].MotionVector.x) > Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.y != 0f)
+        {
+            ratio = Math.Abs(_windCells[cellId].MotionVector.y / _windCells[cellId].MotionVector.x);
+            cellTransferRatio = new Vector2((0.5f * ratio) + (1f - ratio), (0.5f * ratio));
+        }
+        else if (Math.Abs(_windCells[cellId].MotionVector.x) < Math.Abs(_windCells[cellId].MotionVector.y) && _windCells[cellId].MotionVector.x != 0f)
+        {
+            ratio = Math.Abs(_windCells[cellId].MotionVector.x / _windCells[cellId].MotionVector.y);
+            cellTransferRatio = new Vector2((0.5f * ratio), (0.5f * ratio) + (1f - ratio));
+        }
+        else cellTransferRatio = new Vector2(0.5f, 0.5f);
 
-        ratioV = new Vector2(0.5f, 0.5f);
 
         if (_windCells[cellId].MotionVector.x > 0) // Right Movement
         {
-            _windCells[_adjacentId[1]].RecivedMotionVector +=  recivedV * ratioV;
+            _windCells[_adjacentId[1]].RecivedMotionVector +=  recivedV * cellTransferRatio.x;
         }
         else if (_windCells[cellId].MotionVector.x < 0) // left Movement
         {
-            _windCells[_adjacentId[3]].RecivedMotionVector +=  recivedV * ratioV;
+            _windCells[_adjacentId[3]].RecivedMotionVector +=  recivedV * cellTransferRatio.x;
         }
 
         if (_windCells[cellId].MotionVector.y > 0) // Up Movement
         {
-            _windCells[_adjacentId[0]].RecivedMotionVector +=  recivedV * ratioV;
+            _windCells[_adjacentId[0]].RecivedMotionVector +=  recivedV * cellTransferRatio.y;
         }
         else if (_windCells[cellId].MotionVector.y < 0) // Down Movement
         {
-            _windCells[_adjacentId[2]].RecivedMotionVector +=  recivedV * ratioV;
+            _windCells[_adjacentId[2]].RecivedMotionVector +=  recivedV * cellTransferRatio.y;
         }
 
         if (cellId == 465)
@@ -379,7 +609,9 @@ public class Wind : MonoBehaviour
 
         }
     }
+    #endregion
 
+    #region Class Functions
     void ApplyCellsChanges()
     {
         for (int i = 0; i < _airMedium.Cells.Length - 1; i++)
@@ -399,52 +631,10 @@ public class Wind : MonoBehaviour
             TotalHeat += _airMedium.Cells[i].Content[4];
         }
     }
+    #endregion
 
 
-
-    public void CalculateWind()
-    {
-        // clear temp cells list
-        //ClearTempCells();
-        ResetTempCells();
-
-        _tempMaxVector = 0f;
-
-        for (int i = 0; i < _airMedium.Cells.Length - 1; i++)
-        {
-            // Get cell's neighbors
-            GetAdjacentCellsIds(i);
-
-            // Calculate heat differences
-            CalculateHeatDifference(i);
-
-            // Calculate Direction & Amplitude
-            CalculateDirectionAmplitude(i);
-
-            // Calculate Direction Precentages
-            CalculateDirectionPrecentage(i);
-
-            CalculateMotionVector(i);
-
-            if (DebugWind)
-            {
-                DrawDebugLine(i);
-
-                CalculateMaxVector(i);
-            }
-
-            MoveCellsContent(i);
-
-            TransferWind(i);
-        }
-
-        ApplyCellsChanges();
-
-        _maxVector = _tempMaxVector;
-
-        if (DebugWind)
-        {
-            CalculateTotalHeat();
-        }
-    }
 }
+
+
+

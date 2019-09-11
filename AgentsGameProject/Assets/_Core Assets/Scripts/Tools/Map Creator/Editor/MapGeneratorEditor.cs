@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Tilemaps;
+using WeatherSystem;
 
 
 [CustomEditor(typeof(MapCreator))]
